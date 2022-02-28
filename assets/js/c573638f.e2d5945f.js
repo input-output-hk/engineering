@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkengineering_iog_io=self.webpackChunkengineering_iog_io||[]).push([[964],{8866:function(g){g.exports=JSON.parse('{"/tags/ghc":{"allTagsPath":"/tags","slug":"/tags/ghc","name":"ghc","count":3,"permalink":"/tags/ghc"},"/tags/nix":{"allTagsPath":"/tags","slug":"/tags/nix","name":"nix","count":1,"permalink":"/tags/nix"}}')}}]);
