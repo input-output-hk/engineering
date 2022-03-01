@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkengineering_iog_io=self.webpackChunkengineering_iog_io||[]).push([[481],{5717:function(n){n.exports=JSON.parse('{"allTagsPath":"/tags","slug":"/tags/nix","name":"nix","count":2,"permalink":"/tags/nix"}')}}]);
