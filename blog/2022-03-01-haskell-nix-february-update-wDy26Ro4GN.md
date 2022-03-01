@@ -31,4 +31,5 @@ custom_edit_url: null
 * Fix stack cache generator `sha256` is a string not a lambda [#1383](https://github.com/input-output-hk/haskell.nix/pull/1383)
 * Only pass `--index-state` to `cabal` when asked [#1384](https://github.com/input-output-hk/haskell.nix/pull/1384)
 * Pass `enableDWARF` to `makeConfigFiles` to fix `-g3` support in `nix-shell` [#1385](https://github.com/input-output-hk/haskell.nix/pull/1385)
+
 Finally, we’d like to thank all the awesome contributors, who make `haskell.nix` a thriving open source project! :heart:
