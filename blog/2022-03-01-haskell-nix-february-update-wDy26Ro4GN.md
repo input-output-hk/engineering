@@ -7,7 +7,7 @@ custom_edit_url: null
 ---
 ## Documentation
 
-* A tutorial has been added on [building DWARF-enabled executables](https://outline.zw3rk.com/doc/nixbuilding-dwarf-enabled-executables-DXOnO082Q3) on linux systems.  There was also a related fix for building DWARF executables in a nix shell ([#1385](https://github.com/input-output-hk/haskell.nix/pull/1385))
+* A tutorial has been added on [building DWARF-enabled executables](https://outline.zw3rk.com/share/d461004d-1f2f-4d7a-95f2-4e20acb18cac) on linux systems.  There was also a related fix for building DWARF executables in a nix shell ([#1385](https://github.com/input-output-hk/haskell.nix/pull/1385))
 
 ## Changes
 
@@ -31,4 +31,4 @@ custom_edit_url: null
 * Fix stack cache generator `sha256` is a string not a lambda [#1383](https://github.com/input-output-hk/haskell.nix/pull/1383)
 * Only pass `--index-state` to `cabal` when asked [#1384](https://github.com/input-output-hk/haskell.nix/pull/1384)
 * Pass `enableDWARF` to `makeConfigFiles` to fix `-g3` support in `nix-shell` [#1385](https://github.com/input-output-hk/haskell.nix/pull/1385)
-Finally, we’d like to thank all the awesome contributors, who make `haskell.nix` a thriving open source project!
+Finally, we’d like to thank all the awesome contributors, who make `haskell.nix` a thriving open source project! :heart:
