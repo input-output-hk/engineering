@@ -1,5 +1,5 @@
 ---
-slug: ghc-january-update
+slug: 2022-02-01-ghc-january-update
 title: GHC January update
 authors: []
 tags: [ghc]

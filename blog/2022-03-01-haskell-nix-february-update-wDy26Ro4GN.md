@@ -1,5 +1,5 @@
 ---
-slug: haskell-nix-february-update
+slug: 2022-03-01-haskell-nix-february-update
 title: haskell.nix February Update
 authors: []
 tags: [nix]

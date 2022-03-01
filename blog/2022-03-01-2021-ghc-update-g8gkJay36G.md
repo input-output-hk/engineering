@@ -1,5 +1,5 @@
 ---
-slug: 2021-ghc-update
+slug: 2022-03-01-2021-ghc-update
 title: 2021 GHC update
 authors: []
 tags: [ghc]
