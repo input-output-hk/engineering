@@ -7,7 +7,7 @@ custom_edit_url: null
 ---
 IOG is committed to improving Haskell developer experience, both by [sponsoring the Haskell Foundation](https://iohk.io/en/blog/posts/2020/11/04/iohk-sponsors-new-haskell-foundation) and by directly founding a team committed to this task: the Haskell DX team.
 
-Starting now, the team will try to provide regular (monthly) updates about its work. This post is a bit longer because it covers all of 2021 which has not been covered anywhere else.
+The team now tries to provide regular (monthly) updates about its work. This post is a bit longer because it covers all of 2021 which has not been covered anywhere else.
 
 ## Code generation
 
