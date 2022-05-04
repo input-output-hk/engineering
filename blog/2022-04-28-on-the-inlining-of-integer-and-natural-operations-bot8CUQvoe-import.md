@@ -8,7 +8,9 @@ custom_edit_url: null
 **Sylvain Henry (sylvain.henry@iohk.io)** 
 
 In this post I discuss the inlining of Integer and Natural operations in Haskell. It’s a promising performance work I’ve been conducting six months ago, which was blocked by an independent issue, but that I will likely resume soon as the issue has been fixed in the meantime.
+
 ---
+
 
 To follow this post, you must know that `Natural` numbers are represented as follows in `ghc-bignum`:
 
