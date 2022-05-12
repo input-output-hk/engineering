@@ -551,7 +551,7 @@ Which can be loaded into `gephi` for closer inspection of the call graph of our 
 
 ## Step-by-Step guide for running the interpreter on your code
 
-1.  Build you project with `ghc-wpc/_build/stage1/bin` by directly invoking that `ghc` (as I did in the demo-01 project) or by pointing stack to it with `system-ghc` and `extra-path` in `stack.yaml`, or by passing `-w <path-to-ghc-wpc-binary` with cabal.
+1.  Build your project with `ghc-wpc/_build/stage1/bin` by directly invoking that `ghc` (as I did in the demo-01 project) or by pointing stack to it with `system-ghc` and `extra-path` in `stack.yaml`, or by passing `-w <path-to-ghc-wpc-binary` with cabal.
 2.  Generate the `foo.fullpak` file with `mkfullpak foo.o_ghc_stgapp`
 3.  Soft-link to `libHSbase-4.14.0.0.cbits.so` in the directory you will run the interpreter in. This file must be present when you run the interpreter!
 4.  Now run the interpreter on `project.fullpak`
