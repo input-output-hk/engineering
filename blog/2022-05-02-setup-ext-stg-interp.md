@@ -140,10 +140,15 @@ Now we need to `cd` into `ghc-wpc` and tweak the hadrian build.
 
 So in order to build `ghc-wpc` with stack we&rsquo;ll have to tweak the `stack.yaml` file. **You must do this since it is not included in the fork**:
 
-```bash
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project]$ cd ghc-wpc/hadrian/
+Quick side note: To make the formatting nicer I truncate
+`nix-shell:~/foo/bar/baz/ghc-whole-program-compiler-project` to just `...`, so
+`nix-shell:.../ghc-wpc` is equivalent to
+`~/path/to/ghc-whole-compiler-project/ghc-wpc`.
 
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/ghc-wpc/hadrian]$ cat stack.yaml
+```bash
+[nix-shell:...]$ cd ghc-wpc/hadrian/
+
+[nix-shell:.../ghc-wpc/hadrian]$ cat stack.yaml
 resolver: lts-15.5
 
 packages:
@@ -162,17 +167,17 @@ The changes are: (1) tell `stack` we are using `nix`, and (2) reference the `she
 Now we should be able to begin our build, return to the root of `ghc-wpc` and run the following:
 
 ```bash
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/ghc-wpc/hadrian]$ cd ..
+[nix-shell:.../ghc-wpc/hadrian]$ cd ..
 
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/ghc-wpc]$ ./boot && ./configure
+[nix-shell:.../ghc-wpc]$ ./boot && ./configure
 
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/ghc-wpc]$ hadrian/build-stack -j
+[nix-shell:.../ghc-wpc]$ hadrian/build-stack -j
 ```
 
 and go get some coffee since this will take some time. Once it finishes you should have the `ghc-wpc` binary in `_build/stage1/bin`
 
 ```bash
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/ghc-wpc]$ ls -l _build/stage1/bin/
+[nix-shell:.../ghc-wpc]$ ls -l _build/stage1/bin/
 total 8592
 -rwxr-xr-x 1 doyougnu users 1843752 Apr 29 23:01 ghc
 -rw-r--r-- 1 doyougnu users   11082 Apr 29 23:01 ghc.dyn_o_ghc_stgapp
@@ -243,7 +248,7 @@ The changes are: (1) set `compiler: ghc-8.11.0` (the `ghc-wpc` fork), (2) set `s
 Now we can run stack and install the stg tooling:
 
 ```bash
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project]$ stack --stack-root `pwd`/.stack-root install
+[nix-shell:...]$ stack --stack-root `pwd`/.stack-root install
 Trouble loading CompilerPaths cache: UnliftIO.Exception.throwString called with:
 
 Compiler file metadata mismatch, ignoring cache
@@ -287,9 +292,9 @@ You can add `~/.local/bin` to your `PATH` if you want, I&rsquo;ll just be direct
 We are almost all done, all that is left is to build the external-stg-interpreter and run a small script that links everything together into a shared object for the interpreter. So:
 
 ```bash
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project]$ cd external-stg-interpreter/
+[nix-shell:...]$ cd external-stg-interpreter/
 
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/external-stg-interpreter]$ stack install
+[nix-shell:.../external-stg-interpreter]$ stack install
 ...  # bunch of output
 ...
 Copied executables to /home/doyougnu/.local/bin:
@@ -304,7 +309,7 @@ Warning: Installation path /home/doyougnu/.local/bin not found on the PATH envir
 Now we have our `ext-stg-interpreter` built! There are a few caveats I want to point out here. I&rsquo;ve modified `ghc-whole-program-compiler-project/external-stg-interpreter/stack.yaml` to load the right packages and use nix:
 
 ```bash
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/external-stg-interpreter]$ cat stack.yaml
+[nix-shell:.../external-stg-interpreter]$ cat stack.yaml
 resolver: lts-16.13
 
 packages:
@@ -331,28 +336,28 @@ Notice the `nix:` block. We could have just as easily built this using `nix` dir
 The only task left is to link into a shared object library called `libHSbase-4.14.0.0.cbits.so`. To do that we need to use the script called, `c`, in `ghc-whole-program-compiler-project/external-stg-interpreter/data`. This will produce `libHSbase-4.14.0.0.cbits.so` file. ****MAJOR NOTE: this file must be next to any \*.fullpak file you&rsquo;ll be running the interpreter on**** or else you&rsquo;ll get an undefined symbol error, for example:
 
 ```bash
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/external-stg-interpreter/data]$ ls
+[nix-shell:.../external-stg-interpreter/data]$ ls
 cbits.so-script  ghc-rts-base.fullpak  minigame-strict.fullpak
 
 ### notice no .so file
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/external-stg-interpreter/data]$ ~/.local/bin/ext-stg-interpreter ghc-rts-base.fullpak
+[nix-shell:.../external-stg-interpreter/data]$ ~/.local/bin/ext-stg-interpreter ghc-rts-base.fullpak
 ext-stg-interpreter: user error (dlopen: ./libHSbase-4.14.0.0.cbits.so: cannot open shared object file: No such file or directory)
 
 ## we error'd out because it was missing, also
 ## if you get this error then you have an old cbits.so file and need to rerun the c script
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/external-stg-interpreter/data]$ ~/.local/bin/ext-stg-interpreter ghc-rts-base.fullpak
+[nix-shell:.../external-stg-interpreter/data]$ ~/.local/bin/ext-stg-interpreter ghc-rts-base.fullpak
 ext-stg-interpreter: user error (dlopen: ./libHSbase-4.14.0.0.cbits.so: undefined symbol: getProcessElapsedTime)
 ```
 
 To link the interpreter we need to run `c` in the `data/cbits.so-script` sub-folder:
 
 ```bash
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/external-stg-interpreter]$ cd data/cbits.so-script/
+[nix-shell:.../external-stg-interpreter]$ cd data/cbits.so-script/
 
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/external-stg-interpreter/data/cbits.so-script]$ ls
+[nix-shell:.../external-stg-interpreter/data/cbits.so-script]$ ls
 ar  c  cbits-rts.dyn_o  c-src  libHSbase-4.14.0.0.cbits.so  stub-base.dyn_o
 
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/external-stg-interpreter/data/cbits.so-script]$ ./c
+[nix-shell:.../external-stg-interpreter/data/cbits.so-script]$ ./c
 ++ ls ar/libHSbase-4.14.0.0-ghc8.11.0.20210220.dyn_o_cbits.a ar/libHSbindings-GLFW-3.3.2.0-Jg9TvsfYUZwD0ViIP0H2Tz-ghc8.11.0.20210306.dyn_o_cbits.a ar/libHSbytestring-0.10.9.0-ghc8.11.0.20210306.dyn_o_cbits.a ar/libHScriterion-measurement-0.1.2.0-73BCI2Fnk7qE8QjjTa1xNa-ghc8.11.0.20210324.dyn_o_cbits.a ar/libHSghc-8.11.0.20210306-ghc8.11.0.20210306.dyn_o_cbits.a ar/libHSGLUT-2.7.0.15-1pzTWDEZBcYHcS36qZ2lpp-ghc8.11.0.20201112.dyn_o_cbits.a ar/libHSGLUT-2.7.0.15-1pzTWDEZBcYHcS36qZ2lpp-ghc8.11.0.20210324.dyn_o_stubs.a ar/libHShashable-1.3.0.0-Kn7aNSFvzgo2qY16wYzuCX-ghc8.11.0.20210306.dyn_o_cbits.a ar/libHSinteger-gmp-1.0.3.0-ghc8.11.0.20210220.dyn_o_cbits.a ar/libHSlambdacube-quake3-engine-0.1.0.0-7CKLP3Rqgq0PR81lhlwlR-ghc8.11.0.20210306.dyn_o_cbits.a ar/libHSmersenne-random-pure64-0.2.2.0-ExYg8DmthtrLG9JevQbt2m-ghc8.11.0.20210306.dyn_o_cbits.a ar/libHSOpenGLRaw-3.3.4.0-5vXBlmbOM3AIT7GRYfpE3o-ghc8.11.0.20201112.dyn_o_cbits.a ar/libHSprimitive-0.7.0.1-2k3g9qX0zz16vEv34R307m-ghc8.11.0.20210306.dyn_o_cbits.a ar/libHSprocess-1.6.8.2-ghc8.11.0.20210220.dyn_o_cbits.a ar/libHStext-1.2.4.0-ghc8.11.0.20210220.dyn_o_cbits.a ar/libHSunix-2.7.2.2-ghc8.11.0.20210220.dyn_o_cbits.a ar/libHSunix-2.7.2.2-ghc8.11.0.20210220.dyn_o_stubs.a ar/libHSzlib-0.6.2.1-1I6DmfbLEyTBgDZI7SbZfW-ghc8.11.0.20210306.dyn_o_stubs.a
 ++ ls stub-base.dyn_o/Blank_stub.dyn_o stub-base.dyn_o/ClockGetTime_stub.dyn_o stub-base.dyn_o/Internals_stub.dyn_o stub-base.dyn_o/RUsage_stub.dyn_o
 ++ ls cbits-rts.dyn_o/StgPrimFloat.dyn_o cbits-rts.dyn_o/TTY.dyn_o
@@ -363,7 +368,7 @@ ar  c  cbits-rts.dyn_o  c-src  libHSbase-4.14.0.0.cbits.so  stub-base.dyn_o
 This will produce `libHSbase-4.14.0.0.cbits.so` in the immediate directory:
 
 ```bash
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/external-stg-interpreter/data/cbits.so-script]$ ls -l
+[nix-shell:.../external-stg-interpreter/data/cbits.so-script]$ ls -l
 total 984
 drwxr-xr-x 2 doyougnu users   4096 Apr 27 14:10 ar
 -rwxr-xr-x 1 doyougnu users    300 Apr 27 14:10 c
@@ -376,18 +381,18 @@ drwxr-xr-x 2 doyougnu users   4096 Apr 27 14:10 stub-base.dyn_o
 Now we can test our interpreter by running it on the `*.fullpak` files in `external-stg-interpreter/data`:
 
 ```bash
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/external-stg-interpreter/data/cbits.so-script]$ cd ..
+[nix-shell:.../external-stg-interpreter/data/cbits.so-script]$ cd ..
 
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/external-stg-interpreter/data]$ ls
+[nix-shell:.../external-stg-interpreter/data]$ ls
 cbits.so-script  ghc-rts-base-call-graph-summary  ghc-rts-base-call-graph.tsv  ghc-rts-base.fullpak  libHSbase-4.14.0.0.cbits.so  minigame-strict.fullpak
 
 ## remove the old .so file
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/external-stg-interpreter/data]$ rm libHSbase-4.14.0.0.cbits.so
+[nix-shell:.../external-stg-interpreter/data]$ rm libHSbase-4.14.0.0.cbits.so
 
 ## soft-link to the one we just built
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/external-stg-interpreter/data]$ ln -s cbits.so-script/libHSbase-4.14.0.0.cbits.so libHSbase-4.14.0.0.cbits.so
+[nix-shell:.../external-stg-interpreter/data]$ ln -s cbits.so-script/libHSbase-4.14.0.0.cbits.so libHSbase-4.14.0.0.cbits.so
 
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/external-stg-interpreter/data]$ ls -l
+[nix-shell:.../external-stg-interpreter/data]$ ls -l
 total 79220
 drwxr-xr-x 6 doyougnu users     4096 Apr 30 11:50 cbits.so-script
 -rw-r--r-- 1 doyougnu users       48 Apr 30 11:47 ghc-rts-base-call-graph-summary
@@ -396,7 +401,7 @@ drwxr-xr-x 6 doyougnu users     4096 Apr 30 11:50 cbits.so-script
 lrwxrwxrwx 1 doyougnu users       43 Apr 30 11:55 libHSbase-4.14.0.0.cbits.so -> cbits.so-script/libHSbase-4.14.0.0.cbits.so  ### <---- new
 -rw-r--r-- 1 doyougnu users 58630129 Apr 27 14:10 minigame-strict.fullpak
 
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/external-stg-interpreter/data]$ ~/.local/bin/ext-stg-interpreter ghc-rts-base.fullpak
+[nix-shell:.../external-stg-interpreter/data]$ ~/.local/bin/ext-stg-interpreter ghc-rts-base.fullpak
 hello
 hello
 ssHeapStartAddress: 53522
@@ -405,7 +410,7 @@ ssClosureCallCounter: 360
 executed closure id count: 114
 call graph size: 150
 
-[nix-shell:~/programming/haskell/ghc-whole-program-compiler-project/external-stg-interpreter/data]$ ls -l
+[nix-shell:.../external-stg-interpreter/data]$ ls -l
 total 79220
 drwxr-xr-x 6 doyougnu users     4096 Apr 30 11:50 cbits.so-script
 -rw-r--r-- 1 doyougnu users       48 Apr 30 11:56 ghc-rts-base-call-graph-summary    ### <---- interpreter output
