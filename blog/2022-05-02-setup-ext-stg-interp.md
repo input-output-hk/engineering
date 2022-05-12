@@ -20,7 +20,7 @@ tags: [ghc stg tooling profiling optimization]
   - [Step-by-Step guide for running the interpreter on your code](#org8e9f409)
 
 Haskell is a great language camouflaged by lack luster tooling. This situation
-has led to well-known problems (who could forget Cabal hell?). A less discusses
+has led to well-known problems (who could forget Cabal hell?). A less discussed
 problem is what I will call the &ldquo;Black-box syndrome&rdquo;: It is hard to
 know *exactly* what the memory representation and runtime performance of my
 Haskell programs are[^1]:. Now black-box syndrome is not *only* a problem,
