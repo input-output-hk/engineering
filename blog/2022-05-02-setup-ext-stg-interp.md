@@ -333,7 +333,27 @@ Notice the `nix:` block. We could have just as easily built this using `nix` dir
 
 # Linking the external-stg-interpreter
 
-The only task left is to link into a shared object library called `libHSbase-4.14.0.0.cbits.so`. To do that we need to use the script called, `c`, in `ghc-whole-program-compiler-project/external-stg-interpreter/data`. This will produce `libHSbase-4.14.0.0.cbits.so` file. ****MAJOR NOTE: this file must be next to any \*.fullpak file you&rsquo;ll be running the interpreter on**** or else you&rsquo;ll get an undefined symbol error, for example:
+The only task left is to link into a shared object library called
+`libHSbase-4.14.0.0.cbits.so`. To do that we need to use the script called, `c`,
+in `ghc-whole-program-compiler-project/external-stg-interpreter/data`. This
+script is a bit of a hack, it generates the shared object file so that we can link the symbols requested by the C
+FFI in `base`, but it populates those functions with our replacements, which do absolutely nothing. For example, we supply a fake garbage collect:
+```c
+// in .../external-stg-interpreter/data/cbits.so-script/c-src/fake_rts.c
+...
+void performGC(void) {
+}
+
+void performMajorGC(void) {
+}
+...
+```
+
+This works because we won't be using the runtime system at all, we'll be using
+the external STG interpreter instead, however we still need to provide these
+symbols in order to link. ****MAJOR NOTE: this file must be next to any
+\*.fullpak file you&rsquo;ll be running the interpreter on**** or else
+you&rsquo;ll get an undefined symbol error during linking, for example:
 
 ```bash
 [nix-shell:.../external-stg-interpreter/data]$ ls
