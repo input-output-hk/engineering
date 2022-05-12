@@ -23,7 +23,7 @@ Haskell is a great language camouflaged by lackluster tooling. This situation
 has led to well-known problems (who could forget Cabal hell?). A less discussed
 problem is what I will call the &ldquo;Black-box syndrome&rdquo;: It is hard to
 know *exactly* what the memory representation and runtime performance of my
-Haskell programs are[^1]:. Now black-box syndrome is not *only* a problem,
+Haskell programs are[^1]. Now black-box syndrome is not *only* a problem,
 it is also one of the nice features in the language since like all good
 abstractions it elides things I&rsquo;d rather not care about, at least most of
 the time. In other words, I am happy I don&rsquo;t have to do manual memory
