@@ -63,7 +63,9 @@ const config = {
           //   position: 'left',
           //   label: 'Tutorial',
           // },
-          // {to: '/blog', label: 'Blog', position: 'left'},
+          {to: '/', label: 'Recent', position: 'left'},
+          {to: '/tags', label: 'Tags', position: 'left'},
+          {to: '/archive', label: 'Archive', position: 'left'},
           // {
           //   href: 'https://github.com/input-output-hk/',
           //   label: 'GitHub',
