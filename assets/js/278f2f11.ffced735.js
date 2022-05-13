@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkengineering_iog_io=self.webpackChunkengineering_iog_io||[]).push([[747],{1524:function(i){i.exports=JSON.parse('{"allTagsPath":"/tags","slug":"/tags/ghc-stg-tooling-profiling-optimization","name":"ghc stg tooling profiling optimization","count":1,"permalink":"/tags/ghc-stg-tooling-profiling-optimization"}')}}]);
