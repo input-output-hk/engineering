@@ -1,11 +1,10 @@
 ---
 slug: 2022-04-28-on-the-inlining-of-integer-and-natural-operations
 title: On the inlining of Integer and Natural operations
-authors: []
+authors: [sylvain]
 tags: [ghc]
 custom_edit_url: null
 ---
-**Sylvain Henry (sylvain.henry@iohk.io)** 
 
 In this post I discuss the inlining of Integer and Natural operations in Haskell. It’s a promising performance work I’ve been conducting six months ago, which was blocked by an independent issue, but that I will likely resume soon as the issue has been fixed in the meantime.
 

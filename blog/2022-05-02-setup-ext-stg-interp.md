@@ -3,7 +3,7 @@ slug: 2022-05-02-setup-ext-stg-interp
 title: Setting up Csaba's External STG Interpreter
 date: May 2, 2022
 authors: [ doyougnu ]
-tags: [ghc stg tooling profiling optimization]
+tags: [ghc, stg, tooling, profiling, optimization]
 ---
 
 ## Table of Contents

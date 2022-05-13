@@ -1,7 +1,7 @@
 ---
 slug: 2022-03-09-ghc-february-2022-update
 title: GHC February 2022 Update
-authors: []
+authors: [sylvain]
 tags: [ghc]
 custom_edit_url: null
 ---
