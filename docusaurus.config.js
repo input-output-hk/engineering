@@ -33,6 +33,12 @@ const config = {
           // Please change this to your repo.
           editUrl: undefined,
             // 'https://github.com/input-output-hk/engineering/tree/master/',
+          feedOptions: {
+            type: 'all',
+            description: 'IOG Engineering blog',
+            language: 'en',
+            copyright: `Copyright © ${new Date().getFullYear()} IOG, Inc.`
+          }
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
