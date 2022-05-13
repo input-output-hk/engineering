@@ -30,6 +30,7 @@ const config = {
         blog: {
           routeBasePath: '/',
           showReadingTime: true,
+          postsPerPage: 1,
           // Please change this to your repo.
           editUrl: undefined,
             // 'https://github.com/input-output-hk/engineering/tree/master/',
