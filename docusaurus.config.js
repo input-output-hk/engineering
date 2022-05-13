@@ -30,9 +30,16 @@ const config = {
         blog: {
           routeBasePath: '/',
           showReadingTime: true,
+          postsPerPage: 1,
           // Please change this to your repo.
           editUrl: undefined,
             // 'https://github.com/input-output-hk/engineering/tree/master/',
+          feedOptions: {
+            type: 'all',
+            description: 'IOG Engineering blog',
+            language: 'en',
+            copyright: `Copyright © ${new Date().getFullYear()} IOG, Inc.`
+          }
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -57,7 +64,9 @@ const config = {
           //   position: 'left',
           //   label: 'Tutorial',
           // },
-          // {to: '/blog', label: 'Blog', position: 'left'},
+          {to: '/', label: 'Recent', position: 'left'},
+          {to: '/tags', label: 'Tags', position: 'left'},
+          {to: '/archive', label: 'Archive', position: 'left'},
           // {
           //   href: 'https://github.com/input-output-hk/',
           //   label: 'GitHub',

@@ -1,7 +1,7 @@
 ---
 slug: 2022-03-01-2021-ghc-update
 title: 2021 GHC update
-authors: []
+authors: [sylvain]
 tags: [ghc]
 custom_edit_url: null
 ---
