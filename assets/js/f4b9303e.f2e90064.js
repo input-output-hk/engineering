@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkengineering_iog_io=self.webpackChunkengineering_iog_io||[]).push([[366],{1403:function(i){i.exports=JSON.parse('{"allTagsPath":"/tags","slug":"/tags/optimization","name":"optimization","count":1,"permalink":"/tags/optimization"}')}}]);

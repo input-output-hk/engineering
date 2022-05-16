@@ -2,12 +2,42 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://engineering.iog.io/</id>
     <title>IOG Engineering Blog</title>
-    <updated>2022-05-02T00:00:00.000Z</updated>
+    <updated>2022-05-13T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://engineering.iog.io/"/>
     <subtitle>IOG Engineering blog</subtitle>
     <icon>https://engineering.iog.io/img/favicon.ico</icon>
     <rights>Copyright © 2022 IOG, Inc.</rights>
+    <entry>
+        <title type="html"><![CDATA[GHC April 2022 Update]]></title>
+        <id>ghc-update-2022-04</id>
+        <link href="https://engineering.iog.io/ghc-update-2022-04"/>
+        <updated>2022-05-13T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Welcome to the (rather late) April 2022 monthly update from the GHC DevX team at IOG. Since the last update we've continued work on the upcoming JavaScript backend for GHC. Unfortunately, we have nothing to show quite yet but that doesn't mean nothing has happened! On the contrary, we've made great progress and are close to that crucial first milestone hello world. Besides our work on the JavaScript backend, we were pleased to finally push through the Modularizing GHC paper that Sylvain has been working on for 2+ years! It causes quite the splash on the Haskell discourse and reddit, we recommend reading it if you haven't already (links below). Alright, enough introduction let's get into the update.]]></summary>
+        <content type="html"><![CDATA[<p>Welcome to the (rather late) April 2022 monthly update from the GHC DevX team at IOG. Since the last update we've continued work on the upcoming JavaScript backend for GHC. Unfortunately, we have nothing to show quite yet but that doesn't mean nothing has happened! On the contrary, we've made great progress and are close to that crucial first milestone <code>hello world</code>. Besides our work on the JavaScript backend, we were pleased to finally push through the <a href="https://hsyl20.fr/home/posts/2022-05-03-modularizing-ghc-paper.html" target="_blank" rel="noopener noreferrer">Modularizing GHC</a> paper that Sylvain has been working on for 2+ years! It causes quite the splash on the Haskell discourse and reddit, we recommend reading it if you haven't already (links below). Alright, enough introduction let's get into the update.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="javascript-backend">JavaScript Backend<a class="hash-link" href="#javascript-backend" title="Direct link to heading">​</a></h2><p>We have made the following progresses in the implementation of a JavaScript
+backend for GHC (adapted from GHCJS):</p><ul><li><p><strong>linker</strong>: ported GHCJS's linker code into GHC. A lot of code was duplicated from GHC and
+slightly modified for GHCJS's needs, making the process far from trivial.</p></li><li><p><strong>testsuite</strong>: fixed Hadrian to run GHC's testsuite with cross-compilers
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/7850" target="_blank" rel="noopener noreferrer">!7850</a>. There are
+remaining issues though (see
+<a href="https://gitlab.haskell.org/ghc/ghc/-/issues/21292" target="_blank" rel="noopener noreferrer">#21292</a>).</p></li><li><p><strong>build system</strong>: fixes for GHC's configure script were ported (e.g. support for
+the "ghcjs" target in <code>config.sub</code>). GHCJS's custom
+build script was integrated into <code>configure.ac</code>. We can now
+configure the build with: <code>./configure --target=js-unknown-ghcjs</code></p></li><li><p><strong>TH</strong>: we have conducted some experiments to find the best way to bridge GHCJS's
+TH runner and GHC's external interpreter. This will be described in details in
+a future blog post.</p></li><li><p><strong>FFI</strong>: basic support for JavaScript FFI has been ported from GHCJS to GHC. We
+haven't ported the JavaScript parser, so we have dropped the fancy import
+syntax (e.g. "$1.xyz"). It should be enough to build boot libraries and we
+will add JS parsing support later.</p></li></ul><p>At this stage, we are working on building boot libraries and on supporting
+linking with the JS RTS.</p><p>Development happens in the following branch: <a href="https://gitlab.haskell.org/ghc/ghc/-/tree/wip/js-staging" target="_blank" rel="noopener noreferrer">https://gitlab.haskell.org/ghc/ghc/-/tree/wip/js-staging</a></p><h2 class="anchor anchorWithStickyNavbar_mojV" id="modularity-paper">Modularity paper<a class="hash-link" href="#modularity-paper" title="Direct link to heading">​</a></h2><p>Sylvain, Jeffrey, and John Ericson (from Obsidian Systems) wrote a paper about
+"modularizing GHC" using domain-driven design.</p><ul><li>Announce blog post: <a href="https://hsyl20.fr/home/posts/2022-05-03-modularizing-ghc-paper.html" target="_blank" rel="noopener noreferrer">https://hsyl20.fr/home/posts/2022-05-03-modularizing-ghc-paper.html</a></li><li>Paper: <a href="https://hsyl20.fr/home/files/papers/2022-ghc-modularity.pdf" target="_blank" rel="noopener noreferrer">https://hsyl20.fr/home/files/papers/2022-ghc-modularity.pdf</a></li><li>Reddit: <a href="https://www.reddit.com/r/haskell/comments/uhdu4l/modularizing_ghc_paper/" target="_blank" rel="noopener noreferrer">https://www.reddit.com/r/haskell/comments/uhdu4l/modularizing_ghc_paper/</a></li><li>Discourse: <a href="https://discourse.haskell.org/t/modularizing-ghc-paper/4471" target="_blank" rel="noopener noreferrer">https://discourse.haskell.org/t/modularizing-ghc-paper/4471</a></li></ul><p>We've got a lot of great feedback about it (expect a first revision soon).
+We also got a GHC contribution directly inspired by the paper (see
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/8160" target="_blank" rel="noopener noreferrer">!8160</a>) which was
+very welcome!</p>]]></content>
+        <author>
+            <name>Sylvain Henry</name>
+        </author>
+        <category label="ghc" term="ghc"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Setting up Csaba's External STG Interpreter]]></title>
         <id>2022-05-02-setup-ext-stg-interp</id>
