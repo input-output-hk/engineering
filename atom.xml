@@ -36,6 +36,10 @@ very welcome!</p>]]></content>
         <author>
             <name>Sylvain Henry</name>
         </author>
+        <author>
+            <name>Jeffrey M. Young</name>
+            <uri>https://iog.io/en/</uri>
+        </author>
         <category label="ghc" term="ghc"/>
     </entry>
     <entry>
