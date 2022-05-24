@@ -12,18 +12,20 @@ At IOG DevX we have been working on integrating various bits of GHCJS into GHC, 
 
 This post gives an overview of the existing approaches for running Template Haskell in GHC based cross compilers and our plan for the JavaScript backend. Hopefully we can revisit this topic once all the work has been done, and see what exactly we ended up with.
 
-## The Template Haskell Runner
+## The GHCJS Template Haskell Runner
 
 When I first worked on Template Haskell (TH) support for GHCJS, there was no mechanism to combine Template Haskell with cross compilation in GHC.
 
 Normally, Template Haskell is run by loading library code directly into the GHC process and using the bytecode interpreter for the current module. Template Haskell can directly access GHC data structures through the `Q` monad. Clearly this would not be possible for GHCJS: We only have JavaScript code available for the libraries and the organization of the JavaScript data structures is very different from what GHC uses internally.
 
-So I had to look for an alternative. Running Template Haskell basically consists of two parts:
+So I had to look for an alternative. Running Template Haskell consists of two parts:
 
    1. loading/executing the TH code
    2. handling compiler queries from the TH code, for example looking up names or types
 
-The queries from the TH code are abstracted by the `Quasi` typeclass. I noticed that none of the methods required passing around functions or complicated data structures, so it would be possible to serialize each request and response and send it to another process.
+Running the TH code can be done by first compiling the Haskell to JavaScript and then using the JavaScript `eval` feature.
+
+Template Haskell code can query the compiler using the `Quasi` typeclass. I noticed that none of the methods required passing around functions or complicated data structures, so it would be possible to serialize each request and response and send it to another process.
 
 So I went ahead and implemented this approach with a script `thrunner.js` to load and start the code in a node.js server, a message type with serialization, and a new instance of the `Quasi` typeclass to handle the communication with the compiler via the messages. This is still what's in use by GHCJS to this day. Every time GHCJS encounters Template Haskell, it starts a `thrunner` process and the compiler communicates with it over a pipe.
 
@@ -44,11 +46,11 @@ After starting `thrunner.js` GHCJS sends the Haskell parts of the Template Haske
 | `FinishTH True` | |
 | | `FinishTH' <memory-consumption>` |
 
-Each message is followed up by a corresponding reply. The first `RunTH` message contains the compiled JavaScript for the Template Haskell Haskell code, along with its dependencies. Each subsequent `RunTH` only includes dependencies that have not already been sent.
+Each message is followed up by a corresponding reply. For example, a `LookupName'` response follows a `LookupName` request and a `RunTH` message will eventually generate a `RunTH'` result. The first `RunTH` message contains the compiled JavaScript for the Template Haskell Haskell code, along with its dependencies. Each subsequent `RunTH` only includes dependencies that have not already been sent.
 
 The `thrunner` process stays alive during the compilation of at least an entire module, allowing for persistent state (`putQ`/`getQ`).
 
-## External Interpreter
+## The GHC External Interpreter
 
 If we build a Haskell program with (cost centre) profiling, the layout of our data structures changes to include bookkeeping of cost centre information. This means that we need a special profiling runtime system to run this code.
 
@@ -59,7 +61,7 @@ This was Simon Marlow's motivation for adapting the GHCJS `thrunner` approach, i
 Over time, the `iserv` code has evolved with GHC and has been extended to include more operations. By now, there are quite a few differences in features:
 
 | Feature | thrunner | iserv |
-| :---        |    :----:   |          ---: |
+| :--- | :----:   | :---: |
 | Template Haskell support | yes       | yes   |
 | GHCi   | no | yes |
 | Debugger | no | yes |
@@ -71,9 +73,11 @@ Over time, the `iserv` code has evolved with GHC and has been extended to includ
 
 ## Proxies and Bytecodes
 
-Clearly it isn't ideal to have multiple "external interpreter" systems in GHC, therefore we plan to switch from `thrunner` to `iserv` for the upcoming JavaScript backend. We don't need the debugger or GHCi support yet, but we do need to adapt to other changes in the infrastructure. So what does this mean in practice?
+We have now seen two systems for running Template Haskell code outside the compiler process: The original GHCJS `thrunner` and the extended GHC `iserv`.
 
-The biggest change is that we have to rework the linker: `thrunner` does not contain any linking logic by itself: GHCJS compiles everything to JavaScript and sends compiled code to the `thrunner` process, ready to be executed. In contrast, `iserv` has a loader for object and archive files. When dependencies need to be loaded into the interpreter, GHC just gives it the file name. Additionally, `iserv` contains a bytecode interpreter, which `thrunner` lacks.
+Clearly it isn't ideal to have multiple "external interpreter" systems in GHC, therefore we plan to switch from `thrunner` to `iserv` for the upcoming JavaScript GHC backend. We don't need the debugger or GHCi support yet, but we do need to adapt to other changes in the infrastructure. So what does this mean in practice?
+
+The biggest change is that we have to rework the linker: `thrunner` does not contain any linking logic by itself: GHCJS compiles everything to JavaScript and sends compiled code to the `thrunner` process, ready to be executed. In contrast, `iserv` has a loader for object and archive files. When dependencies need to be loaded into the interpreter, GHC just gives it the file name.
 
 Another change is using the updated message types. In the `thrunner` session example above we could see that each message is paired with a response. For example a `RunTH'` response always follows a `RunTH` message, with possibly other messages in between. `iserv` has an interesting approach for the `Message` datatype: Instead of having pairs of data constructors for each message and its response, `iserv` has a GADT `Message a`, where the `a` type parameter indicates the expected response payload for each data constructor.
 
