@@ -46,7 +46,7 @@ After starting `thrunner.js` GHCJS sends the Haskell parts of the Template Haske
 | `FinishTH True` | |
 | | `FinishTH' <memory-consumption>` |
 
-Each message is followed up by a corresponding reply. For example, a `LookupName'` response follows a `LookupName` request and a `RunTH` message will eventually generate a `RunTH'` result. The first `RunTH` message contains the compiled JavaScript for the Template Haskell Haskell code, along with its dependencies. Each subsequent `RunTH` only includes dependencies that have not already been sent.
+Each message is followed up by a corresponding reply. For example, a `LookupName'` response follows a `LookupName` request and a `RunTH` message will eventually generate a `RunTH'` result. The first `RunTH` message contains the compiled JavaScript for the Template Haskell code, along with its dependencies. Each subsequent `RunTH` only includes dependencies that have not already been sent.
 
 The `thrunner` process stays alive during the compilation of at least an entire module, allowing for persistent state (`putQ`/`getQ`).
 
