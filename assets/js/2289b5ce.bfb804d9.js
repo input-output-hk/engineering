@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkengineering_iog_io=self.webpackChunkengineering_iog_io||[]).push([[7449],{4957:function(g){g.exports=JSON.parse('{"allTagsPath":"/tags","slug":"/tags/ghc-ghcjs-javascript-tooling-profiling","name":"ghc ghcjs javascript tooling profiling","count":1,"permalink":"/tags/ghc-ghcjs-javascript-tooling-profiling"}')}}]);
