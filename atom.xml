@@ -2,12 +2,43 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://engineering.iog.io/</id>
     <title>IOG Engineering Blog</title>
-    <updated>2022-05-17T00:00:00.000Z</updated>
+    <updated>2022-06-21T14:28:46.036Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://engineering.iog.io/"/>
     <subtitle>IOG Engineering blog</subtitle>
     <icon>https://engineering.iog.io/img/favicon.ico</icon>
     <rights>Copyright © 2022 IOG, Inc.</rights>
+    <entry>
+        <title type="html"><![CDATA[GHC May 2022 Update]]></title>
+        <id>ghc-update-2022-05</id>
+        <link href="https://engineering.iog.io/ghc-update-2022-05"/>
+        <updated>2022-06-21T14:28:46.036Z</updated>
+        <summary type="html"><![CDATA[This is the May 2022 monthly update from the GHC DevX team at IOG.]]></summary>
+        <content type="html"><![CDATA[<p>This is the May 2022 monthly update from the GHC DevX team at IOG.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="javascript-backend-for-ghc">JavaScript Backend for GHC<a class="hash-link" href="#javascript-backend-for-ghc" title="Direct link to heading">​</a></h2><p>For a few months we have been merging GHCJS (Haskell to JavaScript compiler) into GHC.
+We set our first milestone to be the ability to compile and to run the usual "Hello World" program.
+It turned out to be much more involved than we initially thought (requiring FFI support, etc.), but we should be getting there soon.</p><p>This month we have made the following progress:</p><ul><li><p><strong>RTS</strong>: we have modified Hadrian and <code>rts.cabal</code> in order to build a valid
+native <code>rts</code> unit that GHC can use, in particular containing appropriate
+header files.</p></li><li><p><strong>linker</strong>: the JS linker has been hooked up with GHC's driver.
+We fixed several panics in the linker due to erroneous symbol generation code.
+These bugs were introduced while porting the code from the old 8.10 pretty-printing infrastructure to the newer one.</p></li><li><p><strong>boot libraries</strong>: the JS backend can now build and link all the boot libraries.
+Note that we are not claiming that they are all usable yet. In particular complete FFI support is lacking, but the JS backend Hadrian build completes and so we can start using the produced JS cross-compiler.</p></li><li><p><strong>levity polymorphism</strong>: building <code>ghc-prim</code> uncovered a lurking bug related to
+levity polymorphism. It wasn't noticed in GHCJS 8.10 because it is also
+related to the <code>BoxedRep</code> proposal that introduced a constructor application
+in a commonly used <code>RuntimeRep</code>.</p></li><li><p><strong>sized literals</strong>: support for new sized literals have been added to the code
+generator.</p></li></ul><p>Now that have achieved a build process that actually produces a JS cross compiler, we are confronting and fixing issues in the produced JavaScript code, such as adding, managing, and debugging CPP conditional compilation blocks in JS shim files. You can follow our progress on our development branch <a href="https://gitlab.haskell.org/ghc/ghc/-/tree/wip/js-staging" target="_blank" rel="noopener noreferrer">here</a>.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="external-static-plugins">External Static Plugins<a class="hash-link" href="#external-static-plugins" title="Direct link to heading">​</a></h2><p>GHC doesn't support plugins in cross-compilers <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/14335" target="_blank" rel="noopener noreferrer">#14335</a>.
+Some time ago, we came up with a solution called "external static plugins" <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/7377" target="_blank" rel="noopener noreferrer">!7377</a>.
+These are plugins that are directly loaded from shared libaries, bypassing the issue with usual plugins.</p><p>Our colleague Shea Levy confirmed that the approach works, backported it to GHC 8.10, and has been working on making it work in stage1 cross-compilers for Windows.
+Kudos for this work, Shea.</p><p>As the current user-interface based on environment variables isn't convenient, we have been working on adding new command-line flags to GHC instead.
+We expect to propose this for integration into GHC when the new interface will be fully implemented.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="blog-posts">Blog posts<a class="hash-link" href="#blog-posts" title="Direct link to heading">​</a></h2><p>Inspired by our friends and colleagues at Well-Typed and Tweag, we have been starting to write blog posts for IOG's engineering blog.
+They will mostly be about stuff we are working on or that we are interested in.
+Feel free to send us feedback about these posts and to send us topics you would be interested to read about.</p><ul><li><a href="https://engineering.iog.io/2022-04-28-on-the-inlining-of-integer-and-natural-operations" target="_blank" rel="noopener noreferrer">https://engineering.iog.io/2022-04-28-on-the-inlining-of-integer-and-natural-operations</a></li><li><a href="https://engineering.iog.io/2022-05-02-setup-ext-stg-interp" target="_blank" rel="noopener noreferrer">https://engineering.iog.io/2022-05-02-setup-ext-stg-interp</a></li><li><a href="https://engineering.iog.io/2022-05-17-javascript-template-haskell-external-interpreter" target="_blank" rel="noopener noreferrer">https://engineering.iog.io/2022-05-17-javascript-template-haskell-external-interpreter</a></li></ul><h2 class="anchor anchorWithStickyNavbar_mojV" id="haskell-optimization-handbook">Haskell Optimization Handbook<a class="hash-link" href="#haskell-optimization-handbook" title="Direct link to heading">​</a></h2><p>The "Haskell Optimization Handbook" is an <a href="https://github.com/haskellfoundation/tech-proposals/blob/main/proposals/accepted/026-haskell-optimization-handbook.md" target="_blank" rel="noopener noreferrer">accepted proposal</a> of the Haskell Foundation.
+Jeff has been working behind the scene to make this proposal concrete.
+More about this in the upcoming months.</p>]]></content>
+        <author>
+            <name>Sylvain Henry</name>
+        </author>
+        <category label="ghc" term="ghc"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[JavaScript, Template Haskell and the External Interpreter]]></title>
         <id>2022-05-17-javascript-template-haskell-external-interpreter</id>
