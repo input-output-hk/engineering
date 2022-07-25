@@ -162,11 +162,10 @@ the cost of extra memory allocation during object construction.
 
 ## Addr# and StablePtr#
 
-`Addr#` and `StablePtr#` are defined as a typed array or object holding a typed
-array and some offset into that array. We&rsquo;ll focus on `Addr#` because
-`StablePtr#` is the same implementation, with the exception that the
-`StablePtr#` is tracked in the global variable `h$stablePtrBuf`. `Addr#` are
-constructed in `h$rts_mkPtr`:
+`Addr#` and `StablePtr#` are implemented as a pair of `ByteArray#` and an `Int#`
+offset into the array. We&rsquo;ll focus on `Addr#` because `StablePtr#` is the
+same implementation, with the exception that the `StablePtr#` is tracked in the
+global variable `h$stablePtrBuf`. `Addr#` are constructed in `h$rts_mkPtr`:
 
     function h$rts_mkPtr(x) {
       var buf, off = 0;
