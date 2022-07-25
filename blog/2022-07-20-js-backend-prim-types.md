@@ -226,10 +226,11 @@ and stores extra fields to coerce the data in the `buf` payload efficiently.
 
 ## Numbers: The Involved Case
 
-Translating numbers has two issues. First, JavaScript has no concept of
-fixed-precision 64-bit types such as `Int64#` and `Word64#`. Second, numbers are
-atomic types and do not require any special properties for correct semantics,
-thus using wrapping objects gains us nothing at the cost of indirection.
+Translating numbers has three issues. First, JavaScript has no concept of
+fixed-precision 64-bit types such as `Int64#` and `Word64#`. Second, JavaScript
+bitwise operators only support _signed_ 32-bit values. Third, numbers are atomic
+types and do not require any special properties for correct semantics, thus
+using wrapping objects gains us nothing at the cost of indirection.
 
 
 <a id="orgc9d245e"></a>
@@ -255,6 +256,11 @@ Haskell. The first number is represented by `h1` and `l1` (*high* and *low*),
 and similarly the second number is represented by `h2` and `l2`. The comparison
 is straightforward, we check equivalence of our high bits, if equal then we
 check the lower bits while being careful with signedness. No surprises here.
+
+For the bitwise operators we store both `Word32#` and `Word#` as 32-bit signed
+values, and then map any values greater or equal `2^31` bits to negative values.
+This way we stay within the 32-bit range even though in Haskell these types only
+support nonnegative values.
 
 
 <a id="org453f9cc"></a>
