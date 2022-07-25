@@ -338,5 +338,11 @@ generator module `GHC.StgToJS.Arg`, specifically the functions `allocConStatic`,
 
 -   `Char#`: has no representation in JavaScript
 -   `Addr#` a pair of an array created by `h$newByteArray` and an offset that indexes
--   `Float#/Double#`: Both represented as a JavaScript Double.
+-   `Float#/Double#`: Both represented as a JavaScript Double. This means that
+    `Float#` has excess precision and thus we do not generate exactly the same
+    answers as other platforms which are IEEE754 compliant. Full emulation of
+    single precision Floats does not seem to be worth the effort as of writing.
+    Our implementation represents these in a `ByteArray#`, where each `Float#`
+    takes 4 bytes in the `ByteArray#`. This means that the precision is reduced
+    to a 32-bit Float.
 
