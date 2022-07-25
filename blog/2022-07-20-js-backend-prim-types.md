@@ -336,7 +336,7 @@ generator module `GHC.StgToJS.Arg`, specifically the functions `allocConStatic`,
 
 ## But what about the other stuff!
 
--   `Char#`: has no representation in JavaScript
+-   `Char#`: is represented by a `number`, i.e., the [code point](https://en.wikipedia.org/wiki/Code_point)
 -   `Addr#` a pair of an array created by `h$newByteArray` and an offset that indexes
 -   `Float#/Double#`: Both represented as a JavaScript Double. This means that
     `Float#` has excess precision and thus we do not generate exactly the same
