@@ -193,10 +193,11 @@ constructed in `h$rts_mkPtr`:
     }
 
 The function does some type inspection to check for the special case on
-`string`, if we do not have a string then an `Addr#` is returned by creating a
-new `ArrayBuffer` and an offset into that buffer. The `object` case checks for
-idempotency; if the input is already an `Addr#`, then just return the input. The
-interesting cases are the cases which call to `h$wrapBuffer`:
+`string`, if we do not have a string then an `Ptr` which contains an `Addr#` is
+returned by creating a new `ArrayBuffer` and an offset into that buffer. The
+`object` case checks for idempotency; if the input is already such a `Ptr`, then
+just return the input. The interesting cases are the cases which call to
+`h$wrapBuffer`:
 
     // mem.js.pp
     function h$wrapBuffer(buf, unalignedOk, offset, length) {
