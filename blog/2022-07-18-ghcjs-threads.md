@@ -38,7 +38,7 @@ When a Haskell value is evaluated, its heap object is overwritten by a black hol
 
 Black holes give rise to an interesting problem in the presence of synchronous and asynchronous threads. Typically if we use `h$runSync`, we want to have some guarantee that at least part of the task will run successfully without blocking. For the most part, it's clear which parts of our task depends on potentially blocking IO or thread synchronization. But black holes throw a spanner in the works: Suddenly any "pure" data structure can be a source of blocking if it is under evaluation by another thread.
 
-To regain some predictability and usability of synchronous threads, the `h$runSync` scheduler can run other Haskell threads in order to "clear" a black hole. The process ends all black holes have been cleared or when any of the black holes is impossible to clear because of a blocking situation.
+To regain some predictability and usability of synchronous threads, the `h$runSync` scheduler runs other Haskell threads in order to "clear" a black hole. The process ends when all black holes have been cleared, or when any of the black holes are impossible to clear because of a blocking.
 
 This all happens transparantly to the caller of `h$runSync`, if the black holes could be cleared it appears as if they were never there.
 
