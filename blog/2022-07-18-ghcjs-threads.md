@@ -14,7 +14,7 @@ I recently gave a short presentation on the topic of threads in GHCJS to the GHC
 
 JavaScript is fundamentally single threaded. There are ways to share specific data between tasks but it's not possible to run multiple threads that have access to a shared memory space of JavaScript data.
 
-The single JavaScript thread is often responsible for multiple tasks. For example a node.js server handles multiple simultaneous connections and a web application may be dealing with user input while downloading new data in the background.
+Even though JavaScript is single threaded, the single thread is often responsible for multiple tasks. For example, a node.js server handles multiple simultaneous connections, or a web application may be dealing with user input while downloading new data in the background.
 
 This means that any single task should take care to never block execution of the other task. Typically JavaScript code deals with this with asynchronous programming. A funcion reading a file returns immediately without waiting for the file data to be loaded in memory. When the data is ready a user-supplied callback is called to continue processing the data.
 
