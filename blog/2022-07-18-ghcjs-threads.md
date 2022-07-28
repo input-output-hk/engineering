@@ -34,7 +34,7 @@ By default, Haskell threads in the JS environment run asynchronously. A call to 
 
 ## Black Holes
 
-When a Haskell value is evaluated, its heap object is overwritten by a black hole. This black hole marks the value as being evaluated and prevents other threads from doing the same. "black holing" can be done either immediately or "lazily", when the garbage collector is run. GHCJS implements immediate blackholing.
+When a Haskell value is evaluated, its heap object is overwritten by a black hole. This black hole marks the value as being evaluated and prevents other threads from doing the same. "black holing" is done either immediately or "lazily" when the garbage collector is run. GHCJS implements immediate blackholing.
 
 Black holes give rise to an interesting problem in the presence of synchronous and asynchronous threads. Typically if we use `h$runSync`, we want to have some guarantee that at least part of the task will run succesfully without blocking. For the most past it's fairly clear which parts of our task depends on potentially blocking IO or thread synchronization. But black holes throw a spanner in the works: Suddenly any "pure" data structure can be a source of blocking if it is under evaluation by another thread.
 
