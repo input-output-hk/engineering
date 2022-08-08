@@ -2,7 +2,7 @@
 slug: 2022-07-20-js-backend-prim-types
 title: Primitive Type Representation in GHC's upcoming JS-backend
 date: July 20, 2022
-authors: [ doyougnu ]
+authors: [ doyougnu , sylvain ]
 tags: [ghc, javascript, explanation, knowledge_engineering]
 ---
 
@@ -176,7 +176,7 @@ offset into the array. We&rsquo;ll focus on `Addr#` because `StablePtr#` is the
 same implementation, with the exception that the `StablePtr#` is tracked in the
 global variable `h$stablePtrBuf`. `Addr#`s do not have an explicit constructor,
 rather they are implicitly constructed. For example, consider `h$rts_mkPtr`
-which creates a `Ptr`:
+which creates a `Ptr` that contains an `Addr#`:
 
     function h$rts_mkPtr(x) {
       var buf, off = 0;
@@ -203,12 +203,11 @@ which creates a `Ptr`:
     }
 
 The function does some type inspection to check for the special case on
-`string`, if we do not have a string then a `Ptr` which contains an `Addr#` is
-returned by creating a new `ArrayBuffer` and an offset into that buffer. Or to
-be more precise, the `Addr#` is "constructed" by creating a new `ArrayBuffer`
-and an offset into that buffer. The `object` case checks for idempotency; if the
-input is already such a `Ptr`, then just return the input. The interesting cases
-are the cases which call to `h$wrapBuffer`:
+`string`. If we do not have a string then a `Ptr`, which contains an `Addr#`, is
+returned. The `Addr#` is implicitly constructed by allocating a new
+`ArrayBuffer` and an offset into that buffer. The `object` case is an idempotent
+check; if the input is already such a `Ptr`, then just return the input. The
+cases which do the work are the cases which call to `h$wrapBuffer`:
 
     // mem.js.pp
     function h$wrapBuffer(buf, unalignedOk, offset, length) {
@@ -230,8 +229,8 @@ are the cases which call to `h$wrapBuffer`:
              };
     }
 
-`h$wrapBuffer` is a utility function that does the allocation for the typed array,
-and stores extra fields to coerce the data in the `buf` payload efficiently.
+`h$wrapBuffer` is a utility function that does some offset checks and performs
+the allocation for the typed views as described above.
 
 
 <a id="orgfa8aeb4"></a>
@@ -282,36 +281,28 @@ support nonnegative values.
 
 ### Unwrapped Number Optimization
 
-I mentioned earlier that wrapper objects are inefficient for numerics. To
-implement efficent numerics we use an optimization that detects if an object is
-going to be a `number`, if so then we remove the wrapper object and return just
-the payload, i.e., the number itself. 
+The JS backend uses JavaScript values to represent both Haskell heap objects and
+unboxed values (note that this isn't the only possible implementation, see
+[^1]). As such, it doesn't require that all heap objects have the same
+representation (e.g. a JavaScript object with a "tag" field indicating its type)
+because we can rely on JS introspection for the same purpose (especially
+`typeof`). Hence this optimization consists in using a more efficient JavaScript
+type to represent heap objects when possible, and to fallback on the generic
+representation otherwise.
 
-Fixed-precision Integer types are implemented in the `rts.js.pp` shim, for
-example:
+This optimization particularly applies to `Boxed` numeric values (`Int`, `Word`,
+`Int8`, etc.) which can be directly represented with a JavaScript number,
+similarly to how unboxed `Int#`, `Word#`, `Int8#`, etc. values are represented.
 
-    function h$rts_mkInt8(x) { return (x<<24)>>24; }
-    function h$rts_getInt8(x) { return ((typeof(x) === 'number')?(x):(x).d1); }
+Pros:
 
-Notice that the `getInt8` function calls the `typeof` operator to check the type
-of the input object. In JavaScript, we can think of this as a form of [pointer
-tagging](https://gitlab.haskell.org/ghc/ghc/-/wikis/commentary/rts/haskell-execution/pointer-tagging)
-the native code generator uses. `typeof` scrutinizes the input and checks if it
-is actually `number`. If it is a number then it is `UnBoxed`, if it is an object
-then it is `Boxed`, and is a heap object. The difference is between the type
-`Int8`, which is `Boxed` (a pointer to the heap, and lifted; can contain &perp;)
-and `Int8#` which is `UnBoxed` and is not a pointer but actually the value.
+- Fewer allocations and indirections: instead of one JavaScript object with a
+  field containing a number value, we directly have the number value.
 
-In general, in the JS-backend we deal with `Boxed` values that are heap objects.
-But numbers are different. Consider the case where we want to add two `Int8`
-(both are boxed) in the JS backend. We really only care whether both `Int8`s are
-`Thunk`s or not, if they are thunks then we have to inspect them on the heap,
-and call their entry functions which eventually returns their values; but this
-process is expensive! If they are not `Thunk`s, then we do not need to treat
-them like heap objects and can represent the `Int8` directly as an `Int8#`
-(`UnBoxed`). Thus an `Int8#` is always a JavaScript number, never a JS object,
-but an `Int8` can be either a JS number or an object depending on the code
-involved and whether it was subject to this optimization.
+Cons:
+
+- More complex code to deal with heap objects that can have different
+  representations
 
 The optimization is applicable when:
 
@@ -327,16 +318,18 @@ this optimization. In Haskell we have:
 Notice that this definition satisfies the requirements. A direct translation in
 the JS backend would be:
 
-    // Int8 represented as an Object with an entry function, f, and payload, d1.
+    // An Int8 Thunk represented as an Object with an entry function, f
+    // and payload, d1.
     var anInt8 = { d1 = <Int8# payload>
                  , f  : entry function which would scrutinize the payload
                  }
 
-But we can operationally distinguish between a `Thunk` and an `Int8` because
-these will have separate types in the `StgToJS` GHC pass, whereas in Haskell an
-`Int8` may actually be a `Thunk` until it is scrutinized *and then* becomes the
-`Int8` payload (i.e., call-by-need). So this means that we will always know when
-we have an `Int8` rather than a `Thunk` and therefore we can omit the wrapper
+We can operationally distinguish between a `Thunk` and an `Int8` because these
+will have separate types in the `StgToJS` GHC pass and will have separate types
+(`object` vs `number`) at runtime. In contrast, in Haskell an `Int8` may
+actually be a `Thunk` until it is scrutinized *and then* becomes the `Int8`
+payload (i.e., call-by-need). So this means that we will always know when we
+have an `Int8` rather than a `Thunk` and therefore we can omit the wrapper
 object and convert this code to just:
 
     // no object, just payload
@@ -352,7 +345,6 @@ generator module `GHC.StgToJS.Arg`, specifically the functions `allocConStatic`,
 ## But what about the other stuff!
 
 -   `Char#`: is represented by a `number`, i.e., the [code point](https://en.wikipedia.org/wiki/Code_point)
--   `Addr#` a pair of an array created by `h$newByteArray` and an offset that indexes
 -   `Float#/Double#`: Both represented as a JavaScript Double. This means that
     `Float#` has excess precision and thus we do not generate exactly the same
     answers as other platforms which are IEEE754 compliant. Full emulation of
@@ -361,3 +353,9 @@ generator module `GHC.StgToJS.Arg`, specifically the functions `allocConStatic`,
     takes 4 bytes in the `ByteArray#`. This means that the precision is reduced
     to a 32-bit Float.
 
+[^1]: An alternative approach would be to use some JS ArrayBuffers as memory
+    blocks into which Haskell values and heap objects would be allocated. As an
+    example this is the approach used by the Asterius compiler. The RTS would
+    then need to be much more similar to the C RTS and the optimization
+    presented in this section wouldn't apply because we couldn't rely on
+    introspection of JS values.
