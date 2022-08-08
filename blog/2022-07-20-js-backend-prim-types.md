@@ -165,7 +165,9 @@ the cost of extra memory allocation during object construction.
 `Addr#` and `StablePtr#` are implemented as a pair of `ByteArray#` and an `Int#`
 offset into the array. We&rsquo;ll focus on `Addr#` because `StablePtr#` is the
 same implementation, with the exception that the `StablePtr#` is tracked in the
-global variable `h$stablePtrBuf`. `Addr#` are constructed in `h$rts_mkPtr`:
+global variable `h$stablePtrBuf`. `Addr#`s do not have an explicit constructor,
+rather they are implicitly constructed. For example, consider `h$rts_mkPtr`
+which creates a `Ptr`:
 
     function h$rts_mkPtr(x) {
       var buf, off = 0;
@@ -192,11 +194,12 @@ global variable `h$stablePtrBuf`. `Addr#` are constructed in `h$rts_mkPtr`:
     }
 
 The function does some type inspection to check for the special case on
-`string`, if we do not have a string then an `Ptr` which contains an `Addr#` is
-returned by creating a new `ArrayBuffer` and an offset into that buffer. The
-`object` case checks for idempotency; if the input is already such a `Ptr`, then
-just return the input. The interesting cases are the cases which call to
-`h$wrapBuffer`:
+`string`, if we do not have a string then a `Ptr` which contains an `Addr#` is
+returned by creating a new `ArrayBuffer` and an offset into that buffer. Or to
+be more precise, the `Addr#` is "constructed" by creating a new `ArrayBuffer`
+and an offset into that buffer. The `object` case checks for idempotency; if the
+input is already such a `Ptr`, then just return the input. The interesting cases
+are the cases which call to `h$wrapBuffer`:
 
     // mem.js.pp
     function h$wrapBuffer(buf, unalignedOk, offset, length) {
