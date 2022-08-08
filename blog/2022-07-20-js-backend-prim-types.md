@@ -243,7 +243,7 @@ nothing at the cost of indirection.
 
 ### Working with 64-bit Types
 
-To expressing 64-bit numerics, we simply use two 32-bit numbers, one to express
+To express 64-bit numerics, we simply use two 32-bit numbers, one to express
 the high bits, one for the low bits. For example, consider comparing two `Int64#:`
 
     // arith.js.pp
