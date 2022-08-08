@@ -231,9 +231,12 @@ and stores extra fields to coerce the data in the `buf` payload efficiently.
 
 Translating numbers has three issues. First, JavaScript has no concept of
 fixed-precision 64-bit types such as `Int64#` and `Word64#`. Second, JavaScript
-bitwise operators only support _signed_ 32-bit values. Third, numbers are atomic
-types and do not require any special properties for correct semantics, thus
-using wrapping objects gains us nothing at the cost of indirection.
+bitwise operators only support _signed_ 32-bit values (except the unsigned
+[right
+shift](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Unsigned_right_shift)
+operator of course). Third, numbers are atomic types and do not require any
+special properties for correct semantics, thus using wrapping objects gains us
+nothing at the cost of indirection.
 
 
 <a id="orgc9d245e"></a>
