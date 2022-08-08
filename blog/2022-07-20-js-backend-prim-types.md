@@ -132,8 +132,15 @@ the Haskell type. This is the strategy that implements: `TVar`, `MVar`, `MutVar`
 
 ## ByteArray#, MutableByteArray#, SmallArray#, MutableSmallArray#,
 
-For some types, such as `ByteArray#` we make engineering tradeoffs to optimize for
-common use-cases. Consider the `mem.js.pp` shim, which defines `ByteArray#`:
+`ByteArray#` and friends map to JavaScript's
+[`ArrayBuffer`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer)
+object. The `ArrayBuffer` object provides a fixed-length, raw binary data
+buffer. To index into the `ArrayBuffer` we need to know the type of data the
+buffer is expected to hold. So we make engineering tradeoff; we allocate typed
+views of the buffer payload once at buffer allocation time. This prevents
+allocations from views later when we might be handling the buffer in a hot loop,
+at the cost of slower initialization. For example, consider the `mem.js.pp`
+shim, which defines `ByteArray#`:
 
     // mem.js.pp
     function h$newByteArray(len) {
@@ -151,11 +158,13 @@ common use-cases. Consider the `mem.js.pp` shim, which defines `ByteArray#`:
              }
     }
 
-`ByteArray#` follows the same recipe, `buf` is the payload of the `ByteArray#`,
-`len` is the length of the `ByteArray#`. This is implemented using JavaScripts
-`ArrayBuffer` object to yield a generic fixed-length raw binary data buffer. The
-remaining properties are *views* over the payload to provide fast conversion at
-the cost of extra memory allocation during object construction.
+ `buf` is the payload of the `ByteArray#`, `len` is the length of the
+`ByteArray#`. `i3` to `dv` are the _views_ of the payload; each view is an
+object which interprets the raw data in `buf` differently according to type. For
+example, `i3` interprets `buf` as holding `Int32`, while `dv` interprets `buf`
+as a
+[`DataView`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView)
+and so on. The final property, `m`, is the garbage collector marker.
 
 
 <a id="org0de7f9e"></a>
