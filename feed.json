@@ -10,7 +10,7 @@
             "url": "https://engineering.iog.io/ghc-update-2022-05",
             "title": "GHC DevX May 2022 Update",
             "summary": "This is the May 2022 monthly update from the GHC DevX team at IOG.",
-            "date_modified": "2022-07-12T08:39:55.392Z",
+            "date_modified": "2022-08-09T17:45:35.030Z",
             "author": {
                 "name": "Sylvain Henry"
             },
@@ -24,7 +24,21 @@
             "url": "https://engineering.iog.io/ghc-update-2022-06",
             "title": "GHC DevX June 2022 Update",
             "summary": "This is the June 2022 monthly update from the GHC DevX team at IOG.",
-            "date_modified": "2022-07-12T08:39:55.392Z",
+            "date_modified": "2022-08-09T17:45:35.030Z",
+            "author": {
+                "name": "Sylvain Henry"
+            },
+            "tags": [
+                "ghc"
+            ]
+        },
+        {
+            "id": "ghc-update-2022-07",
+            "content_html": "<p>This is the July 2022 monthly update from the GHC DevX team at IOG.</p><h2 class=\"anchor anchorWithStickyNavbar_mojV\" id=\"javascript-backend-for-ghc\">JavaScript Backend for GHC<a class=\"hash-link\" href=\"#javascript-backend-for-ghc\" title=\"Direct link to heading\">​</a></h2><p>For a few months we have been merging GHCJS (Haskell to JavaScript compiler)\ninto GHC. We set our first milestone to be the ability to compile and to run the\nusual \"Hello World\" program. This month we finally reached it!</p><p>We are now focusing on:</p><ul><li><p>fixing failing tests in GHC's testsuite (~2800 unexpected failures). To do that, we\nhave to implement new primops, to fix bugs we introduced while we ported the\ncode from GHCJS, etc.</p></li><li><p>implementing support for the \"js-sources\" Cabal stanza in Hadrian. Currently\nthe JS backend finds the JS sources required for the RTS and for base into\nexplicitly defined location. It was only a stop-gap measure and we now need to\nimplement proper support for user-provided JavaScript files.</p></li><li><p>documenting and refactoring the source code and making it similar to other GHC\nmodules. As an example, GHCJS used the text package which isn't a boot\npackage. Hence we first switched to use GHC's ShortText implementation and now\nwe switched to a FastString based implementation.</p></li><li><p>adding back GHCJS's features that we haven't ported for some reasons (e.g. the\ncompactor, TH, etc.).</p></li></ul><p>You can follow our progress on our development branch\n<a href=\"https://gitlab.haskell.org/ghc/ghc/-/tree/wip/js-staging\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>.</p><h2 class=\"anchor anchorWithStickyNavbar_mojV\" id=\"blog-posts\">Blog posts<a class=\"hash-link\" href=\"#blog-posts\" title=\"Direct link to heading\">​</a></h2><p>For the time being, we will focus blog post topics on GHCJS internals and\nrelated topics. A few of these blog posts are currently under review and should\nbe published shortly.</p>",
+            "url": "https://engineering.iog.io/ghc-update-2022-07",
+            "title": "GHC July 2022 Update",
+            "summary": "This is the July 2022 monthly update from the GHC DevX team at IOG.",
+            "date_modified": "2022-08-09T17:45:35.030Z",
             "author": {
                 "name": "Sylvain Henry"
             },
