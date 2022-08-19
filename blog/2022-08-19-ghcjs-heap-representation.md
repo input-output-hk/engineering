@@ -151,6 +151,14 @@ Several other heap objects are represented as usual JS objects and recognized
 with the `instanceof` operated. For example a TSO is represented as a `h$Thread`
 object. These objects don't have associated info tables.
 
+Note that we could imagine every heap object being recognised with `instanceof`
+(or by matching on the `constructor` property) by having one separate object
+name for all heap objects. It would mean adding `h$Con`, `h$Thunk`, `h$Fun`,
+`h$Pap`, `h$Blackhole`, and `h$StackFrame` objects. Then all the heap objects
+could be treated in the same way. However these objects need to be overwritable
+in place: a Thunk becomes a Fun/Con/Pap/Blackhole, etc. So they must be
+instances of the same JS object.
+
 ### Optimised representation
 
 Sometimes the generic heap object representation is unnecessary. For example, a
@@ -167,14 +175,3 @@ heap object representations. In comparison, we can't do this with the native
 (non-JS) backend when we only have a pointer to a heap object: the pointer
 doesn't carry the kind of value it points to, hence the pointed memory location
 must be generic enough for this introspection to happen.
-
-# Concluding remarks
-
-We could imagine every heap object being recognised with `instanceof` (or by
-matching on the `constructor` property) by having one separate object name for
-all heap objects. It would mean adding `h$Con`, `h$Thunk`, `h$Fun`, `h$Pap`,
-`h$Blackhole`, and `h$StackFrame` objects. Then all the heap objects could be
-treated in the same way.
-
-The info table for each object that uses one could be specific to each object
-type, making it clearer to understand.
