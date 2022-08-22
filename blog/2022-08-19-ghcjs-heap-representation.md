@@ -43,7 +43,7 @@ They are composed of:
 - a pointer to an info table
 - some words of payload
 
-Heap traversal can be done by following the info table pointer of every heap
+Heap traversal is done by following the info table pointer of every heap
 object to query the layout of the heap object payload.
 
 Info tables contain a pointer to a function called "entry code" that can be
