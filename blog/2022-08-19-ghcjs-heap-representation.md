@@ -73,7 +73,7 @@ Let's now discuss the fields of the heap objects.
 "f" is the equivalent of the info table pointer. It contains a JavaScript
 function that is the entry code for the heap object.
 
-Similarly to the tables-next-to-code optimisation discussed above, we use the
+Similar to the tables-next-to-code optimisation discussed above, we use the
 fact the JS functions are objects that can have properties to store the info
 table fields as properties of the function itself.
 
