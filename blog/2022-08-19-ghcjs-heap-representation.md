@@ -74,7 +74,7 @@ Let's now discuss the fields of the heap objects.
 function that is the entry code for the heap object.
 
 Similar to the tables-next-to-code optimisation discussed above, we use the
-fact the JS functions are objects that can have properties to store the info
+fact that JS functions are objects which have properties to store the info
 table fields as properties of the function itself.
 
 Example of an info table / entry function:
