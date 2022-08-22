@@ -97,7 +97,7 @@ Example of an info table / entry function:
 d1 and d2 fields contain the payload of the heap object.
 
 As fewer or more than two values can be stored in the payload, the following
-encoding is used to store them in two fiels:
+encoding is used to store them in two fields:
 
 | Payload      | d1       | d2                  |
 |--------------|----------|---------------------|
