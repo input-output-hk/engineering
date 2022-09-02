@@ -1,0 +1,111 @@
+# Garbage Collection in GHCJS
+
+The GHCJS runtime makes use of the JavaScript garbage collector as a central part of its memory management. However, JavaScript doesn't support finalizers, nor does it support automatically determining reachability in general - which we need to throw exceptions on threads that are blocked on MVar and STM transactions.
+
+So, to properly support these Haskell features, we need to manually trace reachability in the memory graph, and manually trigger finalizers/exceptions when required.
+
+We also use the reachability checks as an opportunity to clean up other parts of the GHCJS runtime: stacks, registers, and return variables.
+
+## Reference Object
+
+The GHCJS runtime stores a list of every weak reference that currently exists in the heap. Importantly, each reference contains:
+* `val`: A JavaScript reference to its Haskell data constructor
+* `finalizer`: A function to execute to clean the data when it is to be garbage collected
+* `keym`: The marked state of this reference in the GC sweep
+
+## Marking Pass
+
+As a main first step in the GC pass, the entire list of references is iterated over, recursing down the stack with the current mark using `h$follow(...)`.
+
+```
+function h$markWeaks() {
+    var i, w, marked, mark = h$gcMark;
+    do {
+        marked = false;
+        for (i = 0; i < h$weakPointerList.length; ++i) {
+            w = h$weakPointerList[i];
+            if (IS_MARKED_M(w.keym)) {
+                if (w.val !== null && !IS_MARKED(w.val)) {
+                    h$follow(w.val);
+                    marked = true;
+                }
+                if (w.finalizer !== null && !IS_MARKED(w.finalizer)) {
+                    h$follow(w.finalizer);
+                    marked = true;
+                }
+            }
+        }
+    } while(marked);
+}
+```
+
+We see here that this step only performs the actual marking work - the cleanup is done by `h$markRetained()`.
+
+```
+// Excerpt of h$markRetained():
+
+do {
+    marked = false;
+    for (i = 0; i < h$weakPointerList.length; ++i) {
+        w = h$weakPointerList[i];
+            if (w === null) { continue; }
+            if (IS_MARKED_M(w.keym)) {
+                if (w.val !== null && !IS_MARKED(w.val)) {
+                    h$follow(w.val);
+                }
+                if (w.finalizer !== null && !IS_MARKED(w.finalizer)) {
+                    h$follow(w.finalizer);
+                }
+                newList.push(w);
+                h$weakPointerList[i] = null;
+                marked = true;
+}}} while(marked);
+```
+
+In this step, we see the first stage of cleanup. The weak pointer list is again iterated over, and pointers that have been marked as reachable are 'removed' from the old list by setting them to `null`, and then they are pushed to `newList`, which is to replace `h$weakPointerList` after this GC pass. Again, we recursively `h$follow` to mark other data that's reachable from either the actual value or the finalizer.
+
+Next, the unmarked weak references are `null`ified from the `h$weakPointerList`, and they are added to `toFinalize` - the list of pending finalizers.
+
+Now, the retained `newList` list can replace `h$weakPointerList`, allowing the pending finalizers list to be returned, and passed to `h$finalizeWeaks`:
+
+```
+function h$finalizeWeaks(toFinalize) {
+    var mark = h$gcMark;
+    var i, w;
+
+    TRACE_WEAK("to finalize: " + toFinalize.length);
+    // start a finalizer thread if any finalizers need to be run
+    if(toFinalize.length > 0) {
+        var t = new h$Thread();
+        for(i=0;i<toFinalize.length;i++) {
+            w = toFinalize[i];
+            t.sp += 6;
+            t.stack[t.sp-5] = 0;      // mask
+            t.stack[t.sp-4] = h$noop; // handler, dummy
+            t.stack[t.sp-3] = h$catch_e;
+            t.stack[t.sp-2] = h$ap_1_0;
+            t.stack[t.sp-1] = w.finalizer;
+            t.stack[t.sp]   = h$return;
+            w.finalizer = null;
+        }
+        h$wakeupThread(t);
+    }
+}
+```
+
+## Manual Arrays
+
+As an alternative to working within the JavaScript garbage collector, we could instead manage our own memory by storing Haskell data as JavaScript objects in one or more arrays, with each array representing a heap or region of memory. With this technique, references between objects would be stored as indicies, rather than as actual JavaScript references.
+
+While the level of indirection would be the same with this approach compared to the current approach, we remove information that the JavaScript GC could potentially use to optimise memory layouts. So, we would have:
+* JavaScript GC
+  * Haskell data constructor object, with a JavaScript reference to a
+  * GHCJS reference object, with a JavaScript reference to a
+  * Haskell data constructor
+* Manual Arrays
+  * Haskell data constructor object, with a JavaScript reference to a
+  * GHCJS new reference object, with _an array index_ to a
+  * Haskell data constructor
+Since the array index takes the place of the previous JavaScript reference, the JavaScript GC no longer has the connection point that it _may_ be able to use to store related data in adjacent memory.
+
+However, Haskell programs use memory very differently to the ones that the JavaScript GC is designed for. So, by running an embedded garbage collector using arrays, we can emulate features such as generations/nurseries that are prevalent in garbage collectors for immutable languages - and, since the Haskell compiler naturally has information about the Haskell program, this extra information could potentially be used in the runtime to optimise memory layouts within the array-heaps (with the hope that JavaScript array elements are sufficiently adjacent).
