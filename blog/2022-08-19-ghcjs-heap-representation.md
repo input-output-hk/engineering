@@ -13,11 +13,9 @@ I recently gave a short presentation about heap objects representation in GHCJS 
 ## Heap objects
 
 GHC implements Haskell code evaluation by using graph reduction. As such Haskell
-programs compiled by GHC use the heap mainly to store nodes of the graph to be
-reduced.
+programs compiled by GHC use the heap to store nodes of the graph to be
+reduced and utility nodes participating in graph reduction. These nodes are:
 
-Heap objects include:
-- CON: boxed values (saturated constructor applications) with field values as payload
 - FUN: functions with their free variables as payload
 - THUNK: suspensions with their free variables as payload
 - PAP: partial application to a FUN. FUN closure and already applied arguments
@@ -25,15 +23,17 @@ Heap objects include:
 - IND: indirection to another heap object
 - BLACKHOLE: used to overwrite a THUNK when it is being evaluated
 
-GHC also stores other objects in the heap that are not related to graph
-reduction: TSO, BCO, arrays, MutVar#, MVar#, TVar#, stacks and stack frames.
+The heap is also used to store other values:
+
+- CON: boxed values (saturated constructor applications) with field values as payload
+- Other unlifted values: TSO, BCO, arrays, MutVar#, MVar#, TVar#, stacks, stack frames...
 
 ## Info tables
 
-Many heap objects share the same properties: e.g. all `Int` CON objects have the
-same object type, the same payload layout, the same entry code, etc.
-
-Heap objects are split in two parts:
+Many heap objects share the same properties: e.g. all `Int` CON objects are
+exactly the same except for their payload (the `Int#` value) that may be
+different.
+Hence heap objects are split in two parts to allow sharing of common properties:
 - info table: statically known properties (at compilation time) that can be
   shared by several heap objects
 - heap object itself: dynamically allocated in the heap
@@ -44,12 +44,14 @@ They are composed of:
 - some words of payload
 
 Heap traversal is done by following the info table pointer of every heap
-object to query the layout of the heap object payload.
+object to query in the info table the layout of the heap object payload.
 
 Info tables contain a pointer to a function called "entry code" that can be
-specific to each info table. With tables-next-to-code optimisation enabled, the
-info table pointer is actually a pointer to this entry code and the info table
-itself is stored in the words preceeding the entry code.
+specific to each info table. This code is mainly used to apply a node to some
+arguments.
+Note that with tables-next-to-code optimisation enabled, to avoid an
+indirection the info table pointer is actually a pointer to this entry code and
+the info table itself is stored in the words preceeding the entry code.
 
 ## Heap objects in JavaScript
 
@@ -62,9 +64,10 @@ fields:
 
 One question I had was: why don't we use a JS array instead of a JS object?
 Arrays should be faster than objects (i.e. hashmaps), no? It turns out that
-objects like this are optimised by JS engines using "hidden classes". That's why
+objects like this are optimised by JS engines using "hidden classes" (see
+https://v8.dev/blog/fast-properties for an explanation). That's why
 they are usually more efficient than arrays for which bound checking must be
-made. Also arrays are bigger because they need to store their size.
+made. Also arrays are larger in memory because they need to store their size.
 
 Let's now discuss the fields of the heap objects.
 
@@ -85,7 +88,7 @@ Example of an info table / entry function:
   , size // (Int) number of fields in payload (-1 if variable layout)
   , i    // (Array) fields layout (empty if variable layout)
   , n    // (String) object name for debug
-  , a    // (Int) arity, constructor tag
+  , a    // (Int) function arity or constructor tag
   , r    // (Int) arity in number of JS variables
   , s    // (Array) static refs that must be kept alive (SRT)
   , m    // GC mark
@@ -94,10 +97,28 @@ Example of an info table / entry function:
 
 ### d1, d2 fields
 
-d1 and d2 fields contain the payload of the heap object.
+The d1 and d2 fields contain the payload of the heap object: constructor fields,
+function free variables, etc.
 
-As fewer or more than two values can be stored in the payload, the following
-encoding is used to store them in two fields:
+Payloads can be composed of zero, one, or many fields. A naive solution would be
+to have on JS object field (d1, d2, d3...) per payload field. However it would
+be bad for two reasons:
+
+- performance: JS engine hidden classes optimisation mentioned above need
+  objects to have the same number of properties.
+
+- genericity: we couldn't write generic functions (e.g. to copy a closure)
+  without dynamically querying the number of fields composing the payload.
+
+
+Another solution would be to use a single field to store the whole payload. It
+would fulfill the genericity constraint. However performance may not be good
+because of the extra allocation of the object containing the payload and the
+indirection to access its fields.
+
+Instead GHCJS uses a middle ground approach: it always uses only two JS object
+fields to store any number of payload fields. The following encoding is used to
+stash any number of payload fields into two JS fields:
 
 | Payload      | d1       | d2                  |
 |--------------|----------|---------------------|
@@ -107,28 +128,28 @@ encoding is used to store them in two fields:
 | [a,b,c]      | a        | {d1=b,d2=c}         |
 | [a,b,c,d...] | a        | {d1=b,d2=c,d3=d...} |
 
-This encoding allows the heap objects to always have the same representation
-with only two fields (d1 and d2). This is good for:
+It still fulfills the genericity constraint and small objects (up to two fields
+of payload) don't pay for an extra allocation/indirection. The price to pay is
+that two fields of payload are always allocated, even for for objects with 1
+field of payload.
 
-- performance: JS engine hidden classes optimisation mentioned above
+It would be interesting to benchmark the performance of the different payload
+representations.
 
-- genericity: we can write generic functions (e.g. to copy a closure) that don't
-  need to dynamically query the number of fields composing the payload.
 
 ### m field
 
-The "m" field is used for reachability checking (~ garbage collection). GHCJS
-can't rely on the JS engine to know when a heap object is collected, which is
-necessary to implement weak references, finalizers, etc. It implements its own
-heap traversal algorithm for this. The "m" field is used as a marker for this
-algorithm (it will be the topic of a future blog post).
+The "m" field is used both for reachability checking (~ garbage collection) and
+to implement the "stable names" features.
 
-The "m" field is also used to implement the StableName feature. So it can be
-either:
+GHCJS can't rely on the JS engine to know when a heap object is collected. So it
+implements its own heap traversal algorithm for this. The "m" field is used as a
+marker for this algorithm (it will be the topic of a future blog post).
+In this case, the "m" field is a number (a GC mark).
 
-- a number: GC mark
+When a StableName is created for an object, the "m" field of the object is
+updated to point to the StableName object:
 
-- an object:
 ```javascript
 [h$StableName]
   { m // GC mark
@@ -137,40 +158,60 @@ either:
   }
 ```
 
+The "m" field of the StableName object is used in replacement of the mark of the object.
+
 ### cc field
 
 The "cc" field is the cost center associated to the heap object. This field is
-only present when profiling mode is enabled.
+only present when profiling mode is enabled. Cost centers are entered (pushed on
+the cost center stack of the current thread) before the evaluation of thunks and
+function applications.
+
+Cost centers are allocated with the `h$CC` function.
+
 
 ## Other heap object representation
 
 The generic heap object representation presented above is only used for some
-objects that use an info table. Several other heap objects are
-represented as usual JS objects and recognized with the `instanceof` operated.
-For example a TSO is represented as a `h$Thread` object. These objects don't
-have associated info tables.
+objects: those involved in graph reduction (e.g. updatable objects) and values
+that don't have a fixed layout (e.g. CON objects have different layouts
+depending on which constructor they represent). The object layout allows generic
+access to the infotable and to the payload, and the infotable describes the
+object type and the payload layout.
+
+Several other objects don't need this machinery: they always have the same
+layout and are never the result of a reduction (they are unlifted values). These
+objects are represented as JS objects with any field they need (i.e. not using
+the d1/d2 encoding above). To determine the type of such heap objects, instead
+of using the "type" field of an infotable the code uses the `instanceof`
+operator. For example a TSO is represented as a `h$Thread` object.
 
 Note that we could imagine every heap object being recognised with `instanceof`
 (or by matching on the `constructor` property) by having one separate object
 name for all heap objects. It would mean adding `h$Con`, `h$Thunk`, `h$Fun`,
 `h$Pap`, `h$Blackhole`, and `h$StackFrame` objects. Then all the heap objects
-could be treated in the same way. However these objects need to be overwritable
-in place: a Thunk becomes a Fun/Con/Pap/Blackhole, etc. So they must be
-instances of the same JS object.
+could be treated in the same way. However the isssue is that these objects need
+to be overwritable in place: a Thunk becomes a Fun/Con/Pap/Blackhole, etc. So
+they have to be instances of the same JS object.
 
 ### Optimised representation
 
 Sometimes the generic heap object representation is unnecessary. For example, a
 boxed `Int` would be represented as a `CON` heap object with the `Int#` in its
-payload, represented as a JavaScript number value.
+payload, represented as a JavaScript number value. The only thing we can do with
+this heap object is to pass it around and to extract its payload. As such, it is
+more memory efficient to directly pass the payload (a JS number).
 
-The only thing we can do with this heap object is to pass it around and to
-extract its payload. As such, it is more memory efficient to directly pass the
-payload (a JS number). The optimisation consists in doing this.
+GHCJS provides an optimisation that consists in automatically unboxing some CON
+heap objects. For example, Haskell booleans (True and False datacons) are
+directly mapped to JavaScript booleans, boxed numbers (Float, Double, Int, Word,
+Int8, etc.) are directly mapped to JavaScript numbers.
 
-We can do this in JavaScript because we can use `typeof` on the heap object to
-know if it is a JS object or not. It makes it possible to distinguish between
-heap object representations. In comparison, we can't do this with the native
-(non-JS) backend when we only have a pointer to a heap object: the pointer
-doesn't carry the kind of value it points to, hence the pointed memory location
-must be generic enough for this introspection to happen.
+We can do this because JavaScript already provides some boxing of its own: we
+can use the `typeof` operator on a heap object to know if it is a JS object, a
+JS number, a JS boolean, etc. It makes it possible to distinguish between heap
+object representations. In comparison, we can't do this with the native (non-JS)
+backend when we only have a pointer to a heap object: the pointer doesn't carry
+the kind of value it points to, hence the pointed memory location must be
+generic enough for this introspection to be performed (e.g. using infotable
+pointers).
