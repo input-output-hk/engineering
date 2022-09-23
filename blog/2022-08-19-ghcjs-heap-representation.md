@@ -101,11 +101,11 @@ The d1 and d2 fields contain the payload of the heap object: constructor fields,
 function free variables, etc.
 
 Payloads can be composed of zero, one, or many fields. A naive solution would be
-to have on JS object field (d1, d2, d3...) per payload field. However it would
+to have one JS object field (d1, d2, d3...) per payload field. However it would
 be bad for two reasons:
 
-- performance: JS engine hidden classes optimisation mentioned above need
-  objects to have the same number of properties.
+- performance: JS engine hidden classes optimisation mentioned above needs
+  objects to have the same field structure.
 
 - genericity: we couldn't write generic functions (e.g. to copy a closure)
   without dynamically querying the number of fields composing the payload.
@@ -181,20 +181,21 @@ object type and the payload layout.
 
 Several other objects don't need this machinery: they always have the same
 layout and are never the result of a reduction (they are unlifted values). These
-objects are represented as JS objects with any field they need (i.e. not using
+objects are represented as JS objects with any fields they need (i.e. not using
 the d1/d2 encoding above). To determine the type of such heap objects, instead
 of using the "type" field of an infotable the code uses the `instanceof`
 operator. For example a TSO is represented as a `h$Thread` object.
 
-Note that we could imagine every heap object being recognised with `instanceof`
-(or by matching on the `constructor` property) by having one separate object
-name for all heap objects. It would mean adding `h$Con`, `h$Thunk`, `h$Fun`,
-`h$Pap`, `h$Blackhole`, and `h$StackFrame` objects. Then all the heap objects
-could be treated in the same way. However the isssue is that these objects need
-to be overwritable in place: a Thunk becomes a Fun/Con/Pap/Blackhole, etc. So
-they have to be instances of the same JS object.
+Note that we could be tempted to give every heap object a different object name
+and to always use `instanceof` instead of the infotable "type" properties. It
+would mean adding `h$Con`, `h$Thunk`, `h$Fun`, `h$Pap`, `h$Blackhole`, and
+`h$StackFrame` objects. Then all the heap objects could be treated in the same
+way. However the isssue is that these objects need to be overwritable in place:
+a Thunk becomes a Fun/Con/Pap/Blackhole, etc. As far as I know we can't update
+the "instance" of an object, so all these object have to be instances of
+the same JS object.
 
-### Optimised representation
+### Automatic unboxing
 
 Sometimes the generic heap object representation is unnecessary. For example, a
 boxed `Int` would be represented as a `CON` heap object with the `Int#` in its
@@ -215,3 +216,18 @@ backend when we only have a pointer to a heap object: the pointer doesn't carry
 the kind of value it points to, hence the pointed memory location must be
 generic enough for this introspection to be performed (e.g. using infotable
 pointers).
+
+## Summary
+
+Heap object can be represented as JS values (number, boolean) because of the
+automatic unboxing, or as JS objects: discimination is done with the `typeof`
+operator.
+
+Heap objects represented as JS objects come in two flavours:
+- unlifted objects are represented with specific JS objects, disciminated with
+  the `instanceof` operator
+- other objects use the following generic and updatable structure:
+
+```yaml
+{ f, d1, d2, m, [cc] }
+```
