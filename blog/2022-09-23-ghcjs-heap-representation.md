@@ -1,7 +1,7 @@
 ---
-slug: 2022-08-19-ghcjs-heap-representation
+slug: 2022-09-23-ghcjs-heap-representation
 title: GHCJS heap representation
-date: August 19, 2022
+date: September 23, 2022
 authors: [ sylvain ]
 tags: [ ghc, javascript ]
 ---
