@@ -195,6 +195,12 @@ a Thunk becomes a Fun/Con/Pap/Blackhole, etc. As far as I know we can't update
 the "instance" of an object, so all these object have to be instances of
 the same JS object.
 
+Also note that the JS backend doesn't need INDirection nodes because it can
+always overwrite the fields of a JS object with the fields of another to update
+a closure. For the record, indirection nodes are needed in backends that
+layout closures as a chunk of bytes/words and when the size of the closure to
+update is smaller than the size of the updatee closure.
+
 ### Automatic unboxing
 
 Sometimes the generic heap object representation is unnecessary. For example, a
