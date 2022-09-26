@@ -77,7 +77,11 @@ would mean adding <code>h$Con</code>, <code>h$Thunk</code>, <code>h$Fun</code>, 
 way. However the isssue is that these objects need to be overwritable in place:
 a Thunk becomes a Fun/Con/Pap/Blackhole, etc. As far as I know we can't update
 the "instance" of an object, so all these object have to be instances of
-the same JS object.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="automatic-unboxing">Automatic unboxing<a class="hash-link" href="#automatic-unboxing" title="Direct link to heading">​</a></h3><p>Sometimes the generic heap object representation is unnecessary. For example, a
+the same JS object.</p><p>Also note that the JS backend doesn't need INDirection nodes because it can
+always overwrite the fields of a JS object with the fields of another to update
+a closure. For the record, indirection nodes are needed in backends that
+layout closures as a chunk of bytes/words and when the size of the closure to
+update is smaller than the size of the updatee closure.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="automatic-unboxing">Automatic unboxing<a class="hash-link" href="#automatic-unboxing" title="Direct link to heading">​</a></h3><p>Sometimes the generic heap object representation is unnecessary. For example, a
 boxed <code>Int</code> would be represented as a <code>CON</code> heap object with the <code>Int#</code> in its
 payload, represented as a JavaScript number value. The only thing we can do with
 this heap object is to pass it around and to extract its payload. As such, it is
