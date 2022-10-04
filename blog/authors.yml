@@ -12,3 +12,8 @@ luite:
   name: Luite Stegeman
   title: Haskell DevX Engineer @ IOG
   email: luite.stegeman@iohk.io
+
+arnaud:
+  name: Arnaud Bailly
+  title: Technical Architect @ IOG
+  email: arnaud.bailly@iohk.io
