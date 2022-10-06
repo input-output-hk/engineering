@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkengineering_iog_io=self.webpackChunkengineering_iog_io||[]).push([[3362],{4398:function(e){e.exports=JSON.parse('{"allTagsPath":"/tags","slug":"/tags/knowledge-engineering","name":"knowledge_engineering","count":1,"permalink":"/tags/knowledge-engineering"}')}}]);
