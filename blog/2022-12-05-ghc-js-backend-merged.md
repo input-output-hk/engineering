@@ -1,5 +1,5 @@
 ---
-slug: 2022-09-22-ghc-js
+slug: 2022-12-05-ghc-js-backend-merged
 title: JavaScript backend merged into GHC
 authors: [sylvain]
 tags: [ghc]
