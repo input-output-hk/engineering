@@ -11,6 +11,8 @@ implementing a JavaScript backend for GHC, based on GHCJS. It has just been
 into the master branch on November 30th, 2022. This post should answer most of
 the questions you may have about this backend.
 
+[Skip to build instructions for the impatient](#build)
+
 ## Why Javascript?
 
 The only reason to target Javascript is that it is (sadly) the most portable
@@ -350,13 +352,13 @@ coordinate with people outside of our team. However, we're now in a much better
 position to discuss suggestions and to test/review patches in the spirit of open
 source.
 
-## tl;dr Just tell me how to say hello world
+## tl;dr Just tell me how to say hello world {#build}
 
 You need:
 
   - [emscripten](https://emscripten.org/docs/getting_started/downloads.html) version 3.14 or better
   - llvm 15, or a patched llvm 
-  - nodejs, latest stable version but older should also work
+  - nodejs, latest stable version but older should also work and only if you want to run the JS with node.
   
 Most Linux distributions will have the necessary llvm patches. If your on nixos,
 you'll need to use `llvm_git` and hope for the best. [This
