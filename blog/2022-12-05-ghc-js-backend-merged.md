@@ -20,7 +20,10 @@ What about WebAssembly? WebAssembly is a more promising target language for
 performance than Javascript, but it isn't as portable as Javascript yet.
 Moreover WebAssembly can't directly access Web APIs (DOM manipulation, etc.),
 hence still needs some Javascript glue code. For our purpose (portable GUIs),
-sticking to Javascript is still a better option.
+sticking to Javascript is still a better option. That being said, our friends at
+[Tweag](https://www.tweag.io/) have implemented and merged a new
+[WebAssembly](https://www.tweag.io/blog/2022-11-22-wasm-backend-merged-in-ghc/)
+into GHC!
 
 ## Why Haskell?
 
