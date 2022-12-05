@@ -1,8 +1,8 @@
 ---
 slug: 2022-12-05-ghc-js-backend-merged
 title: JavaScript backend merged into GHC
-authors: [sylvain]
-tags: [ghc]
+authors: [sylvain, doyougnu]
+tags: [ghc, javascript, cross-compilation]
 ---
 
 For most of the year 2022, we, the GHC DevX team at IOG, have been working on
@@ -27,12 +27,12 @@ into GHC!
 
 ## Why Haskell?
 
-Other languages such as PureScript target Javascript and provide a programmer
-experience close to Haskell's. The benefit of using Haskell instead is code
-sharing: frontend is Haskell code compiled to Javascript and backend is Haskell
-code compiled to machine code. In particular the (de)serialization code (e.g.
-from/to JSON) is shared and can't get out of sync between the frontend and the
-backend.
+Other languages such as [PureScript](https://www.purescript.org/) target
+Javascript and provide a programmer experience close to Haskell's. The benefit
+of using Haskell instead is code sharing: frontend is Haskell code compiled to
+Javascript and backend is Haskell code compiled to machine code. In particular
+the (de)serialization code (e.g. from/to JSON) is shared and cannot get out of
+sync between the frontend and the backend.
 
 A lot of IOG code is written in Haskell. Duplicating some of this code into some
 other language(s) would be a maintenance burden. That's why we invested into
@@ -44,25 +44,32 @@ Haskell is a language driven by its implementation in GHC. GHC development is
 very active and the GHC API is totally unstable. As a consequence, maintaining a
 Haskell to Javascript compiler based on GHC but outside of GHC is costly.
 
-Our teammate Luite Stegeman has been developing GHCJS for 10 years. Recent
-releases of GHCJS have been relying on a fork of the GHC library. This fork was
-modified to add and to change whatever GHCJS needed. As a result it was much
-more difficult to keep up with the upstream GHC library and GHCJS was stuck to
-using GHC 8.10.
+The maintenance burden is not hypothetical; our teammate Luite Stegeman has been
+developing GHCJS for close to 10 years and has experienced the pain first hand.
+GHCJS relied on a modified fork of the GHC library to suit GHCJS's needs. So any
+changes to upstream GHC had to be adapted to the customized fork or GHCJS would
+fall behind. And fall behind it did, as of writing GHCJS has stuck to using GHC
+8.10; lagging behind by three major releases and counting.
 
-Being a different project, GHCJS also required other tools (Cabal, Stack...) to
-distinguish between GHC and GHCJS. It meant more maintenance burden for
-everyone involved in these projects.
+To compounding the issue, the normal Haskell toolchain does was not designed for
+an edge case like GHCJS. So GHCJS required that the normal tooling, e.g., Cabal
+and Stack, could distinguish between upstream GHC library code and GHCJS code.
+This meant that the GHCJS developers had to maintain the GHC fork, develop
+GHCJS, and patch or contribute to Cabal and Stack. Simply put, the maintenance
+burden was much too high per developer.
 
-Enhancing GHC's cross-compilation support and adding a proper JS backend was the
-best way to reduce the technical debt, to reduce future maintenance costs, and
-to provide a better user experience.
+So instead of spending engineering time and energy _responding_ to ecosystem
+changes and maintenance, the DevX team decided the best course of action was
+enhancing GHC's cross-compilation support and add a proper JS backend based on
+GHCJS. We feel that this adds value to the entire Haskell ecosystem, keeps the
+JS backend in sync with GHC, provides a better user experience for all, and
+reduces maintenance costs.
 
 ## Is GHCJS dead?
 
 Not yet! As it stands, the JS backend doesn't provide all the features provided
-by GHCJS yet. In particular it doesn't support Template Haskell yet. See our
-roadmap below for more details.
+by GHCJS. In particular it doesn't support Template Haskell and we've removed
+the GHCJS FFI to refine its design. See our roadmap below for more details.
 
 Nevertheless GHCJS is unlikely to be updated to use a GHC version more recent
 than 8.10.x. So from our point of view it is in maintenance mode until the JS
@@ -78,13 +85,14 @@ GHCJS user, here are the main differences:
 1. GHCJS was stuck to GHC 8.10 while the JS backend follows GHC head.
 
 1. GHCJS's incremental linking support ("base" bundles) hasn't been ported. This
-   feature required too many changes (e.g. adding new command-line flags) and
+   feature required too many changes (such as adding new command-line flags) and
    would have been backend-specific. This might be implemented in the future if
    it proves to be useful for the newer TH implementation for example.
 
-2. GHCJS's JS code optimizer hasn't been ported. The code was fragile and slow. We
-   plan to work on an intermediate representation between STG and JS to perform
-   the same optimizations in a safer/faster way.
+2. GHCJS's JS code optimizer hasn't been ported. The code was trying to do too
+   much all at once and consequently was fragile and slow. We plan to work on an
+   intermediate representation between STG and JS to perform the same
+   optimizations in a (type) safer/faster way.
 
 3. GHCJS's compactor (link time optimizations) code hasn't been ported. Some
    optimizations have been reimplemented (e.g. global renaming of local
@@ -104,18 +112,20 @@ GHCJS user, here are the main differences:
 
 5. GHCJS's support for TH hasn't been ported. GHCJS had its own implementation
    of an external interpreter (THRunner) which has been used as an inspiration
-   to implement GHC's external interpreter (IServ). However both implementations
-   aren't directly compatible. Retrofitting THRunner into Iserv is our next
-   priority. More details on https://engineering.iog.io/2022-05-17-javascript-template-haskell-external-interpreter
+   to implement GHC's external interpreter (IServ). However, both
+   implementations are directly incompatible. Retrofitting THRunner into Iserv
+   is our next priority. More details on
+   https://engineering.iog.io/2022-05-17-javascript-template-haskell-external-interpreter
 
 6. GHCJS supported an extended FFI import syntax allowing Javascript code to be
    inlined (the FFI import string supports templates of Javascript code with
    placeholders for arguments). This hasn't been ported as adding a Javascript
-   parser to GHC wasn't trivial. For now, only JS function calls are supported.
+   parser to GHC wasn't trivial, and the imported code made no safety guarantees
+   whatsoever. For now, only JS function calls are supported.
 
-7. Any command-line flag introduced by GHCJS hasn't been ported yet. We didn't
-   make any change to GHC's command-line in this work except for adding a
-   `-ddump-js` flag. Other options will be added later as needed.
+7. Any command-line flag introduced by GHCJS has not been ported. We didn't make
+   any change to GHC's command-line in this work except for adding a `-ddump-js`
+   flag. Other options will be added later as needed.
 
 8. The JS backend itself hasn't been optimized and we even removed some
    (seemingly random) uses of NFData from GHCJS's code. We intend to optimize
@@ -134,9 +144,13 @@ Our top priorities are:
 
 ## What has improved compared to GHCJS?
 
-Or why did it take you so long to port a stripped GHCJS into GHC?
+Or, why did it take you so long to port a stripped GHCJS into GHC? While it may
+seem like such a task should be relatively quick&#151especially in a language
+with such a good refactoring story like haskell&#151there were numerous road
+blocks that we needed to remove before adding the backend. In particular, here
+were the troublesome bits:
 
-1. Removing the use of external libraries
+#### Removing the use of external libraries
 
 GHCJS used libraries that aren't already dependencies of GHC: text, lens,
 megaparsec, aeson... As we didn't want to add new dependencies to GHC, we've
@@ -152,14 +166,14 @@ refactored the code to avoid them. Examples:
 GHCJS used to provide its own base and prim libraries: ghcjs-base and
 ghcjs-prim. We've merged those into the existing base and ghc-prim libraries.
 
-2. Reusing GHC's build system: Hadrian
+#### Reusing GHC's build system: Hadrian
 
 GHCJS is known to be complex to build, relying on custom build scripts to deal
 with the GHC fork it uses, etc. The JS backend however is as easy to build as
 any other GHC. It doesn't require any wrapper script, only the "emconfigure"
 tool provided by the Emscripten project.
 
-You can now build a GHC with the JS backend with these commands:
+You can now build a GHC with the JS backend with just these commands:
 
 > ./boot
 > emconfigure ./configure --target=js-unknown-ghcjs
@@ -168,38 +182,42 @@ You can now build a GHC with the JS backend with these commands:
 Note that if this doesn't work, up to date instructions and troubleshootings can
 be found on https://gitlab.haskell.org/ghc/ghc/-/wikis/javascript-backend
 
-Hadrian build system has been adapted to support Cabal's `js-sources`
-stanzas that are to support user-provided `.js` files. `rts` and `base`
-packages both require this feature.
+The Hadrian build system has been adapted to support Cabal's `js-sources`
+stanzas that are to support user-provided `.js` files. Both the `rts` and `base`
+packages required this feature.
 
-3. Support for running GHC's testsuite
+#### Support for running GHC's testsuite
 
 We can now run GHC's testsuite with the JS backend enabled! We had to tweak
-Hadrian to make this possible (support for cross-compilers is subpar). The
-testsuite already found some bugs that we have spent time fixing.
+Hadrian to make this possible (support for cross-compilers is subpar), but the
+testsuite already found some bugs that we have since fixed.
 
-Quite a lot of tests had to be disabled because of missing features (TH, HPC,
-compact regions, etc.) or because the generated code would timeout. We've added
-more precise properties to test descriptions that indicate required features to
-run each test. When we'll implement some feature, it will be much easier to
-reenable all its tests at once. In addition failing tests now have proper
+However, in order to merge for the GHC 9.6 release we had to be disable many
+tests because of missing features (TH, HPC, compact regions, etc.) or because
+the generated code would timeout (not surprising given the missing optimizer and
+compactor). 
+
+But in the process of disabling those tests we've laid a good path forward.
+We've added more precise properties to the testsuite which indicate the required
+features to run each test. So when we implement some feature, it will be
+painless to reenable all its tests. In addition failing tests now have proper
 tickets in GHC's gitlab.
 
-We've spent some time trying to run the testsuite on CI.
-Sadly Hadrian doesn't support this yet (more concretely, it doesn't
-properly support running the testsuite for a cross-compiler in a bindist
-specified with --test-compiler).
+We've spent some time trying to run the testsuite on CI. Sadly Hadrian doesn't
+support this yet (more concretely, it doesn't properly support running the
+testsuite for a cross-compiler in a bindist specified with `--test-compiler`).
 Hopefully it should get fixed soon so that we can easily accept new
-contributions.
-For the time being, the following command should run the testsuite locally:
+contributions. For the time being, the following command should run the
+testsuite locally:
 
 > ./hadrian/build --bignum=native -j2 test
 
 
-4. Upgrading from GHC 8.10 to GHC 9.6
+#### Upgrading from GHC 8.10 to GHC 9.6
 
-The latest version of GHCJS is based on a fork of GHC 8.10.7. One time consuming
-task has been to adapt the code generator to support GHC head. In practice it meant:
+The latest version of GHCJS is based on a fork of GHC 8.10.7. We spent a
+significant amount of time adapting the code generator to support GHC head. In
+practice it meant:
   - adding support for new primops, especially sized primitives
   - adapting to ghc-bignum changes
   - adapting to internal changes
@@ -208,42 +226,44 @@ task has been to adapt the code generator to support GHC head. In practice it me
   - fixing support for unboxed sums
   - many other fixes...
 
-5. Fixing some performance issues
+#### Fixing some performance issues
 
-As we haven't ported GHCJS's Compactor, output size ended up being really too
-big. We've spent some time reimplementing a very important part of the
-Compactor---renaming and shortening of local variables---using a different
-approach which ends up being faster than GHCJS's one. Technically we replace a
-FastString with its FastString unique, so it was only made possible by the
-switch from Text to FastString.
+As we haven't ported GHCJS's Compactor, output size was predictably incredibly
+large. So we've spent time reimplementing a crucial piece of the
+Compactor&#151renaming and shortening of local variables&#151using a different
+approach which ended up being faster than GHCJS's compactor. For the GHC devs
+out there, we replaced a FastString with its FastString unique, so it was only
+made possible after removing Text and switching from Text to FastString.
 
-6. Removal of custom file extensions and support for JS pragmas
+#### Removal of custom file extensions and support for JS pragmas
 
-GHCJS used the .js.pp file extension to identify JS files that need to be passed
-through CPP. Adding support for this extension in Hadrian and GHC proved to be
-more painful than adding support for JS pragmas. Similarly to Haskell extension
-pragmas, you can now write "//#OPTIONS: CPP" in your JS files to enable the CPP
-pass, and extension is always .js.
+GHCJS used the `.js.pp` file extension to identify JS files that needed to be
+passed through CPP before being valid JavaScript. Adding support for this
+extension in both Hadrian and GHC proved to be more painful than just adding
+support for JS pragmas. So we decided to do the latter; similarly to Haskell
+extension pragmas, you can now write "//#OPTIONS: CPP" in your JS files to
+enable the CPP pass, and the file extension is always `.js`.
 
-On the topic of file extensions, technically .js files don't have to be compiled
-into .o files, contrary to C/C++/Haskell/etc. files. However build systems
-(Hadrian, Cabal...) and compilers (GHC) expect this. For consistency we've
-added a "compilation" pass for .js files too. They are now renamed into .o
-files with a "//JAVASCRIPT" header added to distinguish them from object files
-produced by the JS backend (and from Emscripten, in the future).
+While we're on the topic of file extensions, technically `.js` files don't have
+to be compiled into `.o` files (contrary to C/C++/Haskell/etc. files) at all.
+However, build systems (Hadrian, Cabal...) and compilers (GHC) expect this. So
+for consistency with other backends, we've added a "compilation" pass for `.js`
+files too. They are now renamed into `.o` files with a "//JAVASCRIPT" header added
+to distinguish them from object files produced by the JS backend (and from
+Emscripten, in the future).
 
-7. General cleanup and documentation
+#### So much cleanup and documentation
 
 GHC provides some utilities (pretty-printer, binary serialization, string
-interning, etc.) that weren't used before.
-We adapted the code to use them to make the JS backend similar to other
-backends and for performance reasons.
+interning, etc.) that GHCJS did not make use of. So we adapted the GHCJS code to
+exploit these utilities, keep the JS backend similar to other backends, and for
+better performance.
 
 Three of us (out of four) were totally new to GHCJS's code base.
-We strived to understand the code and to make it easier to understand by adding
-a lot of comments and by refactoring it.
-We also wrote a few blog posts explaining some technical details about GHCJS's
-internals:
+We strived to grok the code and to make it understandable by adding
+a lot of comments and refactoring. 
+Throughout this process we logged our learning in our engineering blog
+to explain some (sadly not all) technical details about GHCJS's internals:
 
 - https://engineering.iog.io/2022-05-17-javascript-template-haskell-external-interpreter/
 - https://engineering.iog.io/2022/05/24/april-GHCJS-Objectable-vs-GHC-Binary/
@@ -255,16 +275,17 @@ internals:
 
 There are more in preparation.
 
-8. Plugin support in cross-compilers
+#### Plugin support in cross-compilers
 
-GHC doesn't support plugins when it is built as a cross-compiler (cf
-[#14335](https://gitlab.haskell.org/ghc/ghc/-/issues/14335)).
-This is because it isn't modular enough to support two environments at once: one
-for the target code (JS code here) and one for the host (e.g. native x86 or
-AArch64 code for the plugin).
-We've spent a lot of time making it more modular (see the "Modularizing GHC"
-white paper we published earlier this year and Sylvain's lightning talk at HIW 2022)
-but there is a lot more to do to achieve this (cf
+GHC doesn't support plugins when built as a cross-compiler (cf
+[#14335](https://gitlab.haskell.org/ghc/ghc/-/issues/14335)). This is because it
+isn't modular enough to support two environments at once: one for the target
+code (JS code here) and one for the host (e.g. native x86 or AArch64 code for
+the plugin). We've spent a lot of time making it more modular (see the
+[Modularizing GHC](https://hsyl20.fr/home/files/papers/2022-ghc-modularity.pdf)
+white paper we published earlier this year and Sylvain's [lightning
+talk](https://youtu.be/OHGH5HLOCEM) at HIW 2022) but there is a lot more to do
+to achieve this (cf
 [#17957](https://gitlab.haskell.org/ghc/ghc/-/issues/17957)).
 
 GHCJS used a fragile hack to support plugins: at plugin loading time it would
@@ -272,8 +293,9 @@ substitute the plugin unit with another corresponding one from another
 package database.
 It was fragile because it could violate GHC's single environment assumptions.
 
-We didn't port GHCJS's hack. Nevertheless we have implemented a new way for GHC
-to load plugins directly from libraries instead of packages (#20964 / !7377).
+GHCJS's hack did not get ported. Nevertheless we have implemented a new way for
+GHC to load plugins directly from libraries instead of packages
+([#20964](https://gitlab.haskell.org/ghc/ghc/-/issues/20964)/[!7377](https://gitlab.haskell.org/ghc/ghc/-/merge_requests/7377)).
 This method doesn't require GHC to load module interfaces for the plugin and its
 dependencies, hence workarounds GHC's limitations.
 
@@ -282,7 +304,7 @@ dependencies, hence workarounds GHC's limitations.
 Libraries that use C sources (`c-sources` Cabal stanza) aren't supported by the
 JS backend.
 In the future we plan to use Emscripten to compile C sources and then to
-generate some adapter codes for them, but this isn't done yet.
+generate some adapter code for them, but this isn't done yet.
 
 For now there are two ways to fix libraries that use C sources.
 The C code can either be rewritten in Javascript, or it can be rewritten in
@@ -297,30 +319,141 @@ Haskell version can be directly compiled by that backend and there is no extra w
 In contrast, if the C source is rewritten in JavaScript, then it would need to
 be rewritten _for each_ backend.
 
-That's basically what we've done when we wrote the ghc-bignum library which
-provides a "native" implementation written in Haskell that is functionally
-equivalent to the GMP based implementation.
-Another advantage of the Haskell version is that it is much more pleasant to
-write Haskell code than to write Javascript code.
+That is the approach we've taken when we wrote the ghc-bignum library.
+Ghc-bignum provides a "native" implementation written in Haskell that is
+functionally equivalent to the GMP based implementation. Of course, besides
+being more future proof the Haskell version is just more pleasant to write than
+the Javascript version.
 
-Note that GHCJS came with a "shim" library where a shim is a JS source for some
-package.
-The JS backend won't provide shims so these JS sources will have to be
-upstreamed or reimplemented in Haskell.
+Note that GHCJS came with a "shim" library where a shim is JS source code
+specifically for some package. For example, GHCJS provided shims for packages
+like `text`, `process`, and `hashable`. We do not intend the JS backend to
+provide shims so these JS sources will have to be upstreamed or reimplemented in
+Haskell.
 
-Note that due to Javascript interpreted nature, we can link with libraries using
-foreign imports even if the imported functions don't exist.
-Instead of failing at link time (what usually happens with native code) a JS
-exception be raised only when and if the imported function is called.
+Note that the linking behavior is different due to the interpreted nature of
+Javascript. In the JS backend, we can link with libraries using foreign imports
+_even if_ the imported functions don't exist. Instead of failing at link time
+(what usually happens with native code) a JS exception be raised only when and
+if the imported function is called.
 
 ## How to help?
 
-We have now reached a point where anyone can easily build and test the JS
-backend.
-Anyone can now open bug reports and offer patches for the JS backend on GHC's gitlab.
+We have now reached our first milestone; anyone can easily build and test the JS
+backend, and anyone can open bug reports or offer patches for the JS backend on
+GHC's gitlab.
 
-A few people already offered their help this year: thank you!
-Until now it was difficult to split the work into independent tasks (one fix led
-to a new failure, etc.) and it was difficult to coordinate with people outside
-of our team.
-However we're now in a much better position to discuss suggestions and to test/review patches.
+For those who offered their help this year: thank you! Until now it was
+difficult to split the work into independent tasks (one fix led to a new
+failure, which lead to an architectural issue etc.) and it was difficult to
+coordinate with people outside of our team. However, we're now in a much better
+position to discuss suggestions and to test/review patches in the spirit of open
+source.
+
+## tl;dr Just tell me how to say hello world
+
+You need:
+
+  - [emscripten](https://emscripten.org/docs/getting_started/downloads.html) version 3.14 or better
+  - llvm 15, or a patched llvm 
+  - nodejs, latest stable version but older should also work
+  
+Most Linux distributions will have the necessary llvm patches. If your on nixos,
+you'll need to use `llvm_git` and hope for the best. [This
+fork](https://github.com/doyougnu/ghc.nix) of `ghc.nix` will also be useful to
+you.
+
+#### checkout the GHC source
+```
+git clone --recurse-submodules https://gitlab.haskell.org/ghc/ghc.git
+cd ghc # ensure you are in the ghc source tree for the following commands
+```
+
+#### update the submodules
+```
+git submodule update --init --recursive
+```
+
+#### Boot and configure for JS
+```
+./boot && emconfigure ./configure --target=js-unknown-ghcjs
+```
+
+You should see `configure` finish and report something similar:
+```
+----------------------------------------------------------------------
+Configure completed successfully.
+
+   Building GHC version  : 9.5.20220819
+          Git commit id  : 08c3c4783c72d3173d79ccda2ac282e2d3e04e34
+
+   Build platform        : x86_64-unknown-linux
+   Host platform         : x86_64-unknown-linux
+   Target platform       : js-unknown-ghcjs
+
+   Bootstrapping using   : /nix/store/4bkmkc7c98m4qyszsshnw9iclzzmdn4n-ghc-9.2.3-with-packages/bin/ghc
+      which is version   : 9.2.3
+      with threaded RTS? : YES
+
+   Using (for bootstrapping) : /nix/store/yzs8390walgk2rwl6i5li2g672hdn0kv-gcc-wrapper-11.3.0/bin/cc
+   Using clang               : /nix/store/p894nlicv53firllwgrfxfi51jzckh5l-emscripten-3.1.15/bin/emcc
+      which is version       : 15.0.0
+      linker options         : 
+   Building a cross compiler : YES
+   Unregisterised            : NO
+   TablesNextToCode          : YES
+   Build GMP in tree         : NO
+   hs-cpp       : /nix/store/p894nlicv53firllwgrfxfi51jzckh5l-emscripten-3.1.15/bin/emcc
+   hs-cpp-flags : -E -undef -traditional -Wno-invalid-pp-token -Wno-unicode -Wno-trigraphs
+   ar           : /nix/store/p894nlicv53firllwgrfxfi51jzckh5l-emscripten-3.1.15/bin/emar
+   ld           : /nix/store/p894nlicv53firllwgrfxfi51jzckh5l-emscripten-3.1.15/bin/emcc
+   nm           : /nix/store/0dp0bfg9sncg7bjy389zwyg2gskknm6b-emscripten-llvm-3.1.15/bin/llvm-nm
+   objdump      : /nix/store/zgvxnf9047rdd8g8kq2zxxm9k6kfqf8b-binutils-2.38/bin/objdump
+   ranlib       : /nix/store/p894nlicv53firllwgrfxfi51jzckh5l-emscripten-3.1.15/bin/emranlib
+   otool        : otool
+   install_name_tool : install_name_tool
+   windres      : 
+   dllwrap      : 
+   genlib       : 
+   Happy        : /nix/store/ijdmyaj6i6hgx5ll0lxxgcm9b0xn8nma-happy-1.20.0/bin/happy (1.20.0)
+   Alex         : /nix/store/qzgm2m7p7xc0fnyj4vy3jcmz8pvbg9p7-alex-3.2.6/bin/alex (3.2.6)
+   sphinx-build : /nix/store/27dk5i52465a4azjr2dqmrhyc0m4lpf2-python3.9-sphinx-4.5.0/bin/sphinx-build
+   xelatex      : /nix/store/8jc2258h4nqzqjy303zzkssd3ip675pf-texlive-combined-2021/bin/xelatex
+   makeinfo     : /run/current-system/sw/bin/makeinfo
+   git          : /nix/store/vsr2cn15h7cbwd5vqsam2ab2jzwfbyf9-git-2.36.0/bin/git
+   cabal-install : /nix/store/cjmd2qv1b5pdw4lxh1aw4xwwy4ibnb2p-cabal-install-3.6.2.0/bin/cabal
+
+   Using LLVM tools
+      clang : clang
+      llc   : llc
+      opt   : opt
+
+   HsColour was not found; documentation will not contain source links
+
+   Tools to build Sphinx HTML documentation available: YES
+   Tools to build Sphinx PDF documentation available: YES
+   Tools to build Sphinx INFO documentation available: YES
+----------------------------------------------------------------------
+```
+
+Be sure to verify that `ar`, `ld`, `nm` and friends point to the emscripten
+versions, i.e., the output shows `<tool> : <some-path>-emscripten-<tool>`.
+
+#### Build the JS backend
+```
+./hadrian/build --bignum=native -j
+```
+
+#### Now compile hello world
+```hs
+module Main where
+
+main :: IO ()
+main = putStrLn "Hello JS!"
+```
+
+```
+$ <path-to-ghc-root-dir>/_build/ghc-stage1 -fforce-recomp Main.hs
+$ ./Main
+$ Hello JS!
+```
