@@ -1,7 +1,7 @@
 ---
-slug: 2022-12-02-template-haskell-for-the-js-backend
+slug: 2022-12-07-template-haskell-for-the-js-backend
 title: Template Haskell for the GHC JavaScript Backend
-date: December 2, 2022
+date: December 7, 2022
 authors: [ luite ]
 tags: [ghc, javascript ]
 ---
@@ -49,14 +49,16 @@ Now let's have a look at an analogous GHCJS Template Haskell session:
 
 The incremental linker is used to construct the code in the messages: Initially the `<Template Haskell server>` is loaded, which includes the RTS. Every subsequent message contains only code that wasn't already loaded. For example the message to run `<xyz>` might include code from the `base` package or other dependencies, but only if that code wasn't already required by `<Template Haskell server>`.
 
-The `thrunner.js` script does not contain a bytecode interpreter and functionality for loading object files. It's quite involved to load object files for the JS backend, since they need a rendering pass by the linker (and optionally compactor). Adding the bytecode interpreter is also not trivial, since it's written in C.
+The `thrunner.js` script does not contain a bytecode interpreter and has no functionality for loading object files. It's quite involved to load object files for the JS backend, since they need a rendering pass by the linker (and optionally compactor). Adding the bytecode interpreter is also not trivial, since it's written in C.
 
 So how do we go about integrating everything in the `iserv` framework without implementing the complicated object loading and bytecode interpreter functionality? Work is on the way to extend the `iserv` message protocol to support the incremental linking scheme as used by GHCJS, where the compiler does all the linking work:
 
   1. start `iserv.jsexe` with node.js
   2. **message:** load and run JavaScript code `<xyz>` and return the result.
 
-Here the code `<xyz>` is linked incrementally against `iserv.jsexe`.
+Here the code `<xyz>` is linked incrementally against `iserv.jsexe`.[^1]
+
+[^1]: In theory it's possible to implement most Template Haskell functionalit (everything except state: `putQ`/`getQ`) without incremental linking, but performance would likely be unacceptable.
 
 This requires some changes in the `iserv` code, and was therefore out of scope of the original JavaScript backend merge request, where we tried to minimize the changes to existing GHC infrastructure in order to make the (already large) patch more reviewable. We expect the update to be ready before the 9.8 release, and are planning to backport the changes to 9.6.
 
