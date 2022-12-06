@@ -17,17 +17,19 @@ have about the backend and look forward to the community response.
 
 ## Why Javascript?
 
-The only reason to target Javascript is that it is (sadly) the most portable
-language especially to write user interfaces.
+We chose to target JavaScript because JavaScript is simply the most portable
+language on the web, and especially so for user interfaces. In addition to
+portability, there is a large amount of mature tooling around the JavaScript
+language and such a large user base that the language will likely never die.
 
-What about WebAssembly? WebAssembly is a more promising target language for
-performance than Javascript, but it isn't as portable as Javascript yet.
-Moreover WebAssembly can't directly access Web APIs (DOM manipulation, etc.),
-hence still needs some Javascript glue code. For our purpose (portable GUIs),
-sticking to Javascript is still a better option. That being said, our friends at
-[Tweag](https://www.tweag.io/) have implemented and merged a new
-[WebAssembly](https://www.tweag.io/blog/2022-11-22-wasm-backend-merged-in-ghc/)
-into GHC!
+Webassembly is a promising target as well, and [Tweag](https://www.tweag.io/)
+has just merged a
+[WASM](https://www.tweag.io/blog/2022-11-22-wasm-backend-merged-in-ghc/) WASM
+into GHC as well (great work and congrats!). Webassembly is not as ubiquitous as
+JavaScript yet, and has a harder time interacting with JavaScript directly.
+Hence, we believe that both backends provide different strengths, and it is to
+our benefit, and the communities' to back both code generation paths in GHC for
+different use cases and requirements.
 
 ## Why Haskell?
 
