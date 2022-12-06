@@ -463,3 +463,7 @@ $ <path-to-ghc-root-dir>/_build/ghc-stage1 -fforce-recomp Main.hs
 $ ./Main
 $ Hello JS!
 ```
+
+## Acknowledgements
+We want to thank Jan Hrcek, Moritz Angermann, and David Thrane Christansen for
+time, labor, comments, and suggestions on drafts of this blog post.
