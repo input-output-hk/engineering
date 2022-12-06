@@ -68,8 +68,11 @@ So instead of spending engineering time and energy _responding_ to ecosystem
 changes and maintenance, the DevX team decided the best course of action was
 enhancing GHC's cross-compilation support and add a proper JS backend based on
 GHCJS. We feel that this adds value to the entire Haskell ecosystem, keeps the
-JS backend in sync with GHC, provides a better user experience for all, and
-reduces maintenance costs.
+JS backend in sync with GHC, provides a better user experience for all, reduces
+maintenance costs, and greatly improves the backends in GHC in general. By
+implementing support for a JS backend in GHC, we also improve GHC's support for
+cross-compilation (and testing cross-compilers), which is directly applicable to
+the WASM, iOS, and Android backends in GHC.
 
 ## Is GHCJS dead?
 
