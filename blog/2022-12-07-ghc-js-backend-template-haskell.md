@@ -37,7 +37,8 @@ The GHC external interpreter (`iserv`) runs in a separate process and runs Templ
   1. start `iserv` program
   2. **message:** load library `base.a`
   3. **message:** load object file `module.o`
-  4. **message:** run bytecode `<xyz>` and return the result
+  4. **message:** load bytecode `<xyz>` and return a reference
+  5. **message:** run bytecode reference and return the result
 
 Here we use the notation `<xyz>` to indicate bytecode that is contained inside the message. The `iserv` process contains functionality to load libraries and object files directly, and it contains the GHC bytecode interpreter.
 
@@ -54,11 +55,12 @@ The `thrunner.js` script does not contain a bytecode interpreter and has no func
 So how do we go about integrating everything in the `iserv` framework without implementing the complicated object loading and bytecode interpreter functionality? Work is on the way to extend the `iserv` message protocol to support the incremental linking scheme as used by GHCJS, where the compiler does all the linking work:
 
   1. start `iserv.jsexe` with node.js
-  2. **message:** load and run JavaScript code `<xyz>` and return the result.
+  2. **message:** load JavaScript code `<xyz>` and return a reference
+  3. **message:** run JavaScript code reference and return the result
 
 Here the code `<xyz>` is linked incrementally against `iserv.jsexe`.[^1]
 
-[^1]: In theory it's possible to implement most Template Haskell functionalit (everything except state: `putQ`/`getQ`) without incremental linking, but performance would likely be unacceptable.
+[^1]: In theory it's possible to implement most Template Haskell functionality (everything except state: `putQ`/`getQ`/`addModuleFinalizer`) without incremental linking, but performance would likely be unacceptable and it would be a big change from how `iserv` typically works.
 
 This requires some changes in the `iserv` code, and was therefore out of scope of the original JavaScript backend merge request, where we tried to minimize the changes to existing GHC infrastructure in order to make the (already large) patch more reviewable. We expect the update to be ready before the 9.8 release, and are planning to backport the changes to 9.6.
 
