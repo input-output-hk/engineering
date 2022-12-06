@@ -8,8 +8,10 @@ tags: [ghc, javascript, cross-compilation]
 For most of the year 2022, we, the GHC DevX team at IOG, have been working on
 implementing a JavaScript backend for GHC, based on GHCJS. It has just been
 [merged](https://gitlab.haskell.org/ghc/ghc/-/commit/cc25d52e0f65d54c052908c7d91d5946342ab88a)
-into the master branch on November 30th, 2022. This post should answer most of
-the questions you may have about this backend.
+into the master branch on November 30th, 2022. In this post, we describe the
+challenges we faced bringing GHCJS to GHC, how we overcame those challenges, and
+what's left to do. We hope this post will answer most of the questions you may
+have about the backend and look forward to the community response.
 
 [Skip to build instructions for the impatient](#build)
 
@@ -194,10 +196,10 @@ We can now run GHC's testsuite with the JS backend enabled! We had to tweak
 Hadrian to make this possible (support for cross-compilers is subpar), but the
 testsuite already found some bugs that we have since fixed.
 
-However, in order to merge for the GHC 9.6 release we had to disable many
-tests because of missing features (TH, HPC, compact regions, etc.) or because
-the generated code would timeout (not surprising given the missing optimizer and
-compactor). 
+However, in order to merge for the GHC 9.6 release we had to disable many tests
+because of missing features (TH, HPC, compact regions, etc.) or because the
+generated code would timeout (not surprising given the missing optimizer and
+compactor).
 
 But in the process of disabling those tests we've laid a good path forward.
 We've added more precise properties to the testsuite which indicate the required
