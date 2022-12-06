@@ -53,12 +53,12 @@ changes to upstream GHC had to be adapted to the customized fork or GHCJS would
 fall behind. And fall behind it did, as of writing GHCJS has stuck to using GHC
 8.10; lagging behind by three major releases and counting.
 
-To compounding the issue, the normal Haskell toolchain does was not designed for
-an edge case like GHCJS. So GHCJS required that the normal tooling, e.g., Cabal
-and Stack, could distinguish between upstream GHC library code and GHCJS code.
-This meant that the GHCJS developers had to maintain the GHC fork, develop
-GHCJS, and patch or contribute to Cabal and Stack. Simply put, the maintenance
-burden was much too high per developer.
+To compound the issue, the normal Haskell toolchain does was not designed for an
+edge case like GHCJS. So GHCJS required that the normal tooling, e.g., Cabal and
+Stack, could distinguish between upstream GHC library code and GHCJS code. This
+meant that the GHCJS developers had to maintain the GHC fork, develop GHCJS, and
+patch or contribute to Cabal and Stack. Simply put, the maintenance burden was
+much too high per developer.
 
 So instead of spending engineering time and energy _responding_ to ecosystem
 changes and maintenance, the DevX team decided the best course of action was
@@ -86,24 +86,24 @@ GHCJS user, here are the main differences:
 
 1. GHCJS was stuck to GHC 8.10 while the JS backend follows GHC head.
 
-1. GHCJS's incremental linking support ("base" bundles) hasn't been ported. This
+2. GHCJS's incremental linking support ("base" bundles) hasn't been ported. This
    feature required too many changes (such as adding new command-line flags) and
    would have been backend-specific. This might be implemented in the future if
    it proves to be useful for the newer TH implementation for example.
 
-2. GHCJS's JS code optimizer hasn't been ported. The code was trying to do too
+3. GHCJS's JS code optimizer hasn't been ported. The code was trying to do too
    much all at once and consequently was fragile and slow. We plan to work on an
    intermediate representation between STG and JS to perform the same
    optimizations in a (type) safer/faster way.
 
-3. GHCJS's compactor (link time optimizations) code hasn't been ported. Some
+4. GHCJS's compactor (link time optimizations) code hasn't been ported. Some
    optimizations have been reimplemented (e.g. global renaming of local
    identifiers), but some other are lacking (e.g. compacting initialization code).
    We plan to work on this as part of a larger effort on refactoring the code
    generator, the linker, and some runtime system aspects.
    See also [#22352](https://gitlab.haskell.org/ghc/ghc/-/issues/22352)
 
-4. GHCJS's support for plugins hasn't been ported. The implementation was
+5. GHCJS's support for plugins hasn't been ported. The implementation was
    unsafe (exchanging a unit for another when GHC tries to load a plugin).
    Fixing this properly is a daunting task because of GHC's lack of modularity
    (see [#14335](https://gitlab.haskell.org/ghc/ghc/-/issues/14335)): GHC assumes there is a single global unit environment.
@@ -112,24 +112,24 @@ GHCJS user, here are the main differences:
    [!7377](https://gitlab.haskell.org/ghc/ghc/-/merge_requests/7377) that works
    in any GHC cross-compiler.
 
-5. GHCJS's support for TH hasn't been ported. GHCJS had its own implementation
+6. GHCJS's support for TH hasn't been ported. GHCJS had its own implementation
    of an external interpreter (THRunner) which has been used as an inspiration
    to implement GHC's external interpreter (IServ). However, both
    implementations are directly incompatible. Retrofitting THRunner into Iserv
    is our next priority. More details on
    https://engineering.iog.io/2022-05-17-javascript-template-haskell-external-interpreter
 
-6. GHCJS supported an extended FFI import syntax allowing Javascript code to be
+7. GHCJS supported an extended FFI import syntax allowing Javascript code to be
    inlined (the FFI import string supports templates of Javascript code with
    placeholders for arguments). This hasn't been ported as adding a Javascript
    parser to GHC wasn't trivial, and the imported code made no safety guarantees
    whatsoever. For now, only JS function calls are supported.
 
-7. Any command-line flag introduced by GHCJS has not been ported. We didn't make
+8. Any command-line flag introduced by GHCJS has not been ported. We didn't make
    any change to GHC's command-line in this work except for adding a `-ddump-js`
    flag. Other options will be added later as needed.
 
-8. The JS backend itself hasn't been optimized and we even removed some
+9. The JS backend itself hasn't been optimized and we even removed some
    (seemingly random) uses of NFData from GHCJS's code. We intend to optimize
    the JS backend in a principled way (e.g. by first getting evidences with
    ticky profiles, etc.).
@@ -194,7 +194,7 @@ We can now run GHC's testsuite with the JS backend enabled! We had to tweak
 Hadrian to make this possible (support for cross-compilers is subpar), but the
 testsuite already found some bugs that we have since fixed.
 
-However, in order to merge for the GHC 9.6 release we had to be disable many
+However, in order to merge for the GHC 9.6 release we had to disable many
 tests because of missing features (TH, HPC, compact regions, etc.) or because
 the generated code would timeout (not surprising given the missing optimizer and
 compactor). 
