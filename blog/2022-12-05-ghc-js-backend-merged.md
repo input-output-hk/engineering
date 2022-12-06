@@ -167,8 +167,9 @@ refactored the code to avoid them. Examples:
 
 - we've replaced Text with GHC's ShortText (which provides a similar API) and
   finally with GHC's FastString in most cases (which is usually more performant)
-- we've replaced a lot of code using lenses with its understandable
-  counterpart (which is more common in GHC)
+- we've replaced a lot of lens heavy code with its non-lens equivalents, as GHC
+  does not use lenses itself and a design requirement was to stay within
+  existing code conventions.
 - we've replaced pretty with GHC's pretty-printer (SDoc, etc.)
 - we've replaced binary with GHC's Binary instances
 
