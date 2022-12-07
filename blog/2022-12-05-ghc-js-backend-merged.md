@@ -1,7 +1,7 @@
 ---
 slug: 2022-12-05-ghc-js-backend-merged
 title: JavaScript backend merged into GHC
-authors: [sylvain, doyougnu]
+authors: [sylvain, doyougnu, luite, josh, moritz]
 tags: [ghc, javascript, cross-compilation]
 ---
 

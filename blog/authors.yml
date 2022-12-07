@@ -12,3 +12,13 @@ luite:
   name: Luite Stegeman
   title: Haskell DevX Engineer @ IOG
   email: luite.stegeman@iohk.io
+
+josh:
+  name: Joshua Meredith
+  title: Haskell DevX Engineer @ IOG
+  url: https://iog.io/en/
+
+moritz:
+  name: Moritz Angermann
+  title: Head of DevX @ IOG
+  url: https://iog.io/en/
