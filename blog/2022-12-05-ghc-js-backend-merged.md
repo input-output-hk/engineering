@@ -5,13 +5,14 @@ authors: [sylvain, doyougnu, luite, josh, moritz]
 tags: [ghc, javascript, cross-compilation]
 ---
 
-For most of the year 2022, we, the GHC DevX team at IOG, have been working on
-implementing a JavaScript backend for GHC, based on GHCJS. It has just been
+A new Javascript backend has been
 [merged](https://gitlab.haskell.org/ghc/ghc/-/commit/cc25d52e0f65d54c052908c7d91d5946342ab88a)
-into the master branch on November 30th, 2022. In this post, we describe the
-challenges we faced bringing GHCJS to GHC, how we overcame those challenges, and
-what's left to do. We hope this post will answer most of the questions you may
-have about the backend and look forward to the community response.
+into GHC on November 30th, 2022!
+
+In this post, we, the GHC DevX team at IOG, describe the challenges we faced
+bringing GHCJS to GHC, how we overcame those challenges, and what's left to do.
+We hope this post will answer most of the questions you may have about the
+backend and look forward to the community response.
 
 [Skip to build instructions for the impatient](#build)
 
@@ -24,7 +25,7 @@ language and such a large user base that the language will likely never die.
 
 Webassembly is a promising target as well, and [Tweag](https://www.tweag.io/)
 has just merged a
-[WASM](https://www.tweag.io/blog/2022-11-22-wasm-backend-merged-in-ghc/) WASM
+[WASM backend](https://www.tweag.io/blog/2022-11-22-wasm-backend-merged-in-ghc/)
 into GHC as well (great work and congrats!). Webassembly is not as ubiquitous as
 JavaScript yet, and has a harder time interacting with JavaScript directly.
 Hence, we believe that both backends provide different strengths, and it is to
@@ -57,7 +58,7 @@ changes to upstream GHC had to be adapted to the customized fork or GHCJS would
 fall behind. And fall behind it did, as of writing GHCJS has stuck to using GHC
 8.10; lagging behind by three major releases and counting.
 
-To compound the issue, the normal Haskell toolchain does was not designed for an
+To compound the issue, the normal Haskell toolchain was not designed for an
 edge case like GHCJS. So GHCJS required that the normal tooling, e.g., Cabal and
 Stack, could distinguish between upstream GHC library code and GHCJS code. This
 meant that the GHCJS developers had to maintain the GHC fork, develop GHCJS, and
@@ -216,7 +217,7 @@ tickets in GHC's gitlab.
 We've spent some time trying to run the testsuite on CI. Sadly Hadrian doesn't
 support this yet (more concretely, it doesn't properly support running the
 testsuite for a cross-compiler in a bindist specified with `--test-compiler`).
-Hopefully it should get fixed soon so that we can easily accept new
+Hopefully it should get fixed soon so that we can safely accept new
 contributions. For the time being, the following command should run the
 testsuite locally:
 
@@ -344,7 +345,7 @@ Haskell.
 Note that the linking behavior is different due to the interpreted nature of
 Javascript. In the JS backend, we can link with libraries using foreign imports
 _even if_ the imported functions don't exist. Instead of failing at link time
-(what usually happens with native code) a JS exception be raised only when and
+(what usually happens with native code) a JS exception is raised only when and
 if the imported function is called.
 
 ## How to help?
@@ -355,7 +356,7 @@ GHC's gitlab.
 
 For those who offered their help this year: thank you! Until now it was
 difficult to split the work into independent tasks (one fix led to a new
-failure, which lead to an architectural issue etc.) and it was difficult to
+failure, which led to an architectural issue, etc.) and it was difficult to
 coordinate with people outside of our team. However, we're now in a much better
 position to discuss suggestions and to test/review patches in the spirit of open
 source.
@@ -368,7 +369,7 @@ You need:
   - llvm 15, or a patched llvm 
   - nodejs, latest stable version but older should also work and only if you want to run the JS with node.
   
-Most Linux distributions will have the necessary llvm patches. If your on nixos,
+Most Linux distributions will have the necessary llvm patches. If you're on nixos,
 you'll need to use `llvm_git` and hope for the best. [This
 fork](https://github.com/doyougnu/ghc.nix) of `ghc.nix` will also be useful to
 you.
