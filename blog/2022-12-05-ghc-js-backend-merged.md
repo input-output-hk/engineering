@@ -11,8 +11,6 @@ into GHC on November 30th, 2022!
 
 In this post, we, the GHC DevX team at IOG, describe the challenges we faced
 bringing GHCJS to GHC, how we overcame those challenges, and what's left to do.
-We hope this post will answer most of the questions you may have about the
-backend and look forward to the community response.
 
 [Skip to build instructions for the impatient](#build)
 
