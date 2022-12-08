@@ -21,10 +21,10 @@ language on the web, and especially so for user interfaces. In addition to
 portability, there is a large amount of mature tooling around the JavaScript
 language and such a large user base that the language will remain well-supported for a long time.
 
-Webassembly is a promising target as well, and [Tweag](https://www.tweag.io/)
+WebAssembly is a promising target as well, and [Tweag](https://www.tweag.io/)
 has just merged a
 [WebAssembly backend](https://www.tweag.io/blog/2022-11-22-wasm-backend-merged-in-ghc/)
-into GHC as well (great work and congrats!). Webassembly is not as ubiquitous as
+into GHC as well (great work and congrats!). WebAssembly is not as ubiquitous as
 JavaScript yet, and has a harder time interacting with JavaScript directly.
 Hence, we believe that both backends provide different strengths, and it is to
 our benefit, and the community's, to back both code generation paths in GHC for
@@ -71,7 +71,7 @@ JS backend in sync with GHC, provides a better user experience for all, reduces
 maintenance costs, and greatly improves the backends in GHC in general. By
 implementing support for a JS backend in GHC, we also improve GHC's support for
 cross-compilation (and testing cross-compilers), which is directly applicable to
-the WASM, iOS, and Android backends in GHC.
+the WebAssembly, iOS, and Android backends in GHC.
 
 ## Is GHCJS dead?
 
