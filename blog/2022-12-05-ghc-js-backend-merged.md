@@ -155,8 +155,8 @@ Our top priorities are:
 ## What has improved compared to GHCJS?
 
 Or, why did it take you so long to port a stripped GHCJS into GHC? While it may
-seem like such a task should be relatively quick&#151especially in a language
-with such a good refactoring story like haskell&#151there were numerous road
+seem like such a task should be relatively quick&#151;especially in a language
+with such a good refactoring story like haskell&#151;there were numerous road
 blocks that we needed to remove before adding the backend. In particular, here
 were the troublesome bits:
 
