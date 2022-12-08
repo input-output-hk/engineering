@@ -12,7 +12,7 @@ into GHC on November 30th, 2022!
 In this post, we, the GHC DevX team at IOG, describe the challenges we faced
 bringing GHCJS to GHC, how we overcame those challenges, and what's left to do.
 
-[Skip to build instructions for the impatient](#build)
+[Just show me how to hello world! (Skip to build instructions)](#build)
 
 ## Why JavaScript?
 
@@ -34,10 +34,11 @@ different use cases and requirements.
 
 Other languages such as [PureScript](https://www.purescript.org/) target
 Javascript and provide a programmer experience close to Haskell's. The benefit
-of using Haskell instead is code sharing: it becomes possible to have a web app in which the frontend is Haskell code compiled to
-JavaScript and the backend is Haskell code compiled to machine code. In particular
-the (de)serialization code (e.g. from/to JSON) is shared and cannot get out of
-sync between the frontend and the backend.
+of using Haskell instead is code sharing: it becomes possible to have a web app
+in which the frontend is Haskell code compiled to JavaScript and the backend is
+Haskell code compiled to machine code. In particular the (de)serialization code
+(e.g. from/to JSON) is shared and cannot get out of sync between the frontend
+and the backend.
 
 A lot of IOG code is written in Haskell. Replicating parts of this code in
 other languages would be a maintenance burden. That's why we invested in
@@ -234,7 +235,7 @@ The latest version of GHCJS is based on a fork of GHC 8.10.7. We spent a
 significant amount of time adapting the code generator to support GHC HEAD. In
 practice this meant:
   - Adding support for new primops, especially sized primitives.
-  - Adapting to ghc-bignum changes.
+  - Adapting to `ghc-bignum` changes.
   - Adapting to internal changes.
   - Fixing support for polymorphism in kinds.
   - Fixing support for unlifted newtypes.
@@ -336,8 +337,8 @@ Haskell version can be directly compiled by that backend and there is no extra w
 In contrast, if the C source is rewritten in JavaScript, then it would need to
 be rewritten _for each_ backend.
 
-That is the approach we've taken when we wrote the ghc-bignum library.
-Ghc-bignum provides a "native" implementation written in Haskell that is
+That is the approach we've taken when we wrote the `ghc-bignum` library.
+`Ghc-bignum` provides a "native" implementation written in Haskell that is
 functionally equivalent to the GMP based implementation. Of course, besides
 being more future proof the Haskell version is just more pleasant to write than
 the Javascript version.
