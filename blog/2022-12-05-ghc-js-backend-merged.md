@@ -157,7 +157,7 @@ Our top priorities are:
 
 Or, why did it take you so long to port a stripped GHCJS into GHC? While it may
 seem like such a task should be relatively quick&mdash;especially in a language
-with such a good refactoring story like haskell&mdash;there were numerous road
+with such a good refactoring story like Haskell&mdash;there were numerous road
 blocks that we needed to remove before adding the backend. In particular, here
 were the troublesome bits:
 
@@ -167,16 +167,18 @@ GHCJS used libraries that aren't already dependencies of GHC, such as `text`, `l
 `megaparsec`, and `aeson`. As we didn't want to add new dependencies to GHC, we've
 refactored the code to avoid them. Examples:
 
-- we've replaced `Text` with GHC's `ShortText` (which provides a similar API) and
-  finally with GHC's FastString in most cases (which is usually more performant)
-- we've replaced a lot of lens-heavy code with its non-lens equivalents, because GHC
-  does not use lenses itself and a design requirement was to stay within
+- we've replaced `Text` with GHC's `ShortText` (which provides a similar API)
+  and finally with GHC's `FastString` in most cases (which is usually more
+  performant).
+- we've replaced a lot of lens-heavy code with its non-lens equivalents, because
+  GHC does not use lenses itself, and a design requirement was to stay within
   existing code conventions.
-- we've replaced pretty with GHC's pretty-printer (SDoc, etc.)
-- we've replaced binary with GHC's Binary instances
+- we've replaced `pretty` with GHC's pretty-printer (`SDoc`, etc.).
+- we've replaced `binary` with GHC's `Binary` instances.
 
-GHCJS used to provide its own base and prim libraries: ghcjs-base and
-ghcjs-prim. We've merged those into the existing base and ghc-prim libraries.
+GHCJS used to provide its own `base` and `prim` libraries: `ghcjs-base` and
+`ghcjs-prim`. We've merged those into the existing `base` and `ghc-prim`
+libraries.
 
 #### Reusing GHC's build system: Hadrian
 
@@ -185,7 +187,8 @@ with the GHC fork it uses, etc. The JavaScript backend however is as easy to
 build as any other GHC. It doesn't require any wrapper script, only the
 "emconfigure" tool provided by the Emscripten project.
 
-With a fresh checkout of the GHC source tree, you can now build a GHC with the JavaScript backend with just these commands:
+With a fresh checkout of the GHC source tree, you can now build a GHC with the
+JavaScript backend with just these commands:
 
 > ./boot
 > emconfigure ./configure --target=js-unknown-ghcjs
@@ -201,8 +204,8 @@ packages required this feature.
 #### Support for running GHC's test suite
 
 We can now run GHC's testsuite with the JavaScript backend enabled! We had to
-tweak Hadrian to make this possible (support for cross-compilers is subpar), but
-the testsuite already found some bugs that we have since fixed.
+tweak Hadrian to make this possible (to make Hadrian cross-compiler aware), but
+the testsuite has already found some bugs that we have since fixed.
 
 However, in order to merge for the GHC 9.6 release we had to disable many tests
 because of missing features (TH, HPC, compact regions, etc.) or because the
@@ -212,14 +215,14 @@ compactor).
 But in the process of disabling those tests we've laid a good path forward.
 We've added more precise properties to the testsuite which indicate the required
 features to run each test. So when we implement some feature, it will be
-painless to reenable all its tests. In addition, failing tests now have proper
+painless to re-enable all its tests. In addition, failing tests now have proper
 tickets in GHC's GitLab.
 
 We've spent some time trying to run the testsuite on CI. Sadly Hadrian doesn't
 support this yet (more concretely, it doesn't properly support running the
 testsuite for a cross-compiler in a bindist specified with `--test-compiler`).
-Hopefully it should get fixed soon so that we can safely accept new
-contributions. For the time being, the following command should run the
+However, we have a merge request in the works to fix it soon, and can safely
+accept new contributions. For the time being, the following command will run the
 testsuite locally:
 
 > ./hadrian/build --bignum=native -j2 test
@@ -228,24 +231,27 @@ testsuite locally:
 #### Upgrading from GHC 8.10 to GHC 9.6
 
 The latest version of GHCJS is based on a fork of GHC 8.10.7. We spent a
-significant amount of time adapting the code generator to support GHC head. In
-practice it meant:
-  - adding support for new primops, especially sized primitives
-  - adapting to ghc-bignum changes
-  - adapting to internal changes
-  - fixing support for polymorphism in kinds
-  - fixing support for unlifted newtypes
-  - fixing support for unboxed sums
-  - many other fixes...
+significant amount of time adapting the code generator to support GHC HEAD. In
+practice this meant:
+  - Adding support for new primops, especially sized primitives.
+  - Adapting to ghc-bignum changes.
+  - Adapting to internal changes.
+  - Fixing support for polymorphism in kinds.
+  - Fixing support for unlifted newtypes.
+  - Fixing support for unboxed sums.
+  - Many other fixes...
 
 #### Fixing some performance issues
 
 As we haven't ported GHCJS's Compactor, output size was predictably incredibly
-large. So we've spent time reimplementing a crucial piece of the
+large. So we've spent time re-implementing a crucial piece of the
 Compactor&#151renaming and shortening of local variables&#151using a different
-approach which ended up being faster than GHCJS's compactor. For the GHC devs
-out there, we replaced a FastString with its FastString unique, so it was only
-made possible after removing Text and switching from Text to FastString.
+approach. Our new approach ended up being faster than GHCJS's compactor. For the
+GHC devs out there, we first replaced the `Text` type that the Compactor was
+built around with `FastString`, and then replaced `FastString` with its
+`Unique`. Thus making comparisons in the Compactor constant rather than linear
+time for each identifier. These optimizations were only made possible after
+removing `Text` and switching from `Text` to `FastString`.
 
 #### Removal of custom file extensions and support for JavaScript pragmas
 
