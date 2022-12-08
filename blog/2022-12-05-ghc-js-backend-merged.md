@@ -368,8 +368,8 @@ You need:
   - [emscripten](https://emscripten.org/docs/getting_started/downloads.html)
     version 3.14 or better. Be sure that is has either LLVM 15 or an up to date,
     patched LLVM 14.
-  - nodejs, latest stable version but older should also work and only if you
-    want to run the JavaScript with node.
+  - [Nodejs](https://nodejs.org/en/), latest stable version. Only if you want to
+    run the compiled JavaScript with node.
   
 Most Linux distributions will have the necessary LLVM patches. If you're on NixOS,
 you'll need to use `llvm_git` and hope for the best. [This
