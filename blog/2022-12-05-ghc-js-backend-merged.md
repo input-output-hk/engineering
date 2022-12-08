@@ -264,7 +264,7 @@ files too. They are now renamed into `.o` files with a "//JAVASCRIPT" header
 added to distinguish them from object files produced by the JavaScript backend
 (and from Emscripten, in the future).
 
-#### Cleanup and documentation
+#### Cleanup and documentation {#blogs}
 
 GHC provides some utilities (pretty-printer, binary serialization, string
 interning, etc.) that GHCJS did not make use of. So we adapted the GHCJS code to
@@ -470,6 +470,49 @@ $ <path-to-ghc-root-dir>/_build/ghc-stage1 -fforce-recomp Main.hs
 $ ./Main
 $ Hello JS!
 ```
+
+Under the hood `Main` is just a JavaScript program written as a script with
+`nodejs` as the interpreter. This means you can treat the compiled program like
+any other JavaScript program: loading it into JavaScript tooling or hack on it
+by hand. This also means that all compiled programs, such as `Main`, are
+human-readable, for example here are the first ten lines:
+
+```js
+$ head Main
+#!/usr/bin/env node
+var h$currentThread = null;
+var h$stack = null;
+var h$sp = 0;
+var h$initStatic = [];
+var h$staticThunks = {};
+var h$staticThunksArr = [];
+var h$CAFs = [];
+var h$CAFsReset = [];
+var h$regs = [];
+```
+
+The program begins with a shebang instructing the operating system to send the
+rest of the file to nodejs. The remaining lines are our actual program, which
+starts with global variables that the runtime system, garbage collector, and
+scheduler need. Now human-readable is not the same as easy to understand, for
+example here is the logic that implements a `Maybe`:
+
+```js
+function h$baseZCGHCziMaybeziJust_con_e() { return h$rs() };
+function h$baseZCGHCziMaybeziJust_e() {
+var h$$13be2042 = h$r2;
+h$r1 = h$c1(h$baseZCGHCziMaybeziJust_con_e, h$$13be2042);
+return h$rs();
+};
+function h$baseZCGHCziMaybeziNothing_con_e() { return h$rs() };
+```
+
+Notice that all identifiers are
+[z-encoded](https://gitlab.haskell.org/ghc/ghc/-/wikis/commentary/compiler/symbol-names)
+just as they are in native GHC. For an more information on how the JavaScript
+backend works please see [our other blog posts](#blogs) In any case, we invite
+you to try it out, hack, and be merry!
+
 
 ## Acknowledgements
 We want to thank Jan Hrcek, Moritz Angermann, and David Thrane Christansen for
