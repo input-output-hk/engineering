@@ -92,7 +92,7 @@ GHC library.
 The JavaScript backend borrows a lot of code from GHCJS, but not all of it. If
 you are a GHCJS user, here are the main differences:
 
-1. GHCJS was stuck to GHC 8.10 while the JavaScript backend follows GHC head.
+1. GHCJS was stuck on GHC version 8.10 while the JavaScript backend follows GHC HEAD.
 
 2. GHCJS's incremental linking support ("base" bundles) hasn't been ported. This
    feature required too many changes (such as adding new command-line flags) and
