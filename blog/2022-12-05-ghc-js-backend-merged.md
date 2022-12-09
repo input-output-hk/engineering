@@ -7,10 +7,9 @@ tags: [ghc, javascript, cross-compilation]
 
 A new JavaScript backend has been
 [merged](https://gitlab.haskell.org/ghc/ghc/-/commit/cc25d52e0f65d54c052908c7d91d5946342ab88a)
-into GHC on November 30th, 2022!
-This means that the next release of GHC will be able to emit code that runs in
-web browsers without requiring any extra tools, enabling Haskell to be used for
-both front-end and back-end web applications.
+into GHC on November 30th, 2022! This means that the next release of GHC will be
+able to emit code that runs in web browsers without requiring any extra tools,
+enabling Haskell to for both front-end and back-end web applications.
 
 In this post, we, the GHC DevX team at [IOG](https://iohk.io/), describe the
 challenges we faced bringing GHCJS to GHC, how we overcame those challenges, and
@@ -27,11 +26,11 @@ case you would like to skip ahead:
 
 To put it simply, the number of users on the internet is as low as it will ever
 be _right now_, and it is almost guaranteed that those users use JavaScript. At
-time of writing, JavaScript holds 97.3% of client side programming [market
-share](https://w3techs.com/technologies/details/cp-javascript). Furthermore,
-JavaScript is not going to disappear anytime soon. As more and more
-interactivity is pushed onto the internet, client-side computing and
-consequently JavaScript will become more entrenched because of backwards
+time of writing, JavaScript holds 97.3% of client-side programming [market
+share](https://w3techs.com/technologies/details/cp-javascript) (not to mention
+market share of front-end technologies). Furthermore, JavaScript is not going to
+disappear anytime soon. As more and more interactivity is pushed onto the
+internet, JavaScript will become more entrenched because of backwards
 compatibility, network effects and the amount of capital already devoted to it.
 JavaScript, like C and
 [COBOL](https://cacm.acm.org/news/244370-cobol-programmers-are-back-in-demand-seriously/fulltext?mobile=false)
@@ -40,9 +39,8 @@ target; it provides portability, allows us to capitalize on the massive
 investments in the language and platform, and essentially eliminates the risk
 that the we build our technology atop a disappearing or deprecating foundation.
 
-That is not to say that there are not alternatives. WebAssembly is a promising
-target as well, and [Tweag](https://www.tweag.io/) has just merged a
-[WebAssembly
+WebAssembly is a promising target as well, and [Tweag](https://www.tweag.io/)
+has just merged a [WebAssembly
 backend](https://www.tweag.io/blog/2022-11-22-wasm-backend-merged-in-ghc/) into
 GHC as well (great work and congrats!). WebAssembly is not as ubiquitous as
 JavaScript yet, and has a harder time interacting with JavaScript directly.
@@ -52,29 +50,30 @@ both code generation paths in GHC for different use cases and requirements.
 
 ## Why Haskell?
 
-JavaScript has many problems, ranging from the
+JavaScript has many problems ranging from the
 [downstream](https://www.codeproject.com/Articles/182416/A-Collection-of-JavaScript-Gotchas)
 [effects](https://wtfjs.com/) of early [design
-decisions](https://dl.acm.org/doi/pdf/10.1145/3386327); that inhibit programmer
-productivity and are subtle bug generators, to ecosystem [security
+decisions](https://dl.acm.org/doi/pdf/10.1145/3386327) (that inhibit programmer
+productivity and are subtle bug generators), to ecosystem [security
 issues](https://lwn.net/Articles/681410/), to [fundamental
 issues](https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/)
 with asynchronous and concurrent programming.
 
-At IOG, a central engineering requirement is to create a code base that has a
-high degree of correctness. Haskell makes this easy; or to get a little
-technical, the combination of Strong Static Hindley-Milner based typing allows
-us to write performant, correct, and maintainable code. In addition to this,
-many of the problems that occur in JavaScript are simple not expressible because
-of Haskell's type system and concurrency offerings.
+These issues are problematic for our product domain. At IOG, a central
+engineering requirement is to create a code base that has a high degree of
+correctness. Haskell makes this easy; or to get a little technical, the
+combination of Strong Static Hindley-Milner based typing allows us to write
+performant, correct, and maintainable code. In addition to this, many of the
+problems that occur in JavaScript are simple not expressible because of
+Haskell's type system and concurrency offerings.
 
 There are, of course, competitors: [PureScript](https://www.purescript.org/)
 targets Javascript and provides a programmer experience close to Haskell's. The
-benefit of using Haskell instead is code sharing: we can write the frontend of a
-web app in Haskell that compiles to JavaScript and the backend in Haskell that
+benefit of using Haskell instead is code sharing: we can write the front-end of a
+web app in Haskell that compiles to JavaScript and the back-end in Haskell that
 compiles to machine code. In particular, the (de)serialization code (e.g.
-from/to JSON) is shared and cannot get out of sync between the frontend and the
-backend.
+from/to JSON) is shared and cannot get out of sync between the front-end and the
+back-end.
 
 ## Why a GHC backend?
 
@@ -84,11 +83,12 @@ that are independently maintained, which means that maintaining an out-of-tree
 backend is costly.
 
 The maintenance burden is not hypothetical; our teammate Luite Stegeman has been
-developing a fork of GHC that emits JavaScript, called GHCJS, for close to 10 years and has experienced the pain first hand.
-GHCJS relied on a modified fork of the GHC library to suit GHCJS's needs. So any
-changes to upstream GHC had to be adapted to the customized fork or GHCJS would
-fall behind. And fall behind it did: at the time of writing, GHCJS has stuck to using GHC
-8.10, lagging behind by three major releases and counting.
+developing a fork of GHC that emits JavaScript, called GHCJS, for close to 10
+years and has experienced the pain first hand. GHCJS relied on a modified fork
+of the GHC library to suit GHCJS's needs. So any changes to upstream GHC had to
+be adapted to the customized fork or GHCJS would fall behind. And fall behind it
+did: at the time of writing, GHCJS has stuck to using GHC 8.10, lagging behind
+by three major releases and counting.
 
 Similarly, the [Eta](https://github.com/typelead/eta) compiler&mdash;which is
 targeting the JVM&mdash;faced the same issues and appears to be discontinued
@@ -111,7 +111,7 @@ general. By implementing support for a JavaScript backend in GHC, we also
 improve GHC's support for cross-compilation (and testing cross-compilers), which
 is directly applicable to the WebAssembly, iOS, and Android backends in GHC.
 
-## Is GHCJS dead? {#ghcjs}
+## Is GHCJS Dead? {#ghcjs}
 
 Not yet! As it stands, the JavaScript backend doesn't provide all the features
 provided by GHCJS. In particular it doesn't support Template Haskell and we've
@@ -125,7 +125,7 @@ project so feel free to offer patches to update it to use newer version of the
 GHC library.
 
 
-## What is missing from GHCJS? {#expectations}
+## What is Missing From GHCJS? {#expectations}
 
 The JavaScript backend borrows a lot of code from GHCJS, but not all of it. If
 you are a GHCJS user, here are the main differences:
@@ -185,7 +185,7 @@ you are a GHCJS user, here are the main differences:
    with ticky profiles, etc.).
 
 
-## What's on the JS backend roadmap? {#roadmap}
+## What's on the JS Backend's Roadmap? {#roadmap}
 
 Our top priorities are:
 
@@ -194,7 +194,7 @@ Our top priorities are:
 - Modernizing the generated JavaScript code
 - Enhancing the run-time performance of the generated code
 
-## What has improved compared to GHCJS?
+## What has Improved Compared to GHCJS?
 
 Or, why did it take you so long to port a stripped GHCJS into GHC? While it may
 seem like such a task should be relatively quick&mdash;especially in a language
@@ -202,7 +202,7 @@ with such a good refactoring story like Haskell&mdash;there were numerous road
 blocks that we needed to remove before adding the backend. In particular, here
 were the troublesome bits:
 
-#### Removing the use of external libraries
+#### Removing the Use of External Libraries
 
 GHCJS used libraries that aren't already dependencies of GHC, such as `text`, `lens`,
 `megaparsec`, and `aeson`. As we didn't want to add new dependencies to GHC, we've
@@ -221,7 +221,7 @@ GHCJS used to provide its own `base` and `prim` libraries: `ghcjs-base` and
 `ghcjs-prim`. We've merged those into the existing `base` and `ghc-prim`
 libraries.
 
-#### Reusing GHC's build system: Hadrian
+#### Reusing GHC's Build System: Hadrian
 
 GHCJS is known to be complex to build, relying on custom build scripts to deal
 with the GHC fork it uses, etc. The JavaScript backend however is as easy to
@@ -242,7 +242,7 @@ The Hadrian build system has been adapted to support Cabal's `js-sources`
 stanzas that are to support user-provided `.js` files. Both the `rts` and `base`
 packages required this feature.
 
-#### Support for running GHC's test suite
+#### Support for Running GHC's Test Suite
 
 We can now run GHC's test suite with the JavaScript backend enabled! We had to
 tweak Hadrian to make this possible (to make Hadrian cross-compiler aware), but
@@ -285,7 +285,7 @@ practice this meant:
   - Fixing support for unboxed sums.
   - Many other fixes...
 
-#### Fixing some performance issues
+#### Fixing Some Performance Issues
 
 As we haven't ported GHCJS's Compactor, output size was predictably incredibly
 large. So we've spent time re-implementing a crucial piece of the
@@ -297,7 +297,7 @@ built around with `FastString`, and then replaced `FastString` with its
 time for each identifier. These optimizations were only made possible after
 removing `Text` and switching from `Text` to `FastString`.
 
-#### Removal of custom file extensions and support for JavaScript pragmas
+#### Removal of Custom File Extensions and Support for JavaScript Pragmas
 
 GHCJS used the `.js.pp` file extension to identify JavaScript files that needed
 to be passed through CPP before being valid JavaScript. Adding support for this
@@ -314,7 +314,7 @@ files too. They are now renamed into `.o` files with a "//JAVASCRIPT" header
 added to distinguish them from object files produced by the JavaScript backend
 (and from Emscripten, in the future).
 
-#### Cleanup and documentation {#blogs}
+#### Cleanup and Documentation {#blogs}
 
 GHC provides some utilities (pretty-printer, binary serialization, string
 interning, etc.) that GHCJS did not make use of. So we adapted the GHCJS code to
@@ -337,7 +337,7 @@ to explain some (sadly not all) technical details about GHCJS's internals:
 
 There are more in preparation.
 
-#### Plugin support in cross-compilers
+#### Plugin Support in Cross-Compilers
 
 GHC doesn't support plugins when built as a cross-compiler (cf
 [#14335](https://gitlab.haskell.org/ghc/ghc/-/issues/14335)). This is because it
@@ -426,20 +426,20 @@ you'll need to use `llvm_git` and hope for the best. [This
 fork](https://github.com/doyougnu/ghc.nix) of `ghc.nix` will also be useful to
 you.
 
-#### checkout the GHC source
+#### Checkout the GHC source
 
 ```
 git clone --recurse-submodules https://gitlab.haskell.org/ghc/ghc.git
 cd ghc # ensure you are in the ghc source tree for the following commands
 ```
 
-#### update the submodules
+#### Update the submodules
 
 ```
 git submodule update --init --recursive
 ```
 
-#### Boot and configure for JavaScript
+#### Boot and Configure for JavaScript
 
 ```
 ./boot && emconfigure ./configure --target=js-unknown-ghcjs
@@ -510,7 +510,7 @@ versions, i.e., the output shows `<tool> : <some-path>-emscripten-<tool>`.
 ./hadrian/build --bignum=native -j
 ```
 
-#### Now compile hello world
+#### Now Compile Hello World
 ```hs
 module Main where
 
