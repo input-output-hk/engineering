@@ -223,10 +223,12 @@ libraries.
 
 #### Reusing GHC's Build System: Hadrian
 
-GHCJS is known to be complex to build, relying on custom build scripts to deal
-with the GHC fork it uses, etc. The JavaScript backend however is as easy to
-build as any other GHC. It doesn't require any wrapper script, only the
-"emconfigure" tool provided by the Emscripten project.
+GHCJS has a reputation for being complex to build. It relied on custom build
+scripts to deal with the GHC fork it uses. The JavaScript backend however is as
+easy to build as any other GHC. It doesn't require any wrapper script, only the
+`emconfigure` tool provided by the
+[Emscripten](https://emscripten.org/docs/getting_started/downloads.html)
+project.
 
 With a fresh checkout of the GHC source tree, you can now build a GHC with the
 JavaScript backend with just these commands:
@@ -254,10 +256,10 @@ compact regions, etc.) or because the generated code would time out (not
 surprising given the missing optimizer and compactor).
 
 But in the process of disabling those tests we've laid a good path forward.
-We've added more precise properties to the test suite which indicate the required
-features to run each test. So when we will implement some feature, it will be
-painless to re-enable all its tests. In addition, failing tests now have proper
-tickets in GHC's GitLab.
+We've added more precise properties to the test suite, which indicate the
+required features to run each test. So when we implement some feature, it will
+be painless to re-enable all its tests. In addition, failing tests now have
+proper tickets in GHC's GitLab.
 
 We've spent some time trying to run the test suite on CI but this work wasn't
 ready in time to be included in the initial commit with the rest of the backend.
@@ -301,7 +303,7 @@ removing `Text` and switching from `Text` to `FastString`.
 
 GHCJS used the `.js.pp` file extension to identify JavaScript files that needed
 to be passed through CPP before being valid JavaScript. Adding support for this
-extension in both Hadrian and GHC proved to be more painful than just adding
+extension in both Hadrian and GHC proved to be more work than just adding
 support for JavaScript pragmas. So we decided to do the latter; similarly to
 Haskell extension pragmas, you can now write "//#OPTIONS: CPP" in your
 JavaScript files to enable the CPP pass, and the file extension is always `.js`.
@@ -309,10 +311,10 @@ JavaScript files to enable the CPP pass, and the file extension is always `.js`.
 While we're on the topic of file extensions, technically `.js` files don't have
 to be compiled into `.o` files (contrary to C/C++/Haskell/etc. files) at all.
 However, build systems (Hadrian, Cabal...) and compilers (GHC) expect this. So
-for consistency with other backends, we've added a "compilation" pass for `.js`
-files too. They are now renamed into `.o` files with a "//JAVASCRIPT" header
-added to distinguish them from object files produced by the JavaScript backend
-(and from Emscripten, in the future).
+for consistency with other backends, we've added a fake compilation pass for
+`.js` files too. They are now renamed into `.o` files with a "//JAVASCRIPT"
+header added to distinguish them from object files produced by the JavaScript
+backend (and from Emscripten, in the future).
 
 #### Cleanup and Documentation {#blogs}
 
@@ -341,19 +343,20 @@ There are more in preparation.
 
 GHC doesn't support plugins when built as a cross-compiler (cf
 [#14335](https://gitlab.haskell.org/ghc/ghc/-/issues/14335)). This is because it
-isn't modular enough to support two environments at once: one for the target
-code (JavaScript code here) and one for the host (e.g. native x86 or AArch64
-code for the plugin). We've spent a lot of time making it more modular (see the
-[Modularizing GHC](https://hsyl20.fr/home/files/papers/2022-ghc-modularity.pdf)
-white paper we published earlier this year and Sylvain's [lightning
+cannot yet support two environments at once: one for the target code (JavaScript
+code here) and one for the host (e.g. native x86 or AArch64 code for the
+plugin). We've spent a lot of time making it more modular (see the [Modularizing
+GHC](https://hsyl20.fr/home/files/papers/2022-ghc-modularity.pdf) white paper we
+published earlier this year and Sylvain's [lightning
 talk](https://youtu.be/OHGH5HLOCEM) at HIW 2022) but there is a lot more to do
 to achieve this (cf
 [#17957](https://gitlab.haskell.org/ghc/ghc/-/issues/17957)).
 
 GHCJS used a fragile hack to support plugins: at plugin loading time it would
-substitute the plugin unit with another corresponding one from another
-package database.
-It was fragile because it could violate GHC's single environment assumptions.
+substitute the plugin unit with another corresponding one from another package
+database (For the non-GHC devs out there interested in GHC Units see this
+[note](https://gitlab.haskell.org/ghc/ghc/-/blob/master/compiler/GHC/Unit.hs)).
+This was fragile because it could violate GHC's single environment assumptions.
 
 GHCJS's hack did not get ported. Nevertheless we have implemented a new way for
 GHC to load plugins directly from libraries instead of packages
@@ -415,7 +418,7 @@ source.
 
 You need:
 
-  - [emscripten](https://emscripten.org/docs/getting_started/downloads.html)
+  - [Emscripten](https://emscripten.org/docs/getting_started/downloads.html)
     version 3.14 or better. Be sure that your emscripten is bundled with either
     LLVM 15 or an up to date, patched LLVM 14.
   - [Nodejs](https://nodejs.org/en/), latest stable version. Only if you want to
