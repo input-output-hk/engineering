@@ -499,7 +499,7 @@ var h$regs = [];
 ```
 
 The program begins with a shebang instructing the operating system to send the
-rest of the file to nodejs. The remaining lines are our actual program, which
+rest of the file to `nodejs`. The remaining lines are our actual program, which
 starts with global variables that the runtime system, garbage collector, and
 scheduler need. Now human-readable is not the same as easy to understand, for
 example here is the logic that implements a `Maybe`:
@@ -514,13 +514,11 @@ return h$rs();
 function h$baseZCGHCziMaybeziNothing_con_e() { return h$rs() };
 ```
 
-Notice that all identifiers are
-[z-encoded](https://gitlab.haskell.org/ghc/ghc/-/wikis/commentary/compiler/symbol-names)
-just as they are in native GHC. For an more information on how the JavaScript
-backend works please see [our other blog posts](#blogs) In any case, we invite
-you to try it out, hack, and be merry!
+If you would like to understand this code and how the JavaScript backend works
+in general please see [our other blog posts](#blogs). In any case, we invite you
+to try it out, hack, and be merry!
 
 
 ## Acknowledgements
-We want to thank Jan Hrcek, Moritz Angermann, and David Thrane Christansen for
-time, labor, comments, and suggestions on drafts of this blog post.
+We want to thank Jan Hrcek, and David Thrane Christansen for their time, labor,
+comments, and suggestions on drafts of this blog post.
