@@ -234,9 +234,9 @@ packages required this feature.
 
 #### Support for running GHC's test suite
 
-We can now run GHC's testsuite with the JavaScript backend enabled! We had to
+We can now run GHC's test suite with the JavaScript backend enabled! We had to
 tweak Hadrian to make this possible (to make Hadrian cross-compiler aware), but
-the testsuite has already found some bugs that we have since fixed.
+the test suite has already found some bugs that we have since fixed.
 
 However, in order to merge for the GHC 9.6 release we had to disable many tests
 because of missing features (Template Haskell, Haskell Program Coverage (HPC),
@@ -244,17 +244,20 @@ compact regions, etc.) or because the generated code would time out (not
 surprising given the missing optimizer and compactor).
 
 But in the process of disabling those tests we've laid a good path forward.
-We've added more precise properties to the testsuite which indicate the required
-features to run each test. So when we implement some feature, it will be
+We've added more precise properties to the test suite which indicate the required
+features to run each test. So when we will implement some feature, it will be
 painless to re-enable all its tests. In addition, failing tests now have proper
 tickets in GHC's GitLab.
 
-We've spent some time trying to run the testsuite on CI. Sadly Hadrian doesn't
-support this yet (more concretely, it doesn't properly support running the
-testsuite for a cross-compiler in a bindist specified with `--test-compiler`).
-However, we have a merge request in the works to fix it soon, and can safely
-accept new contributions. For the time being, the following command will run the
-testsuite locally:
+We've spent some time trying to run the test suite on CI but this work wasn't
+ready in time to be included in the initial commit with the rest of the backend.
+For now, only some basic testing is done on CI: compiling a non trivial program
+that uses the GHC library into JavaScript and executing it.
+Nevertheless, we have a merge request in the works so that future contributions
+should be properly validated by running the test suite on CI soon.
+
+For the time being, the following command will run the
+test suite locally:
 
 > ./hadrian/build --bignum=native -j2 test
 
