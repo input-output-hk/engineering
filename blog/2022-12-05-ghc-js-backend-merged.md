@@ -61,6 +61,10 @@ changes to upstream GHC had to be adapted to the customized fork or GHCJS would
 fall behind. And fall behind it did: at the time of writing, GHCJS has stuck to using GHC
 8.10, lagging behind by three major releases and counting.
 
+Similarly, the [Eta](https://github.com/typelead/eta) compiler&mdash;which is
+targeting the JVM&mdash;faced the same issues and appears to be discontinued
+(compatibility with GHC 7.10.3's Haskell from 2015 is mentioned).
+
 Compounding the issue, the normal Haskell toolchain was not designed for an
 edge case like GHCJS. So GHCJS required that the normal tooling, e.g., Cabal and
 Stack, could distinguish between upstream GHC library code and GHCJS code. This
