@@ -12,22 +12,41 @@ This means that the next release of GHC will be able to emit code that runs in
 web browsers without requiring any extra tools, enabling Haskell to be used for
 both front-end and back-end web applications.
 
-In this post, we, the GHC DevX team at IOG, describe the challenges we faced
-bringing GHCJS to GHC, how we overcame those challenges, and what's left to do.
+In this post, we, the GHC DevX team at [IOG](https://iohk.io/), describe the
+challenges we faced bringing GHCJS to GHC, how we overcame those challenges, and
+what's left to do.
 
 [Just show me how to hello world! (Skip to build instructions)](#build)
 
-## Why JavaScript?
+## Why JavaScript? Or, the Big Picture.
 
-We chose to target JavaScript because JavaScript is simply the most portable
-language on the web, and especially so for user interfaces. In addition to
-portability, there is a large amount of mature tooling around the JavaScript
-language and such a large user base that the language will remain well-supported for a long time.
+According to [Our World in Data](https://ourworldindata.org/internet), as of
+2016 there were 3.4 billion people on the internet. That was six years ago and
+almost certainly has only risen since. To put it simply, the number of users on
+the internet is as low as it will ever be `right now`. It will only increase in
+our lifetimes. Thus the internet is _the_ platform for any business, technology,
+movement or culture to have the largest possible impact and reach the largest
+number of people, and attain the most mindshare. To be relevant today is to be
+on the internet.
 
-WebAssembly is a promising target as well, and [Tweag](https://www.tweag.io/)
-has just merged a
-[WebAssembly backend](https://www.tweag.io/blog/2022-11-22-wasm-backend-merged-in-ghc/)
-into GHC as well (great work and congrats!). WebAssembly is not as ubiquitous as
+JavaScript is the de facto technology to create a modern web presence. As more
+and more interactivity is pushed onto the internet, JavaScript is only likely to
+become more entrenched because of backwards compatibility, network effects and
+the amount of capital already devoted to it. JavaScript, like C and
+[COBOL](https://cacm.acm.org/news/244370-cobol-programmers-are-back-in-demand-seriously/fulltext?mobile=false)
+will be with us for the foreseeable future. Furthermore, from a technical
+perspective, JavaScript is simply the most portable language on the web and one
+of the most portable programming languages in existence. All of this makes
+JavaScript an attractive target because it provides portability, allows us to
+capitalize on the massive investments in the language and platform, and
+essentially eliminates the risk that the we build our technology atop a
+disappearing or deprecating foundation. 
+
+That is not to say that there are not alternatives. WebAssembly is a promising
+target as well, and [Tweag](https://www.tweag.io/) has just merged a
+[WebAssembly
+backend](https://www.tweag.io/blog/2022-11-22-wasm-backend-merged-in-ghc/) into
+GHC as well (great work and congrats!). WebAssembly is not as ubiquitous as
 JavaScript yet, and has a harder time interacting with JavaScript directly.
 Hence, we believe that both backends provide different strengths, and it is to
 our benefit, and the community's, to back both code generation paths in GHC for
