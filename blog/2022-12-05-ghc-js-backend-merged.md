@@ -50,8 +50,9 @@ this JavaScript backend for GHC.
 ## Why a GHC backend?
 
 Haskell is a language driven by its implementation in GHC. GHC development is
-very active and the GHC API is totally unstable. As a consequence, maintaining a
-Haskell to Javascript compiler based on GHC but outside of GHC is costly.
+very active and GHC does not define a stable interface for compiler backends
+that are independently maintained, which means that maintaining an out-of-tree
+backend is costly.
 
 The maintenance burden is not hypothetical; our teammate Luite Stegeman has been
 developing a fork of GHC that emits JavaScript, called GHCJS, for close to 10 years and has experienced the pain first hand.
