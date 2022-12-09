@@ -14,33 +14,31 @@ both front-end and back-end web applications.
 
 In this post, we, the GHC DevX team at [IOG](https://iohk.io/), describe the
 challenges we faced bringing GHCJS to GHC, how we overcame those challenges, and
-what's left to do.
+what's left to do. This post is rather long so we've provided these links in
+case you would like to skip ahead:
 
+[Take me to the future of GHCJS](#ghcjs)  
+[Tell me what to expect](#expectations)  
+[Show me the product roadmap](#roadmap)  
+[Tell me how I can help](#contributing)  
 [Just show me how to hello world! (Skip to build instructions)](#build)
 
 ## Why JavaScript? Or, the Big Picture.
 
-According to [Our World in Data](https://ourworldindata.org/internet), as of
-2016 there were 3.4 billion people on the internet. That was six years ago and
-almost certainly has only risen since. To put it simply, the number of users on
-the internet is as low as it will ever be `right now`. It will only increase in
-our lifetimes. Thus the internet is _the_ platform for any business, technology,
-movement or culture to have the largest possible impact and reach the largest
-number of people, and attain the most mindshare. To be relevant today is to be
-on the internet.
-
-JavaScript is the de facto technology to create a modern web presence. As more
-and more interactivity is pushed onto the internet, JavaScript is only likely to
-become more entrenched because of backwards compatibility, network effects and
-the amount of capital already devoted to it. JavaScript, like C and
+To put it simply, the number of users on the internet is as low as it will ever
+be _right now_, and it is almost guaranteed that those users use JavaScript. At
+time of writing, JavaScript holds 97.3% of client side programming [market
+share](https://w3techs.com/technologies/details/cp-javascript). Furthermore,
+JavaScript is not going to disappear anytime soon. As more and more
+interactivity is pushed onto the internet, client-side computing and
+consequently JavaScript will become more entrenched because of backwards
+compatibility, network effects and the amount of capital already devoted to it.
+JavaScript, like C and
 [COBOL](https://cacm.acm.org/news/244370-cobol-programmers-are-back-in-demand-seriously/fulltext?mobile=false)
-will be with us for the foreseeable future. Furthermore, from a technical
-perspective, JavaScript is simply the most portable language on the web and one
-of the most portable programming languages in existence. All of this makes
-JavaScript an attractive target because it provides portability, allows us to
-capitalize on the massive investments in the language and platform, and
-essentially eliminates the risk that the we build our technology atop a
-disappearing or deprecating foundation. 
+will be with us for the foreseeable future. This makes JavaScript an attractive
+target; it provides portability, allows us to capitalize on the massive
+investments in the language and platform, and essentially eliminates the risk
+that the we build our technology atop a disappearing or deprecating foundation.
 
 That is not to say that there are not alternatives. WebAssembly is a promising
 target as well, and [Tweag](https://www.tweag.io/) has just merged a
@@ -48,20 +46,20 @@ target as well, and [Tweag](https://www.tweag.io/) has just merged a
 backend](https://www.tweag.io/blog/2022-11-22-wasm-backend-merged-in-ghc/) into
 GHC as well (great work and congrats!). WebAssembly is not as ubiquitous as
 JavaScript yet, and has a harder time interacting with JavaScript directly.
-Hence, we believe that both backends provide different strengths, and it is to
-our benefit, and the community's, to back both code generation paths in GHC for
-different use cases and requirements.
+Hence, we believe that the WebAssembly and JavaScript backends provide different
+strengths, and it is to our benefit, and the community's, to have and support
+both code generation paths in GHC for different use cases and requirements.
 
 ## Why Haskell?
 
-The problems with JavaScript range from the
+JavaScript has many problems, ranging from the
 [downstream](https://www.codeproject.com/Articles/182416/A-Collection-of-JavaScript-Gotchas)
 [effects](https://wtfjs.com/) of early [design
 decisions](https://dl.acm.org/doi/pdf/10.1145/3386327); that inhibit programmer
 productivity and are subtle bug generators, to ecosystem [security
 issues](https://lwn.net/Articles/681410/), to [fundamental
 issues](https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/)
-with asynchronous programming.
+with asynchronous and concurrent programming.
 
 At IOG, a central engineering requirement is to create a code base that has a
 high degree of correctness. Haskell makes this easy; or to get a little
@@ -113,7 +111,7 @@ general. By implementing support for a JavaScript backend in GHC, we also
 improve GHC's support for cross-compilation (and testing cross-compilers), which
 is directly applicable to the WebAssembly, iOS, and Android backends in GHC.
 
-## Is GHCJS dead?
+## Is GHCJS dead? {#ghcjs}
 
 Not yet! As it stands, the JavaScript backend doesn't provide all the features
 provided by GHCJS. In particular it doesn't support Template Haskell and we've
@@ -127,7 +125,7 @@ project so feel free to offer patches to update it to use newer version of the
 GHC library.
 
 
-## What is missing from GHCJS?
+## What is missing from GHCJS? {#expectations}
 
 The JavaScript backend borrows a lot of code from GHCJS, but not all of it. If
 you are a GHCJS user, here are the main differences:
@@ -187,7 +185,7 @@ you are a GHCJS user, here are the main differences:
    with ticky profiles, etc.).
 
 
-## What's on the JS backend roadmap?
+## What's on the JS backend roadmap? {#roadmap}
 
 Our top priorities are:
 
@@ -363,7 +361,7 @@ GHC to load plugins directly from libraries instead of packages
 This method doesn't require GHC to load module interfaces for the plugin and its
 dependencies, hence workarounds GHC's limitations.
 
-## What about libraries using C sources?
+## What About Libraries Using C Sources?
 
 Libraries that use C sources (`c-sources` Cabal stanza) aren't supported by the
 JavaScript backend. In the future we plan to use Emscripten to compile C sources
@@ -400,7 +398,7 @@ imports _even if_ the imported functions don't exist. Instead of failing at link
 time (which is what usually happens with native code) a JavaScript exception is
 raised only when and if the imported function is called.
 
-## How to help?
+## How to Help? {#contributing}
 
 We have now reached our first milestone; anyone can easily build and test the
 JavaScript backend, and anyone can open bug reports or offer patches for the
@@ -413,13 +411,13 @@ coordinate with people outside of our team. However, we're now in a much better
 position to discuss suggestions and to test/review patches in the spirit of open
 source.
 
-## tl;dr Just tell me how to say hello world {#build}
+## tl;dr Just Tell Me How to Say Hello World {#build}
 
 You need:
 
   - [emscripten](https://emscripten.org/docs/getting_started/downloads.html)
-    version 3.14 or better. Be sure that is has either LLVM 15 or an up to date,
-    patched LLVM 14.
+    version 3.14 or better. Be sure that your emscripten is bundled with either
+    LLVM 15 or an up to date, patched LLVM 14.
   - [Nodejs](https://nodejs.org/en/), latest stable version. Only if you want to
     run the compiled JavaScript with node.
   
@@ -429,17 +427,20 @@ fork](https://github.com/doyougnu/ghc.nix) of `ghc.nix` will also be useful to
 you.
 
 #### checkout the GHC source
+
 ```
 git clone --recurse-submodules https://gitlab.haskell.org/ghc/ghc.git
 cd ghc # ensure you are in the ghc source tree for the following commands
 ```
 
 #### update the submodules
+
 ```
 git submodule update --init --recursive
 ```
 
 #### Boot and configure for JavaScript
+
 ```
 ./boot && emconfigure ./configure --target=js-unknown-ghcjs
 ```
