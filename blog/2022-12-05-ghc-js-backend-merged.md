@@ -140,14 +140,16 @@ you are a GHCJS user, here are the main differences:
    generator, the linker, and some aspects of the runtime system.
    More details are available in [GHC issue #22352](https://gitlab.haskell.org/ghc/ghc/-/issues/22352).
 
-5. GHCJS's support for plugins hasn't been ported. The implementation was
-   unsafe (exchanging a unit for another when GHC tries to load a plugin).
-   Fixing this properly is a daunting task because of GHC's lack of modularity
-   (see [#14335](https://gitlab.haskell.org/ghc/ghc/-/issues/14335)): GHC assumes there is a single global unit environment.
-   We implemented a more principled workaround in
-   [#20964](https://gitlab.haskell.org/ghc/ghc/-/issues/20964) /
-   [!7377](https://gitlab.haskell.org/ghc/ghc/-/merge_requests/7377) that works
-   in any GHC cross-compiler.
+5. GHCJS's hacky support for plugins hasn't been ported.
+   Instead we implemented a new way to load plugins from shared libraries that
+   works in any GHC cross-compiler. See
+   [#20964](https://gitlab.haskell.org/ghc/ghc/-/issues/20964) and
+   [!7377](https://gitlab.haskell.org/ghc/ghc/-/merge_requests/7377).
+   
+   The common and convenient approach to load plugins still isn't supported by
+   GHC when it is used as a cross-compiler (see
+   [#14335](https://gitlab.haskell.org/ghc/ghc/-/issues/14335) for more
+   details).
 
 6. GHCJS's support for Template Haskell hasn't been ported. GHCJS had its own implementation
    of an external interpreter (THRunner) which has been used as an inspiration
