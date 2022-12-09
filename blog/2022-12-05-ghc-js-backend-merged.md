@@ -84,11 +84,10 @@ backend is costly.
 
 The maintenance burden is not hypothetical; our teammate Luite Stegeman has been
 developing a fork of GHC that emits JavaScript, called GHCJS, for close to 10
-years and has experienced the pain first hand. GHCJS relied on a modified fork
-of the GHC library to suit GHCJS's needs. So any changes to upstream GHC had to
-be adapted to the customized fork or GHCJS would fall behind. And fall behind it
-did: at the time of writing, GHCJS has stuck to using GHC 8.10, lagging behind
-by three major releases and counting.
+years and has experienced the pain first hand. Any changes to upstream GHC had
+to be adapted to the customized fork or GHCJS would fall behind. And fall behind
+it did: at the time of writing, GHCJS has stuck to using GHC 8.10, lagging
+behind by three major releases and counting.
 
 Similarly, the [Eta](https://github.com/typelead/eta) compiler&mdash;which is
 targeting the JVM&mdash;faced the same issues and appears to be discontinued
@@ -115,14 +114,14 @@ is directly applicable to the WebAssembly, iOS, and Android backends in GHC.
 
 Not yet! As it stands, the JavaScript backend doesn't provide all the features
 provided by GHCJS. In particular it doesn't support Template Haskell and we've
-removed the GHCJS FFI to refine its design. See our roadmap below for more
-details.
+removed the extended GHCJS FFI syntax to refine its design. See our roadmap
+below for more details.
 
 Nevertheless GHCJS is unlikely to be updated to use a GHC version more recent
 than 8.10.x. So from our point of view it is in maintenance mode until the
-JavaScript backend totally subsumes its features. However it's an open source
-project so feel free to offer patches to update it to use newer version of the
-GHC library.
+JavaScript backend totally subsumes its features. New maintainers who want to
+continue the development of GHCJS until its feature set has been fully subsumed
+by mainline GHC are of course welcome.
 
 
 ## What is Missing From GHCJS? {#expectations}
@@ -172,8 +171,9 @@ you are a GHCJS user, here are the main differences:
 7. GHCJS supported an extended FFI import syntax allowing Javascript code to be
    inlined (the FFI import string supports templates of Javascript code with
    placeholders for arguments). This hasn't been ported because adding a
-   JavaScript parser to GHC wasn't trivial, and the imported code made no safety
-   guarantees whatsoever. For now, only JavaScript function calls are supported.
+   JavaScript parser to GHC was difficult and complex, and the imported code
+   made no safety guarantees whatsoever. For now, only JavaScript function calls
+   are supported.
 
 8. Any command-line flag introduced by GHCJS has not been ported. We didn't make
    any change to GHC's command line in this work except for adding a `-ddump-js`
@@ -189,9 +189,12 @@ you are a GHCJS user, here are the main differences:
 
 Our top priorities are:
 
-- Implementing Template Haskell support
-- Reducing generated JavaScript code size
-- Modernizing the generated JavaScript code
+- Implementing Template Haskell support.
+- Reducing generated JavaScript code size.
+- Modernizing the generated JavaScript code. The code generator adapted from
+  GHCJS does not use more modern JavaScript features such as fat-arrows (`=>`),
+  `symbols` and `let` bindings. We aim for the JavaScript backend to emit
+  JavaScript that comports to [ECMA-262](https://tc39.es/ecma262/).
 - Enhancing the run-time performance of the generated code
 
 ## What has Improved Compared to GHCJS?
@@ -205,7 +208,7 @@ were the troublesome bits:
 #### Removing the Use of External Libraries
 
 GHCJS used libraries that aren't already dependencies of GHC, such as `text`, `lens`,
-`megaparsec`, and `aeson`. As we didn't want to add new dependencies to GHC, we've
+`attoparsec`, and `aeson`. As we didn't want to add new dependencies to GHC, we've
 refactored the code to avoid them. Examples:
 
 - we've replaced `Text` with GHC's `ShortText` (which provides a similar API)
@@ -246,7 +249,7 @@ packages required this feature.
 
 #### Support for Running GHC's Test Suite
 
-We can now run GHC's test suite with the JavaScript backend enabled! We had to
+GHC's entire test suite can now run and check the JavaScript backend! We had to
 tweak Hadrian to make this possible (to make Hadrian cross-compiler aware), but
 the test suite has already found some bugs that we have since fixed.
 
@@ -259,7 +262,7 @@ But in the process of disabling those tests we've laid a good path forward.
 We've added more precise properties to the test suite, which indicate the
 required features to run each test. So when we implement some feature, it will
 be painless to re-enable all its tests. In addition, failing tests now have
-proper tickets in GHC's GitLab.
+proper tickets in GHC's [issue tracker](https://gitlab.haskell.org/ghc/ghc/-/issues/?sort=created_date&state=opened&label_name%5B%5D=javascript&first_page_size=100).
 
 We've spent some time trying to run the test suite on CI but this work wasn't
 ready in time to be included in the initial commit with the rest of the backend.
