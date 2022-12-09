@@ -54,17 +54,29 @@ different use cases and requirements.
 
 ## Why Haskell?
 
-Other languages such as [PureScript](https://www.purescript.org/) target
-Javascript and provide a programmer experience close to Haskell's. The benefit
-of using Haskell instead is code sharing: it becomes possible to have a web app
-in which the frontend is Haskell code compiled to JavaScript and the backend is
-Haskell code compiled to machine code. In particular the (de)serialization code
-(e.g. from/to JSON) is shared and cannot get out of sync between the frontend
-and the backend.
+The problems with JavaScript range from the
+[downstream](https://www.codeproject.com/Articles/182416/A-Collection-of-JavaScript-Gotchas)
+[effects](https://wtfjs.com/) of early [design
+decisions](https://dl.acm.org/doi/pdf/10.1145/3386327); that inhibit programmer
+productivity and are subtle bug generators, to ecosystem [security
+issues](https://lwn.net/Articles/681410/), to [fundamental
+issues](https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/)
+with asynchronous programming.
 
-A lot of IOG code is written in Haskell. Replicating parts of this code in
-other languages would be a maintenance burden. That's why we invested in
-this JavaScript backend for GHC.
+At IOG, a central engineering requirement is to create a code base that has a
+high degree of correctness. Haskell makes this easy; or to get a little
+technical, the combination of Strong Static Hindley-Milner based typing allows
+us to write performant, correct, and maintainable code. In addition to this,
+many of the problems that occur in JavaScript are simple not expressible because
+of Haskell's type system and concurrency offerings.
+
+There are, of course, competitors: [PureScript](https://www.purescript.org/)
+targets Javascript and provides a programmer experience close to Haskell's. The
+benefit of using Haskell instead is code sharing: we can write the frontend of a
+web app in Haskell that compiles to JavaScript and the backend in Haskell that
+compiles to machine code. In particular, the (de)serialization code (e.g.
+from/to JSON) is shared and cannot get out of sync between the frontend and the
+backend.
 
 ## Why a GHC backend?
 
