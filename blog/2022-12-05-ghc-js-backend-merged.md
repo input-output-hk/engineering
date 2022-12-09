@@ -565,5 +565,5 @@ to try it out, hack, and be merry!
 
 
 ## Acknowledgements
-We want to thank Jan Hrcek, and David Thrane Christansen for their time, labor,
+We want to thank Jan Hrcek, and David Thrane Christiansen for their time, labor,
 comments, and suggestions on drafts of this blog post.
