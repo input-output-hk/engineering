@@ -239,9 +239,9 @@ tweak Hadrian to make this possible (to make Hadrian cross-compiler aware), but
 the testsuite has already found some bugs that we have since fixed.
 
 However, in order to merge for the GHC 9.6 release we had to disable many tests
-because of missing features (TH, HPC, compact regions, etc.) or because the
-generated code would time out (not surprising given the missing optimizer and
-compactor).
+because of missing features (Template Haskell, Haskell Program Coverage (HPC),
+compact regions, etc.) or because the generated code would time out (not
+surprising given the missing optimizer and compactor).
 
 But in the process of disabling those tests we've laid a good path forward.
 We've added more precise properties to the testsuite which indicate the required
