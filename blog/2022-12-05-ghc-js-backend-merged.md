@@ -153,9 +153,10 @@ you are a GHCJS user, here are the main differences:
 
 6. GHCJS's support for Template Haskell hasn't been ported. GHCJS had its own implementation
    of an external interpreter (THRunner) which has been used as an inspiration
-   to implement GHC's external interpreter (IServ). However, both
-   implementations are directly incompatible. Retrofitting THRunner into Iserv
-   is our next priority. More details on
+   to implement GHC's external interpreter (IServ).
+   While serving the same purpose, IServ is quite different from
+   THRunner and can't be directly used as a substitute for it.
+   Retrofitting THRunner into Iserv is our next priority. More details on
    https://engineering.iog.io/2022-05-17-javascript-template-haskell-external-interpreter
 
 7. GHCJS supported an extended FFI import syntax allowing Javascript code to be
