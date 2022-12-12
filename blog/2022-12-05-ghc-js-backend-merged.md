@@ -276,6 +276,10 @@ test suite locally:
 
 > ./hadrian/build --bignum=native -j2 test
 
+We use `-j2` to avoid running too many tests in parallel as this could allocate
+too much memory and fail, which isn't surprising as the JavaScript backend
+hasn't been optimized for memory usage yet.
+
 
 #### Upgrading from GHC 8.10 to GHC 9.6
 
@@ -296,11 +300,9 @@ As we haven't ported GHCJS's Compactor, output size was predictably incredibly
 large. So we've spent time re-implementing a crucial piece of the
 Compactor&#151renaming and shortening of local variables&#151using a different
 approach. Our new approach ended up being faster than GHCJS's compactor. For the
-GHC devs out there, we first replaced the `Text` type that the Compactor was
-built around with `FastString`, and then replaced `FastString` with its
-`Unique`. Thus making comparisons in the Compactor constant rather than linear
-time for each identifier. These optimizations were only made possible after
-removing `Text` and switching from `Text` to `FastString`.
+GHC devs out there, as we first replaced the `Text` type with the `FastString`
+type, the newer Compactor can now replace a `FastString`-based identifier with a
+new identifier derived from the `FastString`'s `Unique` in constant time.
 
 #### Removal of Custom File Extensions and Support for JavaScript Pragmas
 
