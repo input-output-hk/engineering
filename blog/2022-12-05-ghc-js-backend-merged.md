@@ -126,8 +126,8 @@ by mainline GHC are of course welcome.
 
 ## What is Missing From GHCJS? {#expectations}
 
-The JavaScript backend borrows a lot of code from GHCJS, but not all of it. If
-you are a GHCJS user, here are the main differences:
+The JavaScript backend borrows a lot of code from GHCJS, but not all of it.
+Here are the main differences between GHCJS and the JavaScript backend:
 
 1. GHCJS was stuck on GHC version 8.10 while the JavaScript backend follows GHC HEAD.
 
@@ -180,9 +180,9 @@ you are a GHCJS user, here are the main differences:
    flag. Other options will be added later as needed.
 
 9. The JavaScript backend itself hasn't been optimized and we even removed some
-   (seemingly random) uses of NFData from GHCJS's code. We intend to optimize
+   undocumented uses of NFData from GHCJS's code. We intend to optimize
    the JavaScript backend in a principled way (e.g. by first gathering evidence
-   with ticky profiles, etc.).
+   with profiling).
 
 
 ## What's on the JS Backend's Roadmap? {#roadmap}
@@ -194,7 +194,7 @@ Our top priorities are:
 - Modernizing the generated JavaScript code. The code generator adapted from
   GHCJS does not use more modern JavaScript features such as fat-arrows (`=>`),
   `symbols` and `let` bindings. We aim for the JavaScript backend to emit
-  JavaScript that comports to [ECMA-262](https://tc39.es/ecma262/).
+  JavaScript that comports with [ECMA-262](https://tc39.es/ecma262/).
 - Enhancing the run-time performance of the generated code
 
 ## What has Improved Compared to GHCJS?
