@@ -342,8 +342,6 @@ to explain some (sadly not all) technical details about GHCJS's internals:
 - https://engineering.iog.io/2022-08-18-js-backend-ffi/
 - https://engineering.iog.io/2022-09-23-ghcjs-heap-representation/
 
-There are more in preparation.
-
 #### Plugin Support in Cross-Compilers
 
 GHC doesn't support plugins when built as a cross-compiler (cf
