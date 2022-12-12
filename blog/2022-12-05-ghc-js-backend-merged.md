@@ -303,7 +303,7 @@ practice this meant:
 
 As we haven't ported GHCJS's Compactor, output size was predictably incredibly
 large. So we've spent time re-implementing a crucial piece of the
-Compactor&#151renaming and shortening of local variables&#151using a different
+Compactor&mdash;renaming and shortening of local variables&mdash;using a different
 approach. Our new approach ended up being faster than GHCJS's compactor. For the
 GHC devs out there, as we first replaced the `Text` type with the `FastString`
 type, the newer Compactor can now replace a `FastString`-based identifier with a
