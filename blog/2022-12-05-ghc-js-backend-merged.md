@@ -95,7 +95,7 @@ targeting the JVM&mdash;faced the same issues and appears to be discontinued
 
 Compounding the issue, the normal Haskell toolchain was not designed for an
 edge case like GHCJS. So GHCJS required that the normal tooling, e.g., Cabal and
-Stack, could distinguish between upstream GHC library code and GHCJS code. This
+Stack, could distinguish between GHC and GHCJS compilers. This
 meant that the GHCJS developers had to maintain the GHC fork, develop GHCJS, and
 patch or contribute to Cabal and Stack. Simply put, the maintenance burden was
 much too high per developer. Examples of differences between GHCJS and GHC:
