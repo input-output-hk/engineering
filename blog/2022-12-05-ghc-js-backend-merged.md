@@ -9,7 +9,7 @@ A new JavaScript backend has been
 [merged](https://gitlab.haskell.org/ghc/ghc/-/commit/cc25d52e0f65d54c052908c7d91d5946342ab88a)
 into GHC on November 30th, 2022! This means that the next release of GHC will be
 able to emit code that runs in web browsers without requiring any extra tools,
-enabling Haskell to for both front-end and back-end web applications.
+enabling Haskell for both front-end and back-end web applications.
 
 In this post, we, the GHC DevX team at [IOG](https://iohk.io/), describe the
 challenges we faced bringing GHCJS to GHC, how we overcame those challenges, and
@@ -42,10 +42,10 @@ that the we build our technology atop a disappearing or deprecating foundation.
 WebAssembly is a promising target as well, and [Tweag](https://www.tweag.io/)
 has just merged a [WebAssembly
 backend](https://www.tweag.io/blog/2022-11-22-wasm-backend-merged-in-ghc/) into
-GHC as well (great work and congrats!). WebAssembly is not as ubiquitous as
+GHC (great work and congrats!). WebAssembly is not as ubiquitous as
 JavaScript yet, and has a harder time interacting with JavaScript directly.
 Hence, we believe that the WebAssembly and JavaScript backends provide different
-strengths, and it is to our benefit, and the community's, to have and support
+strengths, and it is to the Haskell community's benefit to have and support
 both code generation paths in GHC for different use cases and requirements.
 
 ## Why Haskell?
