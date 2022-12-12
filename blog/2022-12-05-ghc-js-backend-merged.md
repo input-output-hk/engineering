@@ -98,7 +98,12 @@ edge case like GHCJS. So GHCJS required that the normal tooling, e.g., Cabal and
 Stack, could distinguish between upstream GHC library code and GHCJS code. This
 meant that the GHCJS developers had to maintain the GHC fork, develop GHCJS, and
 patch or contribute to Cabal and Stack. Simply put, the maintenance burden was
-much too high per developer.
+much too high per developer. Examples of differences between GHCJS and GHC:
+- GHCJS had a double version&mdash;its own version and the version of GHC it was
+  based on&mdash;and build tools had to deal with both
+- GHCJS used non-standard file extension (e.g. `.js_o` and `.js_a` for objects
+  and static libraries respectively) and custom file formats (still true for
+  `.o` but no longer true for `.a`)
 
 So instead of spending engineering time and energy _responding_ to ecosystem
 changes and maintenance, the DevX team decided the best course of action was to
