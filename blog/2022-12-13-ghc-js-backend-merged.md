@@ -5,7 +5,7 @@ authors: [sylvain, doyougnu, luite, josh, moritz]
 tags: [ghc, javascript, cross-compilation]
 ---
 
-A new JavaScript backend has been
+A new JavaScript backend was
 [merged](https://gitlab.haskell.org/ghc/ghc/-/commit/cc25d52e0f65d54c052908c7d91d5946342ab88a)
 into GHC on November 30th, 2022! This means that the next release of GHC will be
 able to emit code that runs in web browsers without requiring any extra tools,
