@@ -14,8 +14,8 @@
             <link>https://engineering.iog.io/2022-12-13-ghc-js-backend-merged</link>
             <guid>2022-12-13-ghc-js-backend-merged</guid>
             <pubDate>Tue, 13 Dec 2022 00:00:00 GMT</pubDate>
-            <description><![CDATA[A new JavaScript backend has been]]></description>
-            <content:encoded><![CDATA[<p>A new JavaScript backend has been
+            <description><![CDATA[A new JavaScript backend was]]></description>
+            <content:encoded><![CDATA[<p>A new JavaScript backend was
 <a href="https://gitlab.haskell.org/ghc/ghc/-/commit/cc25d52e0f65d54c052908c7d91d5946342ab88a" target="_blank" rel="noopener noreferrer">merged</a>
 into GHC on November 30th, 2022! This means that the next release of GHC will be
 able to emit code that runs in web browsers without requiring any extra tools,
