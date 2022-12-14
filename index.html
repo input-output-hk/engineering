@@ -7,7 +7,7 @@
 <link rel="alternate" type="application/rss+xml" href="/rss.xml" title="IOG Engineering RSS Feed">
 <link rel="alternate" type="application/atom+xml" href="/atom.xml" title="IOG Engineering Atom Feed">
 <link rel="alternate" type="application/json" href="/feed.json" title="IOG Engineering JSON Feed"><title data-react-helmet="true">IOG Engineering | IOG Engineering</title><meta data-react-helmet="true" property="og:title" content="IOG Engineering | IOG Engineering"><meta data-react-helmet="true" name="twitter:card" content="summary_large_image"><meta data-react-helmet="true" name="description" content="Blog"><meta data-react-helmet="true" property="og:description" content="Blog"><meta data-react-helmet="true" property="og:url" content="https://engineering.iog.io/"><meta data-react-helmet="true" name="docusaurus_locale" content="en"><meta data-react-helmet="true" name="docusaurus_tag" content="blog_posts_list"><link data-react-helmet="true" rel="icon" href="/img/favicon.ico"><link data-react-helmet="true" rel="canonical" href="https://engineering.iog.io/"><link data-react-helmet="true" rel="alternate" href="https://engineering.iog.io/" hreflang="en"><link data-react-helmet="true" rel="alternate" href="https://engineering.iog.io/" hreflang="x-default"><script data-react-helmet="true">function maybeInsertBanner(){window.__DOCUSAURUS_INSERT_BASEURL_BANNER&&insertBanner()}function insertBanner(){var n=document.getElementById("docusaurus-base-url-issue-banner-container");if(n){n.innerHTML='\n<div id="docusaurus-base-url-issue-banner" style="border: thick solid red; background-color: rgb(255, 230, 179); margin: 20px; padding: 20px; font-size: 20px;">\n   <p style="font-weight: bold; font-size: 30px;">Your Docusaurus site did not load properly.</p>\n   <p>A very common reason is a wrong site <a href="https://docusaurus.io/docs/docusaurus.config.js/#baseurl" style="font-weight: bold;">baseUrl configuration</a>.</p>\n   <p>Current configured baseUrl = <span style="font-weight: bold; color: red;">/</span>  (default value)</p>\n   <p>We suggest trying baseUrl = <span id="docusaurus-base-url-issue-banner-suggestion-container" style="font-weight: bold; color: green;"></span></p>\n</div>\n';var e=document.getElementById("docusaurus-base-url-issue-banner-suggestion-container"),s=window.location.pathname,r="/"===s.substr(-1)?s:s+"/";e.innerHTML=r}}window.__DOCUSAURUS_INSERT_BASEURL_BANNER=!0,document.addEventListener("DOMContentLoaded",maybeInsertBanner)</script><link rel="stylesheet" href="/assets/css/styles.10ad4647.css">
-<link rel="preload" href="/assets/js/runtime~main.141937a8.js" as="script">
+<link rel="preload" href="/assets/js/runtime~main.8fedeb80.js" as="script">
 <link rel="preload" href="/assets/js/main.37e1d62d.js" as="script">
 </head>
 <body>
@@ -55,7 +55,7 @@ engineering requirement is to create a code base that has a high degree of
 correctness. Haskell makes this easy; or to get a little technical, the
 combination of Strong Static Hindley-Milner based typing allows us to write
 performant, correct, and maintainable code. In addition to this, many of the
-problems that occur in JavaScript are simple not expressible because of
+problems that occur in JavaScript are simply not expressible because of
 Haskell&#x27;s type system and concurrency offerings.</p><p>There are, of course, competitors: <a href="https://www.purescript.org/" target="_blank" rel="noopener noreferrer">PureScript</a>
 targets Javascript and provides a programmer experience close to Haskell&#x27;s. The
 benefit of using Haskell instead is code sharing: we can write the front-end of a
@@ -152,9 +152,7 @@ easy to build as any other GHC. It doesn&#x27;t require any wrapper script, only
 <code>emconfigure</code> tool provided by the
 <a href="https://emscripten.org/docs/getting_started/downloads.html" target="_blank" rel="noopener noreferrer">Emscripten</a>
 project.</p><p>With a fresh checkout of the GHC source tree, you can now build a GHC with the
-JavaScript backend with just these commands:</p><blockquote><p>./boot
-emconfigure ./configure --target=js-unknown-ghcjs
-./hadrian/build --bignum=native -j</p></blockquote><p>Note that if this doesn&#x27;t work, up to date instructions and troubleshootings can
+JavaScript backend with just these commands:</p><div class="codeBlockContainer_I0IT theme-code-block"><div class="codeBlockContent_wNvx"><pre tabindex="0" class="prism-code language-text codeBlock_jd64 thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_mRuA"><span class="token-line" style="color:#393A34"><span class="token plain">&gt; ./boot</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">&gt; emconfigure ./configure --target=js-unknown-ghcjs</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">&gt; ./hadrian/build --bignum=native -j</span><br></span></code></pre><button type="button" aria-label="Copy code to clipboard" class="copyButton_wuS7 clean-btn">Copy</button></div></div><p>Note that if this doesn&#x27;t work, up to date instructions and troubleshootings can
 be found on <a href="https://gitlab.haskell.org/ghc/ghc/-/wikis/javascript-backend" target="_blank" rel="noopener noreferrer">https://gitlab.haskell.org/ghc/ghc/-/wikis/javascript-backend</a></p><p>The Hadrian build system has been adapted to support Cabal&#x27;s <code>js-sources</code>
 stanzas that are to support user-provided <code>.js</code> files. Both the <code>rts</code> and <code>base</code>
 packages required this feature.</p><h4 class="anchor anchorWithStickyNavbar_mojV" id="support-for-running-ghcs-test-suite">Support for Running GHC&#x27;s Test Suite<a class="hash-link" href="#support-for-running-ghcs-test-suite" title="Direct link to heading">​</a></h4><p>GHC&#x27;s entire test suite can now run and check the JavaScript backend! We had to
@@ -186,12 +184,12 @@ new identifier derived from the <code>FastString</code>&#x27;s <code>Unique</cod
 to be passed through CPP before being valid JavaScript. Adding support for this
 extension in both Hadrian and GHC proved to be more work than just adding
 support for JavaScript pragmas. So we decided to do the latter; similarly to
-Haskell extension pragmas, you can now write &quot;//#OPTIONS: CPP&quot; in your
+Haskell extension pragmas, you can now write <code>//#OPTIONS: CPP</code> in your
 JavaScript files to enable the CPP pass, and the file extension is always <code>.js</code>.</p><p>While we&#x27;re on the topic of file extensions, technically <code>.js</code> files don&#x27;t have
 to be compiled into <code>.o</code> files (contrary to C/C++/Haskell/etc. files) at all.
 However, build systems (Hadrian, Cabal...) and compilers (GHC) expect this. So
 for consistency with other backends, we&#x27;ve added a fake compilation pass for
-<code>.js</code> files too. They are now renamed into <code>.o</code> files with a &quot;//JAVASCRIPT&quot;
+<code>.js</code> files too. They are now renamed into <code>.o</code> files with a <code>//JAVASCRIPT</code>
 header added to distinguish them from object files produced by the JavaScript
 backend (and from Emscripten, in the future).</p><h4 class="anchor anchorWithStickyNavbar_mojV" id="blogs">Cleanup and Documentation<a class="hash-link" href="#blogs" title="Direct link to heading">​</a></h4><p>GHC provides some utilities (pretty-printer, binary serialization, string
 interning, etc.) that GHCJS did not make use of. So we adapted the GHCJS code to
@@ -266,7 +264,7 @@ example here is the logic that implements a <code>Maybe</code>:</p><div class="c
 in general please see <a href="#blogs">our other blog posts</a>. In any case, we invite you
 to try it out, hack, and be merry!</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="acknowledgements">Acknowledgements<a class="hash-link" href="#acknowledgements" title="Direct link to heading">​</a></h2><p>We want to thank Jan Hrcek, and David Thrane Christiansen for their time, labor,
 comments, and suggestions on drafts of this blog post.</p></div><footer class="row docusaurus-mt-lg"><div class="col"><b>Tags:</b><ul class="tags_XVD_ padding--none margin-left--sm"><li class="tag_JSN8"><a class="tag_hD8n tagRegular_D6E_" href="/tags/ghc">ghc</a></li><li class="tag_JSN8"><a class="tag_hD8n tagRegular_D6E_" href="/tags/javascript">javascript</a></li><li class="tag_JSN8"><a class="tag_hD8n tagRegular_D6E_" href="/tags/cross-compilation">cross-compilation</a></li></ul></div></footer></article><nav class="pagination-nav" aria-label="Blog list page navigation"><div class="pagination-nav__item"></div><div class="pagination-nav__item pagination-nav__item--next"><a class="pagination-nav__link" href="/page/2"><div class="pagination-nav__label">Older Entries</div></a></div></nav></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items"><li class="footer__item"><a href="https://twitter.com/iog_eng" target="_blank" rel="noopener noreferrer" class="footer__link-item"><span>Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_I5OW"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></span></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items"><li class="footer__item"><a href="https://iohk.io/en/blog" target="_blank" rel="noopener noreferrer" class="footer__link-item">IOG Blog</a></li><li class="footer__item"><a href="https://github.com/input-output-hk/" target="_blank" rel="noopener noreferrer" class="footer__link-item"><span>GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_I5OW"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></span></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2022 IOG Engineering, Inc. Built with Docusaurus.</div></div></div></footer></div>
-<script src="/assets/js/runtime~main.141937a8.js"></script>
+<script src="/assets/js/runtime~main.8fedeb80.js"></script>
 <script src="/assets/js/main.37e1d62d.js"></script>
 </body>
 </html>

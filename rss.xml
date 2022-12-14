@@ -58,7 +58,7 @@ engineering requirement is to create a code base that has a high degree of
 correctness. Haskell makes this easy; or to get a little technical, the
 combination of Strong Static Hindley-Milner based typing allows us to write
 performant, correct, and maintainable code. In addition to this, many of the
-problems that occur in JavaScript are simple not expressible because of
+problems that occur in JavaScript are simply not expressible because of
 Haskell's type system and concurrency offerings.</p><p>There are, of course, competitors: <a href="https://www.purescript.org/" target="_blank" rel="noopener noreferrer">PureScript</a>
 targets Javascript and provides a programmer experience close to Haskell's. The
 benefit of using Haskell instead is code sharing: we can write the front-end of a
@@ -155,9 +155,7 @@ easy to build as any other GHC. It doesn't require any wrapper script, only the
 <code>emconfigure</code> tool provided by the
 <a href="https://emscripten.org/docs/getting_started/downloads.html" target="_blank" rel="noopener noreferrer">Emscripten</a>
 project.</p><p>With a fresh checkout of the GHC source tree, you can now build a GHC with the
-JavaScript backend with just these commands:</p><blockquote><p>./boot
-emconfigure ./configure --target=js-unknown-ghcjs
-./hadrian/build --bignum=native -j</p></blockquote><p>Note that if this doesn't work, up to date instructions and troubleshootings can
+JavaScript backend with just these commands:</p><div class="codeBlockContainer_I0IT theme-code-block"><div class="codeBlockContent_wNvx"><pre tabindex="0" class="prism-code language-text codeBlock_jd64 thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_mRuA"><span class="token-line" style="color:#393A34"><span class="token plain">&gt; ./boot</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">&gt; emconfigure ./configure --target=js-unknown-ghcjs</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">&gt; ./hadrian/build --bignum=native -j</span><br></span></code></pre><button type="button" aria-label="Copy code to clipboard" class="copyButton_wuS7 clean-btn">Copy</button></div></div><p>Note that if this doesn't work, up to date instructions and troubleshootings can
 be found on <a href="https://gitlab.haskell.org/ghc/ghc/-/wikis/javascript-backend" target="_blank" rel="noopener noreferrer">https://gitlab.haskell.org/ghc/ghc/-/wikis/javascript-backend</a></p><p>The Hadrian build system has been adapted to support Cabal's <code>js-sources</code>
 stanzas that are to support user-provided <code>.js</code> files. Both the <code>rts</code> and <code>base</code>
 packages required this feature.</p><h4 class="anchor anchorWithStickyNavbar_mojV" id="support-for-running-ghcs-test-suite">Support for Running GHC's Test Suite<a class="hash-link" href="#support-for-running-ghcs-test-suite" title="Direct link to heading">​</a></h4><p>GHC's entire test suite can now run and check the JavaScript backend! We had to
@@ -189,12 +187,12 @@ new identifier derived from the <code>FastString</code>'s <code>Unique</code> in
 to be passed through CPP before being valid JavaScript. Adding support for this
 extension in both Hadrian and GHC proved to be more work than just adding
 support for JavaScript pragmas. So we decided to do the latter; similarly to
-Haskell extension pragmas, you can now write "//#OPTIONS: CPP" in your
+Haskell extension pragmas, you can now write <code>//#OPTIONS: CPP</code> in your
 JavaScript files to enable the CPP pass, and the file extension is always <code>.js</code>.</p><p>While we're on the topic of file extensions, technically <code>.js</code> files don't have
 to be compiled into <code>.o</code> files (contrary to C/C++/Haskell/etc. files) at all.
 However, build systems (Hadrian, Cabal...) and compilers (GHC) expect this. So
 for consistency with other backends, we've added a fake compilation pass for
-<code>.js</code> files too. They are now renamed into <code>.o</code> files with a "//JAVASCRIPT"
+<code>.js</code> files too. They are now renamed into <code>.o</code> files with a <code>//JAVASCRIPT</code>
 header added to distinguish them from object files produced by the JavaScript
 backend (and from Emscripten, in the future).</p><h4 class="anchor anchorWithStickyNavbar_mojV" id="blogs">Cleanup and Documentation<a class="hash-link" href="#blogs" title="Direct link to heading">​</a></h4><p>GHC provides some utilities (pretty-printer, binary serialization, string
 interning, etc.) that GHCJS did not make use of. So we adapted the GHCJS code to
