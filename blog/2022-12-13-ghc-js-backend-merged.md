@@ -64,7 +64,7 @@ engineering requirement is to create a code base that has a high degree of
 correctness. Haskell makes this easy; or to get a little technical, the
 combination of Strong Static Hindley-Milner based typing allows us to write
 performant, correct, and maintainable code. In addition to this, many of the
-problems that occur in JavaScript are simple not expressible because of
+problems that occur in JavaScript are simply not expressible because of
 Haskell's type system and concurrency offerings.
 
 There are, of course, competitors: [PureScript](https://www.purescript.org/)
@@ -241,9 +241,11 @@ project.
 With a fresh checkout of the GHC source tree, you can now build a GHC with the
 JavaScript backend with just these commands:
 
+```
 > ./boot
 > emconfigure ./configure --target=js-unknown-ghcjs
 > ./hadrian/build --bignum=native -j
+```
 
 Note that if this doesn't work, up to date instructions and troubleshootings can
 be found on https://gitlab.haskell.org/ghc/ghc/-/wikis/javascript-backend
@@ -315,14 +317,14 @@ GHCJS used the `.js.pp` file extension to identify JavaScript files that needed
 to be passed through CPP before being valid JavaScript. Adding support for this
 extension in both Hadrian and GHC proved to be more work than just adding
 support for JavaScript pragmas. So we decided to do the latter; similarly to
-Haskell extension pragmas, you can now write "//#OPTIONS: CPP" in your
+Haskell extension pragmas, you can now write `//#OPTIONS: CPP` in your
 JavaScript files to enable the CPP pass, and the file extension is always `.js`.
 
 While we're on the topic of file extensions, technically `.js` files don't have
 to be compiled into `.o` files (contrary to C/C++/Haskell/etc. files) at all.
 However, build systems (Hadrian, Cabal...) and compilers (GHC) expect this. So
 for consistency with other backends, we've added a fake compilation pass for
-`.js` files too. They are now renamed into `.o` files with a "//JAVASCRIPT"
+`.js` files too. They are now renamed into `.o` files with a `//JAVASCRIPT`
 header added to distinguish them from object files produced by the JavaScript
 backend (and from Emscripten, in the future).
 
