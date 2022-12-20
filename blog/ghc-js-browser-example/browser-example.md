@@ -6,7 +6,173 @@
 
 ## Building
 
-TODO: Can we do something with the cabal project file and/or environment variables and the with-compiler/with-hs-pkg fields to optionally specify /path/to/build/stage1/bin in the case that the user is currently building the compiler themselves, since Hadrian can't install stage 1 and prebuilt binaries are generally unavailable.
+For this guide, we'll be compiling GHC from source. Before doing this, we'll need to install a few dependencies.
+
+### Dependencies
+
+Firstly, a standard GHC distribution with Cabal is required. This is best installed via GHCUP ([https://www.haskell.org/ghcup/install/](https://www.haskell.org/ghcup/install/)), or your system's package manager. As of writing, a GHC version of 9.2 or later is required.
+
+We'll be using Emscripten during the `configure` step - which is often available in package managers - but can also be installed from source:
+```
+git clone https://github.com/emscripten-core/emsdk.git
+cd emsdk
+./emsdk install latest
+./emsdk activate latest
+source ./emsdk_env.sh
+```
+
+After installing Emscripten, `emconfigure` should be available on your system path. For more detailed installation instructions, see [https://emscripten.org/docs/getting_started/downloads.html](https://emscripten.org/docs/getting_started/downloads.html).
+
+Now, we'll also need a couple of Haskell programs, which can be installed through Cabal.
+
+```
+cabal install alex happy -j
+```
+
+### GHC
+
+Now, we can clone an up-to-date version of GHC, which we'll build to target JavaScript:
+```
+git clone https://gitlab.haskell.org/ghc/ghc.git --recursive
+```
+You should notice quite a few submodules being cloned as well as the main repo, which can take a while. Once this has completed, change into the `ghc` directory, where we can run some configuration commands:
+```
+cd ghc
+./boot
+emconfigure ./configure --target=js-unknown-ghcjs
+```
+
+`configure` will finish by outputting a screen that looks like:
+```
+----------------------------------------------------------------------
+Configure completed successfully.
+
+   Building GHC version  : 9.5.20221219
+          Git commit id  : 761c1f49f55afc9a9f290fafb48885c2033069ed
+
+   Build platform        : x86_64-unknown-linux
+   Host platform         : x86_64-unknown-linux
+   Target platform       : js-unknown-ghcjs
+
+   Bootstrapping using   : /home/josh/.ghcup/bin/ghc
+      which is version   : 9.4.2
+      with threaded RTS? : YES
+
+   Using (for bootstrapping) : gcc
+   Using clang               : /home/josh/emsdk/upstream/emscripten/emcc
+      which is version       : 15.0.0
+      linker options         :
+   Building a cross compiler : YES
+   Unregisterised            : NO
+   TablesNextToCode          : YES
+   Build GMP in tree         : NO
+   hs-cpp       : /home/josh/emsdk/upstream/emscripten/emcc
+   hs-cpp-flags : -E -undef -traditional -Wno-invalid-pp-token -Wno-unicode -Wno-trigraphs
+   ar           : /home/josh/emsdk/upstream/emscripten/emar
+   ld           : /home/josh/emsdk/upstream/emscripten/emcc
+   nm           : /home/josh/emsdk/upstream/bin/llvm-nm
+   objdump      : /usr/bin/objdump
+   ranlib       : /home/josh/emsdk/upstream/emscripten/emranlib
+   otool        : otool
+   install_name_tool : install_name_tool
+   windres      :
+   dllwrap      :
+   genlib       :
+   Happy        : /home/josh/.cabal/bin/happy (1.20.0)
+   Alex         : /home/josh/.cabal/bin/alex (3.2.7.1)
+   sphinx-build :
+   xelatex      :
+   makeinfo     :
+   git          : /usr/bin/git
+   cabal-install : /home/josh/.cabal/bin/cabal
+
+   Using LLVM tools
+      clang : clang
+      llc   : llc-14
+      opt   : opt-14
+
+   HsColour was not found; documentation will not contain source links
+
+   Tools to build Sphinx HTML documentation available: NO
+   Tools to build Sphinx PDF documentation available: NO
+   Tools to build Sphinx INFO documentation available: NO
+----------------------------------------------------------------------
+```
+
+If everything is correct, you'll see that the `Target platform` is set to `js-unknown-ghcjs`.
+
+Finally, to build GHC:
+```
+./hadrian/build --bignum=native -j
+```
+
+Which will result in:
+```
+/--------------------------------------------------------\
+| Successfully built library 'ghc' (Stage1, way p).      |
+| Library: _build/stage1/compiler/build/libHSghc-9.5_p.a |
+| Library synopsis: The GHC API.                         |
+\--------------------------------------------------------/
+| Copy package 'ghc'
+# cabal-copy (for _build/stage1/lib/package.conf.d/ghc-9.5.conf)
+| Run GhcPkg Recache Stage1: none => none
+| Copy file: _build/stage0/bin/js-unknown-ghcjs-ghc => _build/stage1/bin/js-unknown-ghcjs-ghc
+Build completed in 1h00m
+```
+
+Take note of this `_build/stage1/bin/js-unknown-ghcjs-ghc` path, as it's the GHC executable that we'll be using to compile to JavaScript.
+
+### Hello World
+
+```haskell
+-- HelloWorld.hs
+module Main where
+
+main :: IO ()
+main = putStrLn "Hello, World!"
+```
+
+```
+./HelloWorld
+```
+
+You'll also notice that a folder called `HelloWorld.jsexe` is produced. It has all of our final JavaScript code in it, including a file named `all.js`. The above executable is just a copy of `all.js`, with a call to `node` added to the top. So, we can also run our program with
+
+```
+node HelloWorld.jsexe/all.js
+```
+
+
+## Browser
+
+We saw in the previous example that the GHC's JavaScript backend allows us to write Haskell to run with NodeJS. This produces a portable executable, but otherwise doesn't enable anything we couldn't do before - GHC can already compile Haskell to run on most backend platforms! So, we'll present a unique possibility: running Haskell in the browser.
+
+In this example, we'll use Haskell to draw a simple SVG circle to our browser window. Put the following code in a file named `BrowserExample.hs`:
+
+```
+-- BrowserExample.hs
+module Main where
+
+import Foreign.C.String
+
+foreign import javascript unsafe "((html) => document.body.innerHTML = h$decodeUtf8z(html,0))"
+  setInnerHtml :: CString -> IO ()
+
+circle :: String
+circle = "<svg width=300 height=300><circle cx=50% cy=50% r=50%></circle></svg>"
+
+main :: IO ()
+main = setInnerHtml =<< newCString circle
+```
+
+Then, we can compile it to JavaScript, again with our built GHC:
+```
+/path/to/ghc/_build/stage1/bin/js-unknown-ghcjs-ghc BrowserExample.hs
+```
+
+Now, inside the BrowserExample.jsexe folder, there will be an `index.html` file. This HTML file has our compiled JavaScript already included, so if you open it in your browser, you'll find it loads our SVG circle!
+
+TODO: using within your own html
 
 ## Features
 
@@ -14,42 +180,8 @@ TODO: Can we do something with the cabal project file and/or environment variabl
 
 To access JavaScript-specific features in Haskell, we can import them via Haskell's `foreign import` syntax.
 
-In our example (in `app/Main.hs`), we have:
 ```
-foreign import javascript unsafe "((html) => { return setInner(html); })"
+foreign import javascript unsafe "((html) => document.body.innerHTML = h$decodeUtf8z(html,0))"
   setInnerHtml :: CString -> IO ()
 ```
 
-Here, there are a number of details to take note of:
-- we specify the import as a string of JavaScript with _a single function call_ (TODO: Elaborate on syntax)
-- _TODO: Explain unsafe vs interruptible_
-- we must pass arguments as types from the `base` library's `Foreign.C` module - in this case `CString`
-- return types must also be `Foreign.C` types, or unit (`()`)
-
-On the JavaScript side (in `js/example.js`), we have:
-```
-function setInner(html) {
-  document.body.innerHTML = "example" + h$decodeUtf8z(html,0);
-  return;
-}
-```
-
-In this JavaScript function, we match the inputs specified in the `foreign import` declaration. However, we unfortunately have to currently use internal functions of GHC's JavaScript backend - in order to convert this `CString` (stored as a byte array) into a JavaScript string, we use `h$decodeUtf8z`.
-
-## Current Limitations
-
-### Libraries Using C FFI Imports
-
-If a function is imported via `foreign import ccall`, then that symbol will end up being referenced in the generated JavaScript, with `h$` prepended.
-
-In the example code, the `lucid-svg` library indirectly calls `bytestring`'s `cIsValidUtf8`, which imports the c symbol `bytestring_is_valid_utf8`. To work around this, we can add the missing definition in our own javascript - which we do in `js/example.js`:
-
-```
-function h$bytestring_is_valid_utf8(bs) {
-  return true;
-}
-```
-
-Although this definiton is far from ideal, it demonstrates that we can link in missing library c functions via our own implementation in our project.
-
-### TODO: Talk about the ghc-options JS source linking workaround?
