@@ -1,16 +1,14 @@
 
-# GHC JavaScript Browser Example
-
-## Introduction
+# Using GHC's JavaScript Backend in the Browser
 
 
-## Building
+## Installing GHC for JavaScript
 
 For this guide, we'll be compiling GHC from source. Before doing this, we'll need to install a few dependencies.
 
-### Dependencies
+### Installing Dependencies
 
-Firstly, a standard GHC distribution with Cabal is required. This is best installed via GHCUP ([https://www.haskell.org/ghcup/install/](https://www.haskell.org/ghcup/install/)), or your system's package manager. As of writing, a GHC version of 9.2 or later is required.
+Firstly, a standard GHC distribution with Cabal is required. This is best installed via GHCUP ([https://www.haskell.org/ghcup/install/](https://www.haskell.org/ghcup/install/)), or your system's package manager. As of writing, a GHC version of 9.2 or later is required. To run JavaScript programs, we'll also need to have NodeJS installed.
 
 We'll be using Emscripten during the `configure` step - which is often available in package managers - but can also be installed from source:
 ```
@@ -29,9 +27,9 @@ Now, we'll also need a couple of Haskell programs, which can be installed throug
 cabal install alex happy -j
 ```
 
-### GHC
+### Building GHC
 
-Now, we can clone an up-to-date version of GHC, which we'll build to target JavaScript:
+With all the dependencies installed, we'll now clone an up-to-date version of GHC, which we'll build to target JavaScript:
 ```
 git clone https://gitlab.haskell.org/ghc/ghc.git --recursive
 ```
@@ -122,35 +120,50 @@ Build completed in 1h00m
 
 Take note of this `_build/stage1/bin/js-unknown-ghcjs-ghc` path, as it's the GHC executable that we'll be using to compile to JavaScript.
 
-### Hello World
+### First Haskell to JavaScript Program
+
+Now that we have a version of GHC that can output JavaScript, let's move on to using it to compile a Haskell program, which we can run using NodeJS. Make a file named "HelloJS.hs", with the following contents:
 
 ```haskell
--- HelloWorld.hs
+-- HelloJS.hs
 module Main where
 
 main :: IO ()
-main = putStrLn "Hello, World!"
+main = putStrLn "Hello, JavaScript!"
 ```
 
+Then, to compile it to JavaScript, we'll need the path to the new GHC executable we just built. To run it, use:
 ```
-./HelloWorld
-```
-
-You'll also notice that a folder called `HelloWorld.jsexe` is produced. It has all of our final JavaScript code in it, including a file named `all.js`. The above executable is just a copy of `all.js`, with a call to `node` added to the top. So, we can also run our program with
-
-```
-node HelloWorld.jsexe/all.js
+/path/to/ghc/_build/stage1/bin/js-unknown-ghcjs-ghc HelloJS.hs
 ```
 
+You should see the following output, and that it has produced a `HelloJS` executable.
 
-## Browser
+```
+[1 of 2] Compiling Main             ( HelloJS.hs, HelloJS.o )
+[2 of 2] Linking HelloJS.jsexe
+```
+
+If you have NodeJS installed, this executable can be run just like any other command line program, which will output `Hello, JavaScript` to the console:
+
+```
+./HelloJS
+```
+
+You'll also notice that a folder called `HelloJS.jsexe` is produced. It has all of our final JavaScript code in it, including a file named `all.js`. The above executable is just a copy of `all.js`, with a call to `node` added to the top. So, we can also run our program with:
+
+```
+node HelloJS.jsexe/all.js
+```
+
+## Haskell in the Browser
 
 We saw in the previous example that the GHC's JavaScript backend allows us to write Haskell to run with NodeJS. This produces a portable executable, but otherwise doesn't enable anything we couldn't do before - GHC can already compile Haskell to run on most backend platforms! So, we'll present a unique possibility: running Haskell in the browser.
 
-In this example, we'll use Haskell to draw a simple SVG circle to our browser window. Put the following code in a file named `BrowserExample.hs`:
+In this example, we'll use Haskell to draw a simple SVG circle to our browser window. Put the following code in a file named `HelloBrowser.hs`:
 
-```
--- BrowserExample.hs
+```haskell
+-- HelloBrowser.hs
 module Main where
 
 import Foreign.C.String
@@ -167,21 +180,19 @@ main = setInnerHtml =<< newCString circle
 
 Then, we can compile it to JavaScript, again with our built GHC:
 ```
-/path/to/ghc/_build/stage1/bin/js-unknown-ghcjs-ghc BrowserExample.hs
+/path/to/ghc/_build/stage1/bin/js-unknown-ghcjs-ghc HelloBrowser.hs
 ```
 
-Now, inside the BrowserExample.jsexe folder, there will be an `index.html` file. This HTML file has our compiled JavaScript already included, so if you open it in your browser, you'll find it loads our SVG circle!
+Now, inside the HelloBrowser.jsexe folder, there will be an `index.html` file. This HTML file has our compiled JavaScript already included, so if you open it in your browser, you'll find it loads our SVG circle!
 
-TODO: using within your own html
-
-## Features
-
-### Foreign Import JavaScript
-
-To access JavaScript-specific features in Haskell, we can import them via Haskell's `foreign import` syntax.
-
+It's also possible to use our program with existing HTML. In `index.html`, you'll find the line:
+```html
+<script language="javascript" src="all.js" defer></script>
 ```
-foreign import javascript unsafe "((html) => document.body.innerHTML = h$decodeUtf8z(html,0))"
-  setInnerHtml :: CString -> IO ()
-```
+This references the `all.js` file that we talked about in the first example. So, if we had a HTML document with content, and we wanted to modify it via Haskell, we'd just have to include our program with the `script` tag!
+
+In this example we've encountered a Haskell feature that's only available in the JavaScript backend - JavaScript foreign imports. This feature allows us to write JavaScript arrow functions for use in our Haskell program. Here, it's allowed us to write a function to access the `body` of the HTML, and replace its contents with our SVG string.
+
+### Conclusion
+
 
