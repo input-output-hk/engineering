@@ -1,6 +1,7 @@
 
 # Using GHC's JavaScript Backend in the Browser
 
+In the last post we introduced GHC's new JavaScript backend, which allows the compilation of Haskell code into JavaScript. Because of the prevalence of JavaScript, this opens up the ability for Haskell to be used on new platforms - particularly the browser. In this post, we'll look into how we can build a version of GHC that will compile to JavaScript, and see how to use that to run a first Haskell program in a browser. 
 
 ## Installing GHC for JavaScript
 
@@ -120,7 +121,7 @@ Build completed in 1h00m
 
 Take note of this `_build/stage1/bin/js-unknown-ghcjs-ghc` path, as it's the GHC executable that we'll be using to compile to JavaScript.
 
-### First Haskell to JavaScript Program
+## First Haskell to JavaScript Program
 
 Now that we have a version of GHC that can output JavaScript, let's move on to using it to compile a Haskell program, which we can run using NodeJS. Make a file named "HelloJS.hs", with the following contents:
 
@@ -193,6 +194,8 @@ This references the `all.js` file that we talked about in the first example. So,
 
 In this example we've encountered a Haskell feature that's only available in the JavaScript backend - JavaScript foreign imports. This feature allows us to write JavaScript arrow functions for use in our Haskell program. Here, it's allowed us to write a function to access the `body` of the HTML, and replace its contents with our SVG string.
 
-### Conclusion
+## Conclusion
 
+In this post, we've seen how to build and use a version of GHC that supports compiling to JavaScript, which allowed us to compile some first programs to run on NodeJS and the browser. We've also taken the first steps in using Haskell's foreign function interface to allow browser-specific features to be accessed in our Haskell programs, and we've seen how to include the resulting JavaScript in a custom HTML document.
 
+TODO: Teaser on next post?
