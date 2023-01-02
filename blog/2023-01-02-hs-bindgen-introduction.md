@@ -11,7 +11,7 @@ tags: [cabal, rust, bindgen]
 
 ## Context
 
-Here at IOG, we maintain big Haskell codebases that we want to make rely on some Rust dependencies.
+At IOG we maintain large Haskell codebases and we would like to interface them with some libraries written in Rust.
 
 E.g., for cryptographic primitives, which was the first use case that Iñigo (Cardano Lead Cryptography Engineer) brings me: his concerns were to use [`sha3`](https://crates.io/crates/sha3) crate (Rust library) in `cardano-base`, removing the dependency for `cryptonite` (a library written in C).
 
