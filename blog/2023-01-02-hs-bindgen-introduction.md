@@ -17,7 +17,9 @@ One typical use case concerns cryptographic primitives which must be very perfor
 
 > **Why FFI (Foreign Function Interface)?**
 >
-> Solving the [interoperability](https://docs.rust-embedded.org/book/interoperability/) problem means deciding on what protocol to use to communicate and share data-structure across different runtimes, and (what developers fears most) how do we bundle and distribute such polyglot stack?
+> Solving the [interoperability](https://docs.rust-embedded.org/book/interoperability/) problem means:
+> 1. designing a protocol that allows two codes written with different languages and using different runtime systems to communicate
+> 2. designing tools and methods to build, to bundle, and to distribute such polyglot code bases (what developers fear most)
 >
 > Why not just use, e.g., [Google Protobuf](https://developers.google.com/protocol-buffers) over a [Unix Domain Socket](https://en.wikipedia.org/wiki/Unix_domain_socket)? How to make a choice in this landscape of solutions available? First, I will argue that we want something fast, say, by reducing its overhead to the minimal footprint of extra computations. So, we want to avoid use of any OS capabilities, like I/Os (that will cost you a full roundtrip) and the needs (De)Serialization.
 >
