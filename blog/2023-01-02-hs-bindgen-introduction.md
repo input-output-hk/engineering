@@ -13,7 +13,7 @@ tags: [cabal, rust, bindgen]
 
 At IOG we maintain large Haskell codebases and we would like to interface them with some libraries written in Rust.
 
-E.g., for cryptographic primitives, which was the first use case that Iñigo (Cardano Lead Cryptography Engineer) brings me: his concerns were to use [`sha3`](https://crates.io/crates/sha3) crate (Rust library) in `cardano-base`, removing the dependency for `cryptonite` (a library written in C).
+One typical use case concerns cryptographic primitives which must be very performant. The first use case that Iñigo NAME (Cardano Lead Cryptography Engineer) brought me consisted in replacing a cryptographic library used by `cardano-base`. Namely, replacing `cryptonite`, a library written in Haskell and C, with [`sha3`](https://crates.io/crates/sha3), a Rust library (or "crate").
 
 > **Why FFI (Foreign Function Interface)?**
 >
