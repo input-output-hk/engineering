@@ -159,7 +159,7 @@ node HelloJS.jsexe/all.js
 
 ## Haskell in the Browser
 
-We saw in the previous example that the GHC's JavaScript backend allows us to write Haskell to run with NodeJS. This produces a portable executable, but otherwise doesn't enable anything we couldn't do before - GHC can already compile Haskell to run on most backend platforms! So, we'll present a unique possibility: running Haskell in the browser.
+We saw in the previous example that the GHC's JavaScript backend allows us to write Haskell to run with NodeJS. This produces a portable executable, but otherwise doesn't enable anything we couldn't do before - GHC can already compile Haskell to run on most platforms! So, we'll present a unique possibility: running Haskell in the browser.
 
 In this example, we'll use Haskell to draw a simple SVG circle to our browser window. Put the following code in a file named `HelloBrowser.hs`:
 
@@ -169,14 +169,14 @@ module Main where
 
 import Foreign.C.String
 
-foreign import javascript unsafe "((html) => document.body.innerHTML = h$decodeUtf8z(html,0))"
+foreign import javascript "((html) => document.body.innerHTML = h$decodeUtf8z(html,0))"
   setInnerHtml :: CString -> IO ()
 
 circle :: String
 circle = "<svg width=300 height=300><circle cx=50% cy=50% r=50%></circle></svg>"
 
 main :: IO ()
-main = setInnerHtml =<< newCString circle
+main = withCStraing circle setInnerHtml
 ```
 
 Then, we can compile it to JavaScript, again with our built GHC:
@@ -198,4 +198,4 @@ In this example we've encountered a Haskell feature that's only available in the
 
 In this post, we've seen how to build and use a version of GHC that supports compiling to JavaScript, which allowed us to compile some first programs to run on NodeJS and the browser. We've also taken the first steps in using Haskell's foreign function interface to allow browser-specific features to be accessed in our Haskell programs, and we've seen how to include the resulting JavaScript in a custom HTML document.
 
-TODO: Teaser on next post?
+This is the first tutorial in a series about the JavaScript backend. We plan to write more of these in the coming weeks and months as we add new features (e.g. support for "foreign exports" that will allow JavaScript code to call into Haskell code, support for Template Haskell, etc.). For now it relies on our "insider" knowledge (e.g. how the FFI works) that isn't well documented elsewhere. We do plan to add a chapter about the JavaScript backend in GHC's user guide, but for now your best chance is to look at GHCJS's documentation or at the source code.
