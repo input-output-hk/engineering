@@ -37,7 +37,7 @@ So, what's lacking in Haskell ecosystem? Let's take a look at what kind of integ
 
 * Both with X=**C++**, [`cxx`](https://github.com/dtolnay/cxx) and X=**Python**, [`PyO3`](https://github.com/PyO3/pyo3)
 
-This list isn't exhaustive but give you a big hint, all these projects are about bindgen!
+This list isn't exhaustive but give you a hint, all these projects are about generating bindings (bindgen)!
 
 > **Why bindgen (bindings code generation)?**
 >
