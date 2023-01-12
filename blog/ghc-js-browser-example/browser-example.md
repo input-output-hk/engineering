@@ -1,23 +1,43 @@
 
 # Using GHC's JavaScript Backend in the Browser
 
-In the last post we introduced GHC's new JavaScript backend, which allows the compilation of Haskell code into JavaScript. Because of the prevalence of JavaScript, this opens up the ability for Haskell to be used on new platforms - particularly the browser. In this post, we'll build a version of GHC that will compile to JavaScript, and use that to run a Haskell program in a browser. 
+In the our last major
+[post](https://engineering.iog.io/2022-12-13-ghc-js-backend-merged) we
+introduced GHC's new JavaScript backend, which allows the compilation of Haskell
+code into JavaScript. This is the first tutorial in a new series about the
+JavaScript backend. We plan to write more of those in the coming weeks and
+months as we add new features (e.g. support for "foreign exports" that will
+allow JavaScript code to call into Haskell code, support for Template Haskell,
+etc.). For now it relies on our "insider" knowledge (e.g. how the FFI works)
+that isn't well documented elsewhere. We do plan to add a chapter about the
+JavaScript backend in GHC's user guide, but for now your best chance is to look
+at GHCJS's documentation or at the source code. In this post, we'll build GHC as
+a JavaScript cross-compiler and run a trivial Haskell program in the browser.
 
-The JavaScript backend is currently an active work in progress, and so it is not feature complete. Importantly, Template Haskell and Foreign Function Interface exports are being worked on and are still to come.
-
-## Installing GHC for JavaScript
-
-For this guide, we'll be compiling GHC from source. Before doing this, we'll need to install a few dependencies. These are:
-* GHC/Cabal
-* Emscripten
-* Alex
-* Happy
+## Building GHC as a Cross Compiler to JavaScript
 
 ### Installing Dependencies
 
-Firstly, a standard GHC distribution with Cabal is required. This is best installed via GHCUP ([https://www.haskell.org/ghcup/install/](https://www.haskell.org/ghcup/install/)), or your system's package manager. As of writing, a GHC version of 9.2 or later is required. To run JavaScript programs, we'll also need to have NodeJS installed.
+First we need to install all the typical dependencies for GHC plus `Emscripten`,
+thus the final list is:
+
+* A GHC/Cabal to boot with
+* Alex
+* Happy
+* Emscripten to configure with
+* (Optional) NodeJS to run JavaScript locally
+
+
+A standard GHC distribution with Cabal is required. This is best installed via GHCUP ([https://www.haskell.org/ghcup/install/](https://www.haskell.org/ghcup/install/)), or your system's package manager. As of writing, a GHC version of 9.2 or later is required. 
+
+Now, we'll also need a couple of Haskell programs, which we'll install through Cabal.
+
+```
+cabal install alex happy -j
+```
 
 We'll be using Emscripten during the `configure` step - which is often available in package managers - but can also be installed from source:
+
 ```
 git clone https://github.com/emscripten-core/emsdk.git
 cd emsdk
@@ -26,28 +46,25 @@ cd emsdk
 source ./emsdk_env.sh
 ```
 
-After installing Emscripten, `emconfigure` should be available on your system path. If the installation was successful, `which emconfigure` should point to a location within the emsdk git project:
+After installing Emscripten, `emconfigure` should be available on your system path. If the installation was successful, `which emconfigure` should point to a location within the emsdk git project, for example:
 
 ```
 $ which emconfigure
 /path/to/emsdk/upstream/escripten/emconfigure
 ```
 
-For more detailed installation instructions, see [https://emscripten.org/docs/getting_started/downloads.html](https://emscripten.org/docs/getting_started/downloads.html).
+For more detailed installation instructions, see [https://emscripten.org/docs/getting_started/downloads.html](https://emscripten.org/docs/getting_started/downloads.html). 
 
-Now, we'll also need a couple of Haskell programs, which can be installed through Cabal.
+That's all we need to build GHC as a cross compiler. NodeJS can be installed via your system's package manager if you want to run the JavaScript programs locally. We'll assume its in your `$PATH` for the rest of the blog post.
 
-```
-cabal install alex happy -j
-```
 
 ### Building GHC
 
-With all the dependencies installed, we'll now clone an up-to-date version of GHC, which we'll build to target JavaScript:
+With all the dependencies installed, we can clone GHC HEAD and build the cross compiler:
 ```
 git clone https://gitlab.haskell.org/ghc/ghc.git --recursive
 ```
-You should notice quite a few submodules being cloned as well as the main repo, which can take a while. Once this has completed, change into the `ghc` directory, where we can run some configuration commands:
+You should notice quite a few submodules being cloned as well as the main repo; expect this to take a while. Once this has completed, change into the `ghc` directory, where we can run some configuration commands:
 ```
 cd ghc
 ./boot
@@ -111,7 +128,9 @@ Configure completed successfully.
 ----------------------------------------------------------------------
 ```
 
-If everything is correct, you'll see that the `Target platform` is set to `js-unknown-ghcjs`, and the tools needed to build will be set to their Emscripten counterparts - `ar` becomes `emar`, `nm` becomes `llvm-nm`, etc.
+If everything is correct, you'll see that the `Target platform` is set to
+`js-unknown-ghcjs`, and the tools needed to build will be set to their
+Emscripten counterparts - `ar` becomes `emar`, `nm` becomes `llvm-nm`, etc.
 
 Finally, to build GHC:
 ```
@@ -132,7 +151,10 @@ Which will result in:
 Build completed in 1h00m
 ```
 
-Take note of this `_build/stage1/bin/js-unknown-ghcjs-ghc` path, as it's the GHC executable that we'll be using to compile to JavaScript.
+Take note of `_build/stage1/bin/js-unknown-ghcjs-ghc` path. This is the GHC executable that we'll be using to compile to JavaScript. To make life easier on ourselves we can alias it:
+```
+alias ghc-js=`pwd`/_build/stage1/bin/js-unknown-ghcjs-ghc
+```
 
 ## First Haskell to JavaScript Program
 
@@ -148,7 +170,7 @@ main = putStrLn "Hello, JavaScript!"
 
 Then, to compile it to JavaScript, we'll need the path to the new GHC executable we just built. To run it, use:
 ```
-/path/to/ghc/_build/stage1/bin/js-unknown-ghcjs-ghc HelloJS.hs
+ghc-js HelloJS.hs
 ```
 
 You should see the following output, and that it has produced a `HelloJS` executable.
@@ -194,7 +216,7 @@ main = withCString circle setInnerHtml
 
 Then, we can compile it to JavaScript, again with our built GHC:
 ```
-/path/to/ghc/_build/stage1/bin/js-unknown-ghcjs-ghc HelloBrowser.hs
+ghc-js HelloBrowser.hs
 ```
 
 Now, inside the HelloBrowser.jsexe folder, there will be an `index.html` file. This HTML file has our compiled JavaScript already included, so if you open it in your browser, you'll find it loads our SVG circle!
