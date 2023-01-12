@@ -214,12 +214,30 @@ main :: IO ()
 main = withCString circle setInnerHtml
 ```
 
-Then, we can compile it to JavaScript, again with our built GHC:
+Our program is small. We define a foreign import and write that import inline as
+a [fat
+arrow](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions).
+All it does is pass the input `CString` to a helper function `h$decodeUtf8z`,
+and then assign the result to innerHTML property of our web page. Alternatively,
+we could have set the foreign import to a function symbol like so:
+
+```
+foreign import javascript "h$setInnerHTML"
+  setInnerHtml :: CString -> IO ()
+```
+
+where `setInnerHTML` is defined in a `.js` file that is then loaded with
+`js-sources` in a `.cabal` file. Obviously that is too much for such a simple
+example.
+
+Next, we can compile our program to JavaScript, again with our built GHC:
 ```
 ghc-js HelloBrowser.hs
 ```
 
-Now, inside the HelloBrowser.jsexe folder, there will be an `index.html` file. This HTML file has our compiled JavaScript already included, so if you open it in your browser, you'll find it loads our SVG circle!
+Now, inside the HelloBrowser.jsexe folder, there will be an `index.html` file.
+This HTML file has our compiled JavaScript already included, so if you open it
+in your browser, you'll find it loads our SVG circle!
 
 It's also possible to use our program with existing HTML. In `index.html`, you'll find the line:
 ```html
