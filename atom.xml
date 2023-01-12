@@ -2,12 +2,77 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://engineering.iog.io/</id>
     <title>IOG Engineering Blog</title>
-    <updated>2022-12-13T00:00:00.000Z</updated>
+    <updated>2023-01-12T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://engineering.iog.io/"/>
     <subtitle>IOG Engineering blog</subtitle>
     <icon>https://engineering.iog.io/img/favicon.ico</icon>
-    <rights>Copyright © 2022 IOG, Inc.</rights>
+    <rights>Copyright © 2023 IOG, Inc.</rights>
+    <entry>
+        <title type="html"><![CDATA[GHC DevX Update 2023-01-12]]></title>
+        <id>2023-01-12-ghc-update</id>
+        <link href="https://engineering.iog.io/2023-01-12-ghc-update"/>
+        <updated>2023-01-12T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Starting in 2023 we–the IOG GHC DevX team–are going to provide biweekly updates]]></summary>
+        <content type="html"><![CDATA[<p>Starting in 2023 we–the IOG GHC DevX team–are going to provide biweekly updates
+about our work. This is the first edition.</p><h1>JS backend</h1><h2 class="anchor anchorWithStickyNavbar_mojV" id="js-backend-in-the-browser-tutorial">JS backend in the browser tutorial<a class="hash-link" href="#js-backend-in-the-browser-tutorial" title="Direct link to heading">​</a></h2><p>We are working on a draft of a JS backend tutorial about using it to build a
+simple web application: <a href="https://github.com/input-output-hk/engineering/pull/24" target="_blank" rel="noopener noreferrer">https://github.com/input-output-hk/engineering/pull/24</a></p><p>Publication is expected next week.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="cabal-support-for-js-sources">Cabal support for js-sources<a class="hash-link" href="#cabal-support-for-js-sources" title="Direct link to heading">​</a></h2><p>Sylvain has made a patch to add cabal support for the <code>js-sources</code> stanza when
+GHC is used as a compiler (and not only when GHCJS is used as a compiler):
+<a href="https://github.com/haskell/cabal/pull/8636" target="_blank" rel="noopener noreferrer">https://github.com/haskell/cabal/pull/8636</a></p><p>It’s missing tests and then it should be ready to be merged.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="js-backend-ci">JS backend CI<a class="hash-link" href="#js-backend-ci" title="Direct link to heading">​</a></h2><p>Jeff has been working on adding a proper CI job that runs the full testsuite
+with the JS backend. Cf ticket
+<a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22128" target="_blank" rel="noopener noreferrer">#22128</a> and merge request
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9552" target="_blank" rel="noopener noreferrer">!9552</a>.</p><p>He had to fix some unexpected test passes (!) with the JS backend due to an
+imprecise <code>req_smp</code> predicate used by the testsuite. More details on
+<a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22630" target="_blank" rel="noopener noreferrer">#22630</a> and
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9568" target="_blank" rel="noopener noreferrer">!9568</a>.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="js-backend-template-haskell">JS backend: Template Haskell<a class="hash-link" href="#js-backend-template-haskell" title="Direct link to heading">​</a></h2><p>Luite and Sylvain started implementing support for Template Haskell (TH) with
+the JS backend.</p><p>Sylvain has reimplemented support for running an adapted version of the
+THRunner.js script from GHCJS. He has also refactored the JS linker and
+implemented incremental linking.</p><p>The next step is to link and to run an instance of the external interpreter code
+that implements the Template Haskell protocol (execution of the <code>Q</code> monad)
+adapted to run in JavaScript. GHCJS used to have its own duplicated code for
+this but for maintenance concerns it’s much better to reuse the external
+interpreter code.</p><h1>GHCi</h1><h2 class="anchor anchorWithStickyNavbar_mojV" id="ghci-sized-primitive-types-word8-etc">GHCi: sized primitive types (Word8#, etc.)<a class="hash-link" href="#ghci-sized-primitive-types-word8-etc" title="Direct link to heading">​</a></h2><p>Luite has implemented support for sized primitive types in GHCi. Cf
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/8822" target="_blank" rel="noopener noreferrer">!8822</a>.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="ghci-prim-calling-convention">GHCi: “prim” calling convention<a class="hash-link" href="#ghci-prim-calling-convention" title="Direct link to heading">​</a></h2><p>Luite has implemented support for the “prim” calling convention in GHCi. Cf
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9026" target="_blank" rel="noopener noreferrer">!9026</a></p><h1>Compiler performance</h1><h2 class="anchor anchorWithStickyNavbar_mojV" id="jeff">Jeff<a class="hash-link" href="#jeff" title="Direct link to heading">​</a></h2><p>Each of these improves allocations between 0.2 - 0.7% depending on the input
+(improvements by a thousand cuts):</p><ul><li><p><strong>GHC.Foreign improved Strictness</strong>: An Attempt to remove lazy IO and SAT an
+argument that is only used for a debug message. Got a review from Andreas.
+Want to try to 2 more improvements then ready to merge.
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9644" target="_blank" rel="noopener noreferrer">!9644</a></p></li><li><p><strong>InfoTableProv: ShortText → ShortByteString</strong>: Post review from Ben I made some
+improvements that preserved type safety and still recovered most of the
+performance improvements. Ready to merge
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9637" target="_blank" rel="noopener noreferrer">!9637</a></p></li><li><p><strong>GHC.Unit.State</strong>: swapped use of Data.Map for GHC.Unique.UniqMap and expanded
+UniqMap API. Results in progress (need to patch Haddock) and still
+experimental. The idea here is to use a data structure that no longer needs to
+balance on insertions because Unit.State performs a lot of merges on these
+maps.</p></li><li><p><strong>GHC.Utils.Binary.foldGet’ removed lazy IO and lazy accumulator</strong>: merged
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9538" target="_blank" rel="noopener noreferrer">!9538</a></p></li></ul><h2 class="anchor anchorWithStickyNavbar_mojV" id="josh">Josh<a class="hash-link" href="#josh" title="Direct link to heading">​</a></h2><ul><li><p><strong>Stricter break</strong>: we noticed in a ticky profile that <code>GHC.List.break</code> allocates
+3 thunks and 1 datacon per list element returned the first part of the list.
+If this list is fully evaluated later, we can allocate only 1 datacon per list
+element instead. Preliminary results bootstrapping GHC with this change look
+very promising.</p></li><li><p><strong>FastMutInt (Binary)</strong>: Josh started reviving Sylvain’s MR
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/7246" target="_blank" rel="noopener noreferrer">!7246</a> about
+bundling more than one <code>Int#</code> in a <code>FastMutInt</code> for performance. He tried to
+make a proof of concept generalisation of 2-FastMutInt into n-FastMutInts
+(using GHC type level Natural). The types don’t really recurse in a convenient
+way (Int -&gt; (… -&gt; IO ())) so it would probably introduce more complexity than
+the problem is worth. Now, he’s just implementing the original patch with the
+fixes and documentation.</p></li></ul>]]></content>
+        <author>
+            <name>Sylvain Henry</name>
+        </author>
+        <author>
+            <name>Jeffrey M. Young</name>
+            <uri>https://iog.io/en/</uri>
+        </author>
+        <author>
+            <name>Luite Stegeman</name>
+        </author>
+        <author>
+            <name>Joshua Meredith</name>
+            <uri>https://iog.io/en/</uri>
+        </author>
+        <category label="ghc" term="ghc"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[JavaScript backend merged into GHC]]></title>
         <id>2022-12-13-ghc-js-backend-merged</id>
