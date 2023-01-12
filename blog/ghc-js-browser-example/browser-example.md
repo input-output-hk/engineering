@@ -214,11 +214,7 @@ main :: IO ()
 main = withCString circle setInnerHtml
 ```
 
-Our program is small. We define a foreign import and write that import inline as
-a [fat
-arrow](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions).
-All it does is pass the input `CString` to a helper function `h$decodeUtf8z`,
-and then assign the result to innerHTML property of our web page. Alternatively,
+In this example we've encountered a Haskell feature that's only available in the JavaScript backend - JavaScript foreign imports. This feature allows us to write JavaScript [arrow functions](https://262.ecma-international.org/13.0/#prod-ArrowFunction) for use in our Haskell program. Here, it's allowed us to write a function to access the `body` of the HTML, and replace its contents with our SVG string. Alternatively,
 we could have set the foreign import to a function symbol like so:
 
 ```
@@ -226,9 +222,8 @@ foreign import javascript "h$setInnerHTML"
   setInnerHtml :: CString -> IO ()
 ```
 
-where `setInnerHTML` is defined in a `.js` file that is then loaded with
-`js-sources` in a `.cabal` file. Obviously that is too much for such a simple
-example.
+where `h$setInnerHTML` is defined in a `.js` file that is then loaded with
+`js-sources` in a `.cabal` file (the `h$` is just convention). 
 
 Next, we can compile our program to JavaScript, again with our built GHC:
 ```
@@ -243,9 +238,7 @@ It's also possible to use our program with existing HTML. In `index.html`, you'l
 ```html
 <script language="javascript" src="all.js" defer></script>
 ```
-This references the `all.js` file that we talked about in the first example. So, if we had a HTML document with content, and we wanted to modify it via Haskell, we'd just have to include our program with the `script` tag!
-
-In this example we've encountered a Haskell feature that's only available in the JavaScript backend - JavaScript foreign imports. This feature allows us to write JavaScript [arrow functions](https://262.ecma-international.org/13.0/#prod-ArrowFunction) for use in our Haskell program. Here, it's allowed us to write a function to access the `body` of the HTML, and replace its contents with our SVG string.
+This references the `all.js` file that we talked about in the first example. So, if we had a HTML document with content, and we wanted to modify it via Haskell, we'd just have to include our program with the `script` tag! 
 
 ## Conclusion
 
