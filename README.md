@@ -1,5 +1,7 @@
 # Website
 
+Sources for the IOG Engineering blog hosted on https://engineering.iog.io/ 
+
 This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
 
 ### Installation
