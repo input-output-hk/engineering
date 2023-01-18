@@ -1,7 +1,14 @@
+---
+slug: 2023-01-18-javascript-browser-tutorial
+title: JavaScript backend merged into GHC
+authors: [sylvain, doyougnu, luite, josh, moritz]
+tags: [ghc, javascript, cross-compilation]
+---
+
 
 # Using GHC's JavaScript Backend in the Browser
 
-In the our last major
+In the previous
 [post](https://engineering.iog.io/2022-12-13-ghc-js-backend-merged) we
 introduced GHC's new JavaScript backend, which allows the compilation of Haskell
 code into JavaScript. This is the first tutorial in a new series about the
@@ -55,7 +62,7 @@ $ which emconfigure
 
 For more detailed installation instructions, see [https://emscripten.org/docs/getting_started/downloads.html](https://emscripten.org/docs/getting_started/downloads.html). 
 
-That's all we need to build GHC as a cross compiler. NodeJS can be installed via your system's package manager if you want to run the JavaScript programs locally. We'll assume its in your `$PATH` for the rest of the blog post.
+That's all we need to build GHC as a cross compiler. NodeJS can be installed via your system's package manager if you want to run the JavaScript programs locally. We'll assume it's in your `$PATH` for the rest of the blog post.
 
 
 ### Building GHC
@@ -180,13 +187,13 @@ You should see the following output, and that it has produced a `HelloJS` execut
 [2 of 2] Linking HelloJS.jsexe
 ```
 
-If you have NodeJS installed, this executable can be run just like any other command line program, which will output `Hello, JavaScript` to the console:
+If you have NodeJS installed, this executable can be run just like any other command line program, which will output `Hello, JavaScript!` to the console:
 
 ```
 ./HelloJS
 ```
 
-Notice that a folder called `HelloJS.jsexe` was produced. This directory contains all the final JavaScript code in it, including a file named `all.js`, and a minimal `index.html` HTML file that wraps `all.js`. For now, we'll only care about `all.js` and return to `index.html later. `all.js` _is_ the payload of our `HelloJS` exectuable. The executable is simply a copy of `all.js`, with a call to `node` added to the top. So, we can also run our program with:
+Notice that a directory called `HelloJS.jsexe` was produced. This directory contains all the final JavaScript code in it, including a file named `all.js`, and a minimal `index.html` HTML file that wraps `all.js`. For now, we'll only care about `all.js` and return to `index.html later. `all.js` _is_ the payload of our `HelloJS` exectuable. The executable is simply a copy of `all.js`, with a call to `node` added to the top. So, we can equivalently run our program with:
 
 ```
 node HelloJS.jsexe/all.js
@@ -222,17 +229,22 @@ foreign import javascript "h$setInnerHTML"
   setInnerHtml :: CString -> IO ()
 ```
 
-where `h$setInnerHTML` is defined in a `.js` file that is then loaded with
-`js-sources` in a `.cabal` file (the `h$` is just convention). 
+where `h$setInnerHTML` is defined in a `.js` file that is then loaded
+by passing the JavaScript file to GHC along with the Haskell sources (the `h$` is just convention). 
 
 Next, we can compile our program to JavaScript, again with our built GHC:
 ```
 ghc-js HelloBrowser.hs
 ```
 
-Now, inside the HelloBrowser.jsexe folder, there will be an `index.html` file.
+Or `ghc-js HelloBrowser.hs foo.js` if `setInnerHTML` is defined in `foo.js`.
+
+
+Now, inside the HelloBrowser.jsexe directory, there will be an `index.html` file.
 This HTML file has our compiled JavaScript already included, so if you open it
-in your browser, you'll find it loads our SVG circle!
+in your browser, you'll find it loads our SVG circle in the top-left of the page!
+
+![Example webpage screenshot](browser-screenshot.png)
 
 It's also possible to use our program with existing HTML. In `index.html`, you'll find the line:
 ```html
@@ -244,4 +256,4 @@ This references the `all.js` file that we talked about in the first example. So,
 
 In this post, we've seen how to build and use a version of GHC that supports compiling to JavaScript, which allowed us to compile some first programs to run on NodeJS and the browser. We've also taken the first steps in using Haskell's foreign function interface to allow browser-specific features to be accessed in our Haskell programs, and we've seen how to include the resulting JavaScript in a custom HTML document.
 
-This is the first tutorial in a series about the JavaScript backend, which is currently under active deveopment. As development progresses and the backend becomes more feature-complete, we will be writing more tutorials on it - introducing coming features such as FFI exports and Template Haskell.
+This is the first tutorial in a series about the JavaScript backend, which is currently under active deveopment. Not all Haskell features are supported as of yet. Importantly, there is no current way for JavaScript code to call into Haskell code ("Foreign Exports"), which is a heavy limitation. Template Haskell and "wrapper" foreign imports are also unsupported. As development progresses and the backend gains support for these features, we will be writing more tutorials to introduce them!
