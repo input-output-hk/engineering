@@ -137,7 +137,7 @@ Finally, to build GHC:
 ./hadrian/build --bignum=native -j --docs=none
 ```
 
-Which will result in:
+Expect this to take around a half hour or longer. If all goes well you should see:
 ```
 /--------------------------------------------------------\
 | Successfully built library 'ghc' (Stage1, way p).      |
