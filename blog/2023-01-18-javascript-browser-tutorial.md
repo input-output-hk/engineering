@@ -1,7 +1,7 @@
 ---
 slug: 2023-01-18-javascript-browser-tutorial
 title: JavaScript backend merged into GHC
-authors: [sylvain, doyougnu, luite, josh, moritz]
+authors: [sylvain, doyougnu, luite, josh]
 tags: [ghc, javascript, cross-compilation]
 ---
 
