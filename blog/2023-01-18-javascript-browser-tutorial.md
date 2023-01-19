@@ -218,7 +218,7 @@ module Main where
 
 import Foreign.C.String
 
-foreign import javascript "((html) => document.body.innerHTML = h$decodeUtf8z(html,0))"
+foreign import javascript "((arr,offset) => document.body.innerHTML = h$decodeUtf8z(arr,offset))"
   setInnerHtml :: CString -> IO ()
 
 circle :: String
