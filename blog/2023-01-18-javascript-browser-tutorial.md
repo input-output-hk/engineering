@@ -208,7 +208,7 @@ node HelloJS.jsexe/all.js
 
 ## Haskell in the Browser
 
-We saw in the previous example that the GHC's JavaScript backend allows us to write Haskell to run with NodeJS. This produces a portable executable, but otherwise doesn't enable anything we couldn't do before - GHC can already compile Haskell to run on most platforms! So, we'll present a unique possibility: running Haskell in the browser.
+We saw in the previous example that GHC's JavaScript backend allows us to write Haskell to run with NodeJS. This produces a portable executable, but otherwise doesn't enable anything we couldn't do before - GHC can already compile Haskell to run on most platforms! So, we'll present a unique possibility: running Haskell in the browser.
 
 In this example, we'll use Haskell to draw a simple SVG circle to our browser window. Put the following code in a file named `HelloBrowser.hs`:
 
@@ -228,16 +228,16 @@ main :: IO ()
 main = withCString circle setInnerHtml
 ```
 
-In this example we've encountered a Haskell feature that's only available in the JavaScript backend - JavaScript foreign imports. This feature allows us to write JavaScript [arrow functions](https://262.ecma-international.org/13.0/#prod-ArrowFunction) for use in our Haskell program. Here, it's allowed us to write a function to access the `body` of the HTML, and replace its contents with our SVG string. Alternatively,
+In this example we've encountered a Haskell feature that's only available in the JavaScript backend: JavaScript foreign imports. This feature allows our Haskell program to call JavaScript functions. In our example we use this feature to call a JavaScript [arrow functions](https://262.ecma-international.org/13.0/#prod-ArrowFunction) updating the `body` of the page with our HTML snippet containing an embedded drawing of a circle in SVG. Alternatively,
 we could have set the foreign import to a function symbol like so:
 
 ```
-foreign import javascript "h$setInnerHTML"
+foreign import javascript "setInnerHTML"
   setInnerHtml :: CString -> IO ()
 ```
 
-where `h$setInnerHTML` is defined in a `.js` file that is then loaded
-by passing the JavaScript file to GHC along with the Haskell sources (the `h$` is just convention). 
+where `setInnerHTML` is defined in a `.js` file that is then loaded
+by passing the JavaScript file to GHC along with the Haskell sources.
 
 Next, we can compile our program to JavaScript, again with our built GHC:
 ```
