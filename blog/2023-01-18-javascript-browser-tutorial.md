@@ -1,6 +1,6 @@
 ---
 slug: 2023-01-18-javascript-browser-tutorial
-title: JavaScript backend merged into GHC
+title: Using GHC's JavaScript Backend in the Browser
 authors: [sylvain, doyougnu, luite, josh]
 tags: [ghc, javascript, cross-compilation]
 ---
@@ -8,7 +8,7 @@ tags: [ghc, javascript, cross-compilation]
 
 # Using GHC's JavaScript Backend in the Browser
 
-In the previous
+In a previous
 [post](https://engineering.iog.io/2022-12-13-ghc-js-backend-merged) we
 introduced GHC's new JavaScript backend, which allows the compilation of Haskell
 code into JavaScript. This is the first tutorial in a new series about the
@@ -20,6 +20,13 @@ that isn't well documented elsewhere. We do plan to add a chapter about the
 JavaScript backend in GHC's user guide, but for now your best chance is to look
 at GHCJS's documentation or at the source code. In this post, we'll build GHC as
 a JavaScript cross-compiler and run a trivial Haskell program in the browser.
+
+Please note: this is a technology preview of the in-development JavaScript backend
+for GHC. Not all Haskell features are implemented, and bugs are expected. It is
+currently not possible for JavaScript code to call into Haskell code ("foreign
+exports" aren't implemented). GHC does not support multi-targets, so a GHC executable
+built for JavaScript will only be able to produce JavaScript, and a separate GHC
+must be used if intending to additionally target other platforms such as native.
 
 ## Building GHC as a Cross Compiler to JavaScript
 
@@ -244,7 +251,7 @@ Now, inside the HelloBrowser.jsexe directory, there will be an `index.html` file
 This HTML file has our compiled JavaScript already included, so if you open it
 in your browser, you'll find it loads our SVG circle in the top-left of the page!
 
-![Example webpage screenshot](browser-screenshot.png)
+![Example webpage screenshot](img/browser-screenshot.png)
 
 It's also possible to use our program with existing HTML. In `index.html`, you'll find the line:
 ```html
