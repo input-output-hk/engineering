@@ -15,6 +15,7 @@ const config = {
   favicon: 'img/favicon.ico',
   organizationName: 'input-output-hk', // Usually your GitHub org/user name.
   projectName: 'engineering', // Usually your repo name.
+  staticDirectories: ['static'],
 
   presets: [
     [

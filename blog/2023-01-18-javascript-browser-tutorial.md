@@ -251,7 +251,7 @@ Now, inside the HelloBrowser.jsexe directory, there will be an `index.html` file
 This HTML file has our compiled JavaScript already included, so if you open it
 in your browser, you'll find it loads our SVG circle in the top-left of the page!
 
-![Example webpage screenshot](img/browser-screenshot.png)
+![Example webpage screenshot](/img/browser-screenshot.png)
 
 It's also possible to use our program with existing HTML. In `index.html`, you'll find the line:
 ```html
