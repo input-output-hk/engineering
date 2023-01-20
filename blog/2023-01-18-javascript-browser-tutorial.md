@@ -24,9 +24,10 @@ a JavaScript cross-compiler and run a trivial Haskell program in the browser.
 Please note: this is a technology preview of the in-development JavaScript backend
 for GHC. Not all Haskell features are implemented, and bugs are expected. It is
 currently not possible for JavaScript code to call into Haskell code ("foreign
-exports" aren't implemented). GHC does not support multi-targets, so a GHC executable
-built for JavaScript will only be able to produce JavaScript, and a separate GHC
-must be used if intending to additionally target other platforms such as native.
+exports" aren't implemented). GHC isn't a multi-target compiler yet, so a GHC executable
+built for a native platform (Linux/x86-64, Windows/x86-64, Darwin/AArch64...) as currently distributed (via ghcup, Stack, binary distributions, etc.) won't be able to produce JavaScript.
+That's why we start this post with the required steps to build yourself
+a GHC compiler capable of producing JavaScript.
 
 ## Building GHC as a Cross Compiler to JavaScript
 
