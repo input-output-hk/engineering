@@ -166,6 +166,10 @@ What `cargo-cabal` actually does is:
 
 * Generate a custom `X.cabal` linking `rustc` output as `extra-librairies`, and either a ([`naersk`](https://github.com/nix-community/naersk) and [`haskell.nix`](https://github.com/input-output-hk/haskell.nix) based) `flake.nix` or a `Setup.lhs` build customization (to work around this [issue](https://github.com/haskell/cabal/issues/2641)).
 
+## Limitations
+
+What would be the reason to NOT use `cargo-cabal` and `hs-bindgen`? I should mention that `{-# LANGUAGE CApiFFI #-}` language extonsion features, like using C values that are `#define` in a header or `vargs`, are not supported (because they're indeed C specific). E.g. variadic arguments didn't exist in Rust and are usually implemented with [the Builder pattern](https://doc.rust-lang.org/1.0.0/style/ownership/builders.html). Again I want to make obvious that if you're looking for `CApiFFI` features you should embed Rust code in a C library, with e.g. `c-bindgen`, and so not use the tools introduced here!
+
 ## What's next?
 
 [`cargo-cabal`](https://github.com/yvan-sraka/cargo-cabal) and [`hs-bindgen`](https://github.com/yvan-sraka/hs-bindgen) combined are less than 1000 LoC, they also support Rust `#[no_std]` code, and I would be glad to keep them as [KISS](https://en.wikipedia.org/wiki/KISS_principle) and modular as possible. But there is still room for improvements, e.g. by adding traits' implementations for more Rust `std` types, or why not supporting `async` functions with [`async-ffi`](https://github.com/oxalica/async-ffi)?!
