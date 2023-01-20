@@ -279,7 +279,7 @@ browser, you'll find it loads our SVG circle in the top-left of the page!
 
 ![Example webpage screenshot](/img/browser-screenshot.png)
 
-It's also possible to use our program with existing HTML. In `index.html`, you'll find the line:
+`index.html` contains the minimal HTML code required to load the generated JavaScript code. It simply loads the `all.js` file mentioned above with the following `script` tag that you can reuse in your own HTML files:
 ```html
 <script language="javascript" src="all.js" defer></script>
 ```
