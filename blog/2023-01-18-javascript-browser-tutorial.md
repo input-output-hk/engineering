@@ -33,24 +33,28 @@ must be used if intending to additionally target other platforms such as native.
 ### Installing Dependencies
 
 First we need to install all the typical dependencies for GHC plus `Emscripten`,
-thus the final list is:
+so our final list is:
 
-* A GHC/Cabal to boot with
+* GHC version 9.2 or later
+* Cabal
 * Alex
 * Happy
 * Emscripten to configure with
 * (Optional) NodeJS to run JavaScript locally
 
 
-A standard GHC distribution with Cabal is required. This is best installed via GHCUP ([https://www.haskell.org/ghcup/install/](https://www.haskell.org/ghcup/install/)), or your system's package manager. As of writing, a GHC version of 9.2 or later is required. 
+Let's take these in order, a standard GHC distribution with Cabal is needed so we can boot our new compiler.
+We recommend using  GHCUP
+([https://www.haskell.org/ghcup/install/](https://www.haskell.org/ghcup/install/)),
+or your system's package manager to install the this. 
 
-Now, we'll also need a couple of Haskell programs, which we'll install through Cabal.
+We need Alex and Happy to build GHC, these can be installed through Cabal:
 
 ```
 cabal install alex happy -j
 ```
 
-We'll be using Emscripten during the `configure` step - which is often available in package managers - but can also be installed from source:
+We need Emscripten during the `configure` step of the build. `Emscripten` should be available in most package managers, but you can also build and install it from source:
 
 ```
 git clone https://github.com/emscripten-core/emsdk.git
@@ -60,7 +64,10 @@ cd emsdk
 source ./emsdk_env.sh
 ```
 
-After installing Emscripten, `emconfigure` should be available on your system path. If the installation was successful, `which emconfigure` should point to a location within the emsdk git project, for example:
+After installing Emscripten, `emconfigure` should be available on your system
+path. Use `which emconfigure` to check that it is on your `$PATH`. If you built
+from source, then the output should point to a location within the emsdk git
+project like so:
 
 ```
 $ which emconfigure
@@ -78,14 +85,14 @@ With all the dependencies installed, we can clone GHC HEAD and build the cross c
 ```
 git clone https://gitlab.haskell.org/ghc/ghc.git --recursive
 ```
-You should notice quite a few submodules being cloned as well as the main repo; expect this to take a while. Once this has completed, change into the `ghc` directory, where we can run some configuration commands:
+You should notice quite a few submodules being cloned as well as the main repo; expect this to take a while. Once this has completed, navigate to the `ghc` directory and run the following configuration commands:
 ```
 cd ghc
 ./boot
 emconfigure ./configure --target=js-unknown-ghcjs
 ```
 
-`configure` will finish by outputting a screen that looks like:
+`emconfigure ./configure --target=js-unknown-ghcjs` will finish by outputting a screen that looks like:
 ```
 ----------------------------------------------------------------------
 Configure completed successfully.
@@ -143,8 +150,8 @@ Configure completed successfully.
 ```
 
 If everything is correct, you'll see that the `Target platform` is set to
-`js-unknown-ghcjs`, and the tools needed to build will be set to their
-Emscripten counterparts - `ar` becomes `emar`, `nm` becomes `llvm-nm`, etc.
+`js-unknown-ghcjs`, and the build tools will be set to their
+Emscripten counterparts: `ar` becomes `emar`, `nm` becomes `llvm-nm`, etc.
 
 Finally, to build GHC:
 ```
@@ -165,14 +172,15 @@ Expect this to take around a half hour or longer. If all goes well you should se
 Build completed in 1h00m
 ```
 
-Take note of `_build/stage1/bin/js-unknown-ghcjs-ghc` path. This is the GHC executable that we'll be using to compile to JavaScript. To make life easier on ourselves we can alias it:
+Take note of `_build/stage1/bin/js-unknown-ghcjs-ghc` path. This is the GHC executable that we'll use to compile to JavaScript. To make life easier on ourselves we can alias it:
+
 ```
 alias ghc-js=`pwd`/_build/stage1/bin/js-unknown-ghcjs-ghc
 ```
 
 ## First Haskell to JavaScript Program
 
-Now that we have a version of GHC that can output JavaScript, let's move on to using it to compile a Haskell program, which we can run using NodeJS. Make a file named "HelloJS.hs", with the following contents:
+Now that we have a version of GHC that can output JavaScript, let's compile a Haskell program and run it with NodeJS. Make a file named "HelloJS.hs", with the following contents:
 
 ```haskell
 -- HelloJS.hs
@@ -182,25 +190,31 @@ main :: IO ()
 main = putStrLn "Hello, JavaScript!"
 ```
 
-Then, to compile it to JavaScript, we'll need the path to the new GHC executable we just built. To run it, use:
+Now we can compile it using the alias we defined earlier:
 ```
 ghc-js HelloJS.hs
 ```
 
-You should see the following output, and that it has produced a `HelloJS` executable.
+You should see the following output, and a `HelloJS` executable.
 
 ```
 [1 of 2] Compiling Main             ( HelloJS.hs, HelloJS.o )
 [2 of 2] Linking HelloJS.jsexe
 ```
 
-If you have NodeJS installed, this executable can be run just like any other command line program, which will output `Hello, JavaScript!` to the console:
+If you have NodeJS is on your `Path`, then this executable can be run just like any other command line program:
 
 ```
 ./HelloJS
+Hello, JavaScript!
 ```
 
-Notice that a directory called `HelloJS.jsexe` was produced. This directory contains all the final JavaScript code in it, including a file named `all.js`, and a minimal `index.html` HTML file that wraps `all.js`. For now, we'll only care about `all.js` and return to `index.html later. `all.js` _is_ the payload of our `HelloJS` exectuable. The executable is simply a copy of `all.js`, with a call to `node` added to the top. So, we can equivalently run our program with:
+Notice that a directory called `HelloJS.jsexe` was created. This directory
+contains all the final JavaScript code, including a file named `all.js`, and a
+minimal `index.html` HTML file that wraps `all.js`. For now, we'll only care
+about `all.js` and return to `index.html later. `all.js` _is_ the payload of our
+`HelloJS` exectuable. The executable is simply a copy of `all.js`, with a call
+to `node` added to the top. We could have equivalently run our program with:
 
 ```
 node HelloJS.jsexe/all.js
@@ -208,7 +222,11 @@ node HelloJS.jsexe/all.js
 
 ## Haskell in the Browser
 
-We saw in the previous example that GHC's JavaScript backend allows us to write Haskell to run with NodeJS. This produces a portable executable, but otherwise doesn't enable anything we couldn't do before - GHC can already compile Haskell to run on most platforms! So, we'll present a unique possibility: running Haskell in the browser.
+We saw in the previous example that GHC's JavaScript backend allows us to write
+Haskell and run the output JavaScript with NodeJS. This produces a portable
+executable, but otherwise doesn't enable anything we couldn't do before; GHC can
+already compile Haskell to run on most platforms! So let's do something novel,
+and run Haskell in the browser.
 
 In this example, we'll use Haskell to draw a simple SVG circle to our browser window. Put the following code in a file named `HelloBrowser.hs`:
 
@@ -228,8 +246,14 @@ main :: IO ()
 main = withCString circle setInnerHtml
 ```
 
-In this example we've encountered a Haskell feature that's only available in the JavaScript backend: JavaScript foreign imports. This feature allows our Haskell program to call JavaScript functions. In our example we use this feature to call a JavaScript [arrow functions](https://262.ecma-international.org/13.0/#prod-ArrowFunction) updating the `body` of the page with our HTML snippet containing an embedded drawing of a circle in SVG. Alternatively,
-we could have set the foreign import to a function symbol like so:
+Notice that we've encountered a Haskell feature that's only available in the
+JavaScript backend: JavaScript foreign imports. This feature allows our Haskell
+program to call JavaScript functions. In our example we use this feature to call
+a JavaScript [arrow
+function](https://262.ecma-international.org/13.0/#prod-ArrowFunction) that
+updates the `body` of the page with our HTML snippet containing a drawing of a
+circle. Alternatively, we could have set the foreign import to a function symbol
+like so:
 
 ```
 foreign import javascript "setInnerHTML"
@@ -240,6 +264,7 @@ where `setInnerHTML` is defined in a `.js` file that is then loaded
 by passing the JavaScript file to GHC along with the Haskell sources.
 
 Next, we can compile our program to JavaScript, again with our built GHC:
+
 ```
 ghc-js HelloBrowser.hs
 ```
@@ -247,9 +272,9 @@ ghc-js HelloBrowser.hs
 Or `ghc-js HelloBrowser.hs foo.js` if `setInnerHTML` is defined in `foo.js`.
 
 
-Now, inside the HelloBrowser.jsexe directory, there will be an `index.html` file.
-This HTML file has our compiled JavaScript already included, so if you open it
-in your browser, you'll find it loads our SVG circle in the top-left of the page!
+Recall the `index.html` file inside the HelloBrowser.jsexe directory. This HTML
+file has our compiled JavaScript already included, so if you open it in your
+browser, you'll find it loads our SVG circle in the top-left of the page!
 
 ![Example webpage screenshot](/img/browser-screenshot.png)
 
@@ -257,7 +282,7 @@ It's also possible to use our program with existing HTML. In `index.html`, you'l
 ```html
 <script language="javascript" src="all.js" defer></script>
 ```
-This references the `all.js` file that we talked about in the first example. So, if we had a HTML document with content, and we wanted to modify it via Haskell, we'd just have to include our program with the `script` tag! 
+This references the `all.js` file that we described in the first example. So, if we had a HTML document with content, and we wanted to modify it via Haskell, we'd just have to include our program with the `script` tag! 
 
 ## Conclusion
 
