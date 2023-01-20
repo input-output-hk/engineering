@@ -273,7 +273,7 @@ ghc-js HelloBrowser.hs
 Or `ghc-js HelloBrowser.hs foo.js` if `setInnerHTML` is defined in `foo.js`.
 
 
-Recall the `index.html` file inside the HelloBrowser.jsexe directory. This HTML
+Recall the `index.html` file inside the `HelloBrowser.jsexe` directory. This HTML
 file has our compiled JavaScript already included, so if you open it in your
 browser, you'll find it loads our SVG circle in the top-left of the page!
 
