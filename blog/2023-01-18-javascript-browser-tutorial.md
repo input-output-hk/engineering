@@ -283,7 +283,8 @@ browser, you'll find it loads our SVG circle in the top-left of the page!
 ```html
 <script language="javascript" src="all.js" defer></script>
 ```
-This references the `all.js` file that we described in the first example. So, if we had a HTML document with content, and we wanted to modify it via Haskell, we'd just have to include our program with the `script` tag! 
+
+As the JS backend still lacks support for some FFI features (foreign exports, foreign "wrapper" imports...), JavaScript codes can't easily interact with Haskell codes. It reduces the amount of advanced/interesting examples we can present for now. We'll publish new blog posts illustrating these features when they will be implemented.
 
 ## Conclusion
 
