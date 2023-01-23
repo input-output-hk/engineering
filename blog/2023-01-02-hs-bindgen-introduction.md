@@ -1,5 +1,5 @@
 ---
-slug: 2023-01-02-hs-bindgen-introduction
+slug: 2023-01-23-hs-bindgen-introduction
 title: One step forward, an easier interoperability between Rust and Haskell
 authors: [yvan]
 tags: [cabal, rust, bindgen]
