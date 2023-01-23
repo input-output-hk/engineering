@@ -139,6 +139,8 @@ The previous code example highlighted that we rely on two constructs: an attribu
 > We want generated bindings to always match the source code used for generation, so we want to force the user to integrate binding generation in the build process.
 >
 > The natural way to do that in Rust, and to have directly access to source code's AST (Abstract Syntax Tree), rather than trying to implement a parser, is to use a macro!
+>
+> **To go further:** `c-bindgen` is well known to be buggy! It's a flaw in its design to have a custom Rust source parser, rather using the framework implement here for `hs-bindgen` would allow us to provide a better `c-bindgen` implementation.
 
 Wrapping user types by these traits have several benefits:
 
