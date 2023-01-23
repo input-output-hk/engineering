@@ -186,4 +186,6 @@ It would be delightful to get as far as having custom preludes in Haskell bindin
 
 Finally, It’s worth mentioning that there are also proposals to improve the interface between Haskell programs requiring Rust libraries, including this Cabal [RFC](https://github.com/haskell/cabal/issues/7906). As a reminder, the implementation proposed here does not provide support for Haskell dependencies in Rust project yet, but there is a previous [unmaintained attempt](https://github.com/mgattozzi/curryrs) of bringing Haskell runtime support in Rust binaries. We should also keep a close look on the Rust RFC that offer to introduce a `#[repr(interop)]` attribute: [Experimental feature gate proposal `interoperable_abi`](https://github.com/rust-lang/rust/pull/105586).
 
+I would like to thank [@hsyl20](https://github.com/hsyl20), [@iquerejeta](https://github.com/iquerejeta) and [@govanify](https://github.com/govanify) for their careful reviewing and corrections they provide to make this article in good shape.
+
 Thanks for reading, feel free to experiment with this Proof of Concept and to provide feedbacks on GitHub :)
