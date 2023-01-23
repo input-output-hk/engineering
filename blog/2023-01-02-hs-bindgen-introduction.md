@@ -124,7 +124,7 @@ In Rust, [`extern`](https://doc.rust-lang.org/book/ch19-01-unsafe-rust.html#usin
 >
 > So, do not fear the C ABI … because, at least, it is stable!
 >
-> [1] https://viruta.org/rust-stable-abi.html
+> **To go further:** I invite you to read *[“Rust does not have a stable ABI”](https://viruta.org/rust-stable-abi.html)* by Federico Mena Quintero: a blog post discussing how much the absence of Rust stable ABI isn't a big deal in the context of GTK development. Highlighting that *[“How Swift Achieved Dynamic Linking Where Rust Couldn't”](https://faultlore.com/blah/swift-abi/) by Aria Beingessner isn't so far from [`GObject` Introspection](https://gi.readthedocs.io/en/latest/) strategy!
 
 ## Implementation
 
