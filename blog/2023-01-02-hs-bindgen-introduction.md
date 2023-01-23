@@ -148,7 +148,7 @@ Wrapping user types by these traits have several benefits:
 
 * The user can extensively always implement these traits for arbitrary types ;
 
-* Provided traits implementation for `std` types take care of memory management [2] ;
+* Provided traits implementation for `std` types take care of memory management ;
 
 * Traits improve a lot of ergonomics by implicitly and safely casting a given type to an FFI-safe one.
 
