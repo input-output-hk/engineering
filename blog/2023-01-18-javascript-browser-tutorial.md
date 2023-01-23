@@ -74,7 +74,7 @@ project like so:
 
 ```
 $ which emconfigure
-/path/to/emsdk/upstream/escripten/emconfigure
+/path/to/emsdk/upstream/emscripten/emconfigure
 ```
 
 For more detailed installation instructions, see [https://emscripten.org/docs/getting_started/downloads.html](https://emscripten.org/docs/getting_started/downloads.html). 
