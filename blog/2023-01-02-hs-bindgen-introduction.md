@@ -11,7 +11,7 @@ tags: [cabal, rust, bindgen]
 
 ## Context
 
-At IOG we maintain large Haskell codebases and we would like to interface them with some libraries written in Rust.
+At IOG we maintain large [Haskell](https://www.haskell.org) codebases and we would like to interface them with some libraries written in [Rust](https://www.rust-lang.org).
 
 Rust is a systems programming language known for its strong static typing guarantees, which make it similar to Haskell (even if a bit less expressive). However, unlike Haskell, Rust does not have a GC (Garbage Collector) and use a compile-time memory management strategy. This mechanism is encoded through its type system with the concept of _“ownership”_ and _“lifetime”_ of values, which can complicate the writing of programs but unlock smaller runtime costs footprint. Rust is becoming increasingly popular in the systems programming and embedded systems domains, and is also used in areas such as cryptography, where performance is critical.
 
