@@ -170,6 +170,8 @@ What `cargo-cabal` actually does is:
 
 * Generate a custom `X.cabal` linking `rustc` output as `extra-librairies`, and either a ([`naersk`](https://github.com/nix-community/naersk) and [`haskell.nix`](https://github.com/input-output-hk/haskell.nix) based) `flake.nix` or a [`Setup.lhs`](https://github.com/yvan-sraka/cargo-cabal/blob/main/src/Setup.lhs) build customization (to work around this [issue](https://github.com/haskell/cabal/issues/2641)).
 
+**To go further:** there is no first-class `stack` support yet provided, but we could easily imagine a `cargo-stack` binary that just wrap a `cargo-cabal --stack` CLI option!
+
 ## Limitations
 
 What would be the reason to NOT use `cargo-cabal` and `hs-bindgen`? I should mention that `{-# LANGUAGE CApiFFI #-}` language extonsion features, like using C values that are `#define` in a header or `vargs`, are not supported (because they're indeed C specific). E.g. variadic arguments didn't exist in Rust and are usually implemented with [the Builder pattern](https://doc.rust-lang.org/1.0.0/style/ownership/builders.html). Again I want to make obvious that if you're looking for `CApiFFI` features you should embed Rust code in a C library, with e.g. `c-bindgen`, and so not use the tools introduced here!
