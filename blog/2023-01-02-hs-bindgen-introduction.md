@@ -15,7 +15,7 @@ At IOG we maintain large [Haskell](https://www.haskell.org) codebases and we wou
 
 Rust is a systems programming language known for its strong static typing guarantees, which make it similar to Haskell (even if a bit less expressive). However, unlike Haskell, Rust does not have a GC (Garbage Collector) and use a compile-time memory management strategy. This mechanism is encoded through its type system with the concept of _“ownership”_ and _“lifetime”_ of values, which can complicate the writing of programs but unlock smaller runtime costs footprint. Rust is becoming increasingly popular in the systems programming and embedded systems domains, and is also used in areas such as cryptography, where performance is critical.
 
-One typical use case concerns cryptographic primitives which must be very performant. The first use case that Iñigo Querejeta Azurmendi (Cardano Lead Cryptography Engineer) brought me consisted in replacing a cryptographic library used by `cardano-base`. Namely, replacing `cryptonite`, a library written in Haskell and C, with [`sha3`](https://crates.io/crates/sha3), a Rust library (or "crate").
+One typical use case concerns cryptographic primitives which must be very performant. The first use case that Iñigo Querejeta Azurmendi (Cardano Lead Cryptography Engineer) brought me consisted in replacing a cryptographic library used by [`cardano-base`](https://github.com/input-output-hk/cardano-base). Namely, replacing [`cryptonite`](https://github.com/input-output-hk/cardano-crypto/blob/develop/cbits/cryptonite_sha512.h), a library written in Haskell and C, with [`sha3`](https://crates.io/crates/sha3), a Rust library (or "crate").
 
 > **Why FFI (Foreign Function Interface)?**
 >
