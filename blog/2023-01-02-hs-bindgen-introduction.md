@@ -174,7 +174,7 @@ What `cargo-cabal` actually does is:
 
 ## Limitations
 
-What would be the reason to NOT use `cargo-cabal` and `hs-bindgen`? I should mention that `{-# LANGUAGE CApiFFI #-}` language extonsion features, like using C values that are `#define` in a header or `vargs`, are not supported (because they're indeed C specific). E.g. variadic arguments didn't exist in Rust and are usually implemented with [the Builder pattern](https://doc.rust-lang.org/1.0.0/style/ownership/builders.html). Again I want to make obvious that if you're looking for `CApiFFI` features you should embed Rust code in a C library, with e.g. `c-bindgen`, and so not use the tools introduced here!
+What would be the reason to NOT use `cargo-cabal` and `hs-bindgen`? I should mention that `{-# LANGUAGE CApiFFI #-}` language extension features, like using C values that are `#define` in a header or `vargs`, are not supported (because they're indeed C specific). E.g. variadic arguments didn't exist in Rust and are usually implemented with [the Builder pattern](https://doc.rust-lang.org/1.0.0/style/ownership/builders.html). Again I want to make obvious that if you're looking for `CApiFFI` features you should embed Rust code in a C library, with e.g. `c-bindgen`, and so not use the tools introduced here!
 
 ## What's next?
 
