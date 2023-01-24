@@ -217,7 +217,7 @@ Hello, JavaScript!
 Notice that a directory called `HelloJS.jsexe` was created. This directory
 contains all the final JavaScript code, including a file named `all.js`, and a
 minimal `index.html` HTML file that wraps `all.js`. For now, we'll only care
-about `all.js` and return to `index.html later. `all.js` _is_ the payload of our
+about `all.js` and return to `index.html` later. `all.js` _is_ the payload of our
 `HelloJS` exectuable. The executable is simply a copy of `all.js`, with a call
 to `node` added to the top. We could have equivalently run our program with:
 
