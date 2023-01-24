@@ -172,7 +172,7 @@ What `cargo-cabal` actually does is:
 
 * Generate a custom `X.cabal` linking `rustc` output as `extra-librairies`, and either a ([`naersk`](https://github.com/nix-community/naersk) and [`haskell.nix`](https://github.com/input-output-hk/haskell.nix) based) `flake.nix` or a [`Setup.lhs`](https://github.com/yvan-sraka/cargo-cabal/blob/main/src/Setup.lhs) Cabal build script (to work around this [issue](https://github.com/haskell/cabal/issues/2641)).
 
-**To go further:** there is no first-class `stack` support yet provided, but we could easily imagine a `cargo-stack` binary that just wrap a `cargo-cabal --stack` CLI option!
+**To go further:** `stack` isn't supported yet, but we could easily imagine a `cargo-stack` binary that just wraps a `cargo-cabal --stack` CLI option!
 
 ## Limitations
 
