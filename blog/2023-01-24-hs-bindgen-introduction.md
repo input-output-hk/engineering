@@ -134,7 +134,7 @@ The previous code example highlighted that we rely on two constructs: an attribu
 >
 > Binding code generation could have been achieved using an external tool, e.g., `c-bindgen` parses Rust code (before macro expansion) and deduces the right C function signatures.
 >
-> But rather we choose to define a custom macro (like `cxx`, `wasm-bindgen` and `PyO3` does), and so we require the user to depend on a custom crate. Why?
+> But instead we decided to define a custom macro (like `cxx`, `wasm-bindgen`, and `PyO3` do), and so we require the user to depend on a custom crate.
 >
 > We want generated bindings to always match the source code used for generation, so we want to force the user to integrate binding generation in the build process.
 >
