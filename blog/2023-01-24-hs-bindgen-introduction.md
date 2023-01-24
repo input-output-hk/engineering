@@ -132,7 +132,7 @@ The previous code example highlighted that we rely on two constructs: an attribu
 
 > **Why use a Rust macro?**
 >
-> Binding code generation could have been achieved using an external tool, e.g., `c-bindgen` parses Rust code (before macro expansion) and deduce the right C function signatures.
+> Binding code generation could have been achieved using an external tool, e.g., `c-bindgen` parses Rust code (before macro expansion) and deduces the right C function signatures.
 >
 > But rather we choose to define a custom macro (like `cxx`, `wasm-bindgen` and `PyO3` does), and so we require the user to depend on a custom crate. Why?
 >
