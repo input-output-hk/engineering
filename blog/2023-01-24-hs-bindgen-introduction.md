@@ -47,7 +47,7 @@ This list isn't exhaustive but give you a hint, all these projects are about gen
 >
 > FFI are like a blind spot in your type system. Writing them manually is both frankly painful and really dangerous, as your compiler will not warn you about non-matching interfaces.
 >
-> Binding generation comes to the rescue by considerably reducing the room for human errors, and as a bonus, it simplifies a lot of maintainer job with a more readable reduced codebase.
+> Binding generation comes to the rescue by considerably reducing the room for human errors. As a bonus, it also makes maintainers' life easier thanks to a smaller and more readable code base.
 
 ## Example
 
