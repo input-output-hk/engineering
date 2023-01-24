@@ -5,7 +5,7 @@ authors: [yvan]
 tags: [cabal, rust, bindgen]
 ---
 
-**TL;DR:** This blog post intends to sum up the why and how of [`cargo-cabal`](https://github.com/yvan-sraka/cargo-cabal) and [`hs-bindgen`](https://github.com/yvan-sraka/hs-bindgen), if you’re looking for usage walkthroughs and code examples, check out project READMEs on GitHub!
+**TL;DR:** This blog post intends to sum up the why and how of [`cargo-cabal`](https://github.com/yvan-sraka/cargo-cabal) and [`hs-bindgen`](https://github.com/yvan-sraka/hs-bindgen). If you’re looking for usage walkthroughs and code examples, check out project READMEs on GitHub!
 
 > **N.B.** quoted paragraphs in this article, give straightforward motivation regarding some systems programming basic concepts, feel free to skip them if you know you’re likely to be already comfortable with ;)
 
