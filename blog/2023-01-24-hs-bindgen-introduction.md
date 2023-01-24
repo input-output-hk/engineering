@@ -74,7 +74,7 @@ fn greetings(name: &str) {
     println!("Hello, {name}!");
 }
 
-#[no_mangle] // Mangling randomize symbols
+#[no_mangle] // Mangling makes symbol names more difficult to predict. We disable it to ensure that the resulting symbol is really `__c_greetings`.
 extern "C" fn __c_greetings(__0: *const core::ffi::c_char) -> () {
     // `traits` module is `hs-bindgen::hs-bindgen-traits`
     // n.b. do not forget to import it, e.g., with `use hs-bindgen::*`
