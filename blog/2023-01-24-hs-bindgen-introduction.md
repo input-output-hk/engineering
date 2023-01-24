@@ -56,8 +56,8 @@ So, let's look at a minimal example. In this case, if we annotate a function lik
 ```rust
 use hs_bindgen::*;
 
-/// Haskell type signature are auto-magically inferred from Rust function
-/// type! This feature could slow down compilation, and be enabled with:
+/// Haskell type signatures are auto-magically inferred from Rust function
+/// types! This feature could slow down compilation, and be enabled with:
 /// `hs-bindgen = { ..., features = [ "full" ] }`
 #[hs_bindgen]
 fn greetings(name: &str) {
