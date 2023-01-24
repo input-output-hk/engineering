@@ -136,7 +136,7 @@ The previous code example highlighted that we rely on two constructs: an attribu
 >
 > But instead we decided to define a custom macro (like `cxx`, `wasm-bindgen`, and `PyO3` do), and so we require the user to depend on a custom crate.
 >
-> We want generated bindings to always match the source code used for generation, so we want to force the user to integrate binding generation in the build process.
+> The reason is that we want generated bindings to always match the source code used for their generation. By using a macro we enforce binding generation during the build process and bindings can't get out-of-sync.
 >
 > The natural way to do that in Rust, and to have directly access to source code's AST (Abstract Syntax Tree), rather than trying to implement a parser, is to use a macro!
 >
