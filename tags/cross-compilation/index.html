@@ -7,7 +7,7 @@
 <link rel="alternate" type="application/rss+xml" href="/rss.xml" title="IOG Engineering RSS Feed">
 <link rel="alternate" type="application/atom+xml" href="/atom.xml" title="IOG Engineering Atom Feed">
 <link rel="alternate" type="application/json" href="/feed.json" title="IOG Engineering JSON Feed"><title data-react-helmet="true">2 posts tagged with &quot;cross-compilation&quot; | IOG Engineering</title><meta data-react-helmet="true" property="og:title" content="2 posts tagged with &quot;cross-compilation&quot; | IOG Engineering"><meta data-react-helmet="true" name="twitter:card" content="summary_large_image"><meta data-react-helmet="true" property="og:url" content="https://engineering.iog.io/tags/cross-compilation"><meta data-react-helmet="true" name="docusaurus_locale" content="en"><meta data-react-helmet="true" name="docusaurus_tag" content="blog_tags_posts"><link data-react-helmet="true" rel="icon" href="/img/favicon.ico"><link data-react-helmet="true" rel="canonical" href="https://engineering.iog.io/tags/cross-compilation"><link data-react-helmet="true" rel="alternate" href="https://engineering.iog.io/tags/cross-compilation" hreflang="en"><link data-react-helmet="true" rel="alternate" href="https://engineering.iog.io/tags/cross-compilation" hreflang="x-default"><link rel="stylesheet" href="/assets/css/styles.10ad4647.css">
-<link rel="preload" href="/assets/js/runtime~main.71b3dbef.js" as="script">
+<link rel="preload" href="/assets/js/runtime~main.5239dc11.js" as="script">
 <link rel="preload" href="/assets/js/main.602e5b06.js" as="script">
 </head>
 <body>
@@ -16,14 +16,14 @@
 <a href="https://engineering.iog.io/2022-12-13-ghc-js-backend-merged" target="_blank" rel="noopener noreferrer">post</a> we
 introduced GHC&#x27;s new JavaScript backend, which allows the compilation of Haskell
 code into JavaScript. This is the first tutorial in a new series about the
-JavaScript backend. We plan to write more of those in the coming weeks and
+JavaScript backend. In this post, we&#x27;ll build GHC as
+a JavaScript cross-compiler and run a trivial Haskell program in the browser.</p><p>We plan to write more of those blog post in the coming weeks and
 months as we add new features (e.g. support for &quot;foreign exports&quot; that will
 allow JavaScript code to call into Haskell code, support for Template Haskell,
 etc.). For now it relies on our &quot;insider&quot; knowledge (e.g. how the FFI works)
 that isn&#x27;t well documented elsewhere. We do plan to add a chapter about the
 JavaScript backend in GHC&#x27;s user guide, but for now your best chance is to look
-at GHCJS&#x27;s documentation or at the source code. In this post, we&#x27;ll build GHC as
-a JavaScript cross-compiler and run a trivial Haskell program in the browser.</p><p>Please note: this is a technology preview of the in-development JavaScript backend
+at GHCJS&#x27;s documentation or at the source code.</p><p>Please note: this is a technology preview of the in-development JavaScript backend
 for GHC. Not all Haskell features are implemented, and bugs are expected. It is
 currently rather complicated for JavaScript code to call into Haskell code (&quot;foreign
 exports&quot; aren&#x27;t implemented). GHC isn&#x27;t a multi-target compiler yet, so a GHC executable
@@ -310,7 +310,7 @@ example here is the logic that implements a <code>Maybe</code>:</p><div class="c
 in general please see <a href="#blogs">our other blog posts</a>. In any case, we invite you
 to try it out, hack, and be merry!</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="acknowledgements">Acknowledgements<a class="hash-link" href="#acknowledgements" title="Direct link to heading">​</a></h2><p>We want to thank Jan Hrcek, and David Thrane Christiansen for their time, labor,
 comments, and suggestions on drafts of this blog post.</p></div><footer class="row docusaurus-mt-lg"><div class="col col--9"><b>Tags:</b><ul class="tags_XVD_ padding--none margin-left--sm"><li class="tag_JSN8"><a class="tag_hD8n tagRegular_D6E_" href="/tags/ghc">ghc</a></li><li class="tag_JSN8"><a class="tag_hD8n tagRegular_D6E_" href="/tags/javascript">javascript</a></li><li class="tag_JSN8"><a class="tag_hD8n tagRegular_D6E_" href="/tags/cross-compilation">cross-compilation</a></li></ul></div><div class="col text--right col--3"><a aria-label="Read more about JavaScript backend merged into GHC" href="/2022-12-13-ghc-js-backend-merged"><b>Read More</b></a></div></footer></article></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items"><li class="footer__item"><a href="https://twitter.com/iog_eng" target="_blank" rel="noopener noreferrer" class="footer__link-item"><span>Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_I5OW"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></span></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items"><li class="footer__item"><a href="https://iohk.io/en/blog" target="_blank" rel="noopener noreferrer" class="footer__link-item">IOG Blog</a></li><li class="footer__item"><a href="https://github.com/input-output-hk/" target="_blank" rel="noopener noreferrer" class="footer__link-item"><span>GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_I5OW"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></span></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2023 IOG Engineering, Inc. Built with Docusaurus.</div></div></div></footer></div>
-<script src="/assets/js/runtime~main.71b3dbef.js"></script>
+<script src="/assets/js/runtime~main.5239dc11.js"></script>
 <script src="/assets/js/main.602e5b06.js"></script>
 </body>
 </html>
