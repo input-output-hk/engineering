@@ -1,5 +1,5 @@
 ---
-slug: 2023-01-18-javascript-browser-tutorial
+slug: 2023-01-24-javascript-browser-tutorial
 title: Using GHC's JavaScript Backend in the Browser
 authors: [sylvain, doyougnu, luite, josh]
 tags: [ghc, javascript, cross-compilation]
