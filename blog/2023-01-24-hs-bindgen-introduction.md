@@ -99,7 +99,7 @@ extern "C" fn __c_greetings(__0: *const core::ffi::c_char) -> () {
 --   header file) can't work in our case. Maybe we want a future with an
 --   {-# LANGUAGE RustApiFFI #-} language extension that would enable us to
 --   work on top of a `.rs` source file (or a `.rlib`, but this is unlikely as
---   this format has purposely no public specifications).
+--   this format has purposely no public specification).
 
 {-# OPTIONS_GHC -Wno-unused-imports #-}
 
