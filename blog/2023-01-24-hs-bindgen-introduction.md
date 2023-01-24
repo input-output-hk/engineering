@@ -33,9 +33,9 @@ FFI is a feature that's already offered by both `rustc` (Rust compiler) and `ghc
 
 So, what's lacking in Haskell ecosystem? Let's take a look at what kind of integration other languages offer with Rust:
 
-* From **X** to Rust with X=**C**, [`rust-bindgen`](https://github.com/rust-lang/rust-bindgen)
-* From Rust to **X** with X=**C**, [`c-bindgen`](https://github.com/eqrion/cbindgen) and X=**ECMAScript**, [`wasm-bindgen`](https://github.com/rustwasm/wasm-bindgen)
-* Both with X=**C++**, [`cxx`](https://github.com/dtolnay/cxx) and X=**Python**, [`PyO3`](https://github.com/PyO3/pyo3)
+* From **C** to Rust [`rust-bindgen`](https://github.com/rust-lang/rust-bindgen) ;
+* From Rust to **C** [`c-bindgen`](https://github.com/eqrion/cbindgen) and Rust to **ECMAScript**, [`wasm-bindgen`](https://github.com/rustwasm/wasm-bindgen) ;
+* Both from and to Rust with **C++** [`cxx`](https://github.com/dtolnay/cxx) and **Python** [`PyO3`](https://github.com/PyO3/pyo3).
 
 This list isn't exhaustive but give you a hint, all these projects are about generating bindings (bindgen)!
 
