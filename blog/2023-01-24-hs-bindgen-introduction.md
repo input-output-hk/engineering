@@ -156,7 +156,9 @@ Wrapping user types by these traits have several benefits:
 >
 > `rustc` will complain if a function prefixed by `extern` keyword use as arguments types that are not FFI-safe. FFI-safe types guarantee that a type has a [specified layout](https://doc.rust-lang.org/reference/type-layout.html) (memory representation) by e.g. having a [`#[repr(C)]`](https://doc.rust-lang.org/nomicon/other-reprs.html#reprc) compiler attribute, for the given C call convention.
 
-**To go further:** speaking of memory management, the strategy implemented here is: freeing the value is the role of the receiver (which has “ownership” of it). This means that, e.g. the type that return a Rust function, will not be [`Drop`](https://doc.rust-lang.org/std/ops/trait.Drop.html) by Rust but rather should be [`free`](https://hackage.haskell.org/package/base/docs/Foreign-Marshal-Alloc.html) on Haskell side! I also invite you to read *[“FFI safety and GC”](https://frasertweedale.github.io/blog-fp/posts/2022-09-23-ffi-safety-and-gc.html)* by Fraser Tweedale: a blog post discussing FFI `unsafe` keyword and Garbage Collection in Haskell.
+**To go further:** the memory management strategy is: freeing the value is the role of the receiver (which has “ownership” of it). This means that values returned by Rust functions aren't [`dropped`](https://doc.rust-lang.org/std/ops/trait.Drop.html) by Rust but rather should be [`freed`](https://hackage.haskell.org/package/base/docs/Foreign-Marshal-Alloc.html) on the Haskell side!
+
+Currently `hs-bindgen` only generates `unsafe` Haskell foreign imports. In the future it could generate `safe` ones too. I invite you to read *[“FFI safety and GC”](https://frasertweedale.github.io/blog-fp/posts/2022-09-23-ffi-safety-and-gc.html)* by Fraser Tweedale or GHC's users guide to understand the differences between `unsafe`/`safe`.
 
 ## DevX
 
