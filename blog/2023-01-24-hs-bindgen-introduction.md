@@ -190,4 +190,4 @@ Finally, it’s worth mentioning that there are also proposals to improve the in
 
 I would like to thank [@hsyl20](https://github.com/hsyl20), [@iquerejeta](https://github.com/iquerejeta) and [@govanify](https://github.com/govanify) for their reviews and for their helpful suggestions.
 
-Thanks for reading, feel free to experiment with this Proof of Concept and to provide feedbacks on GitHub :)
+Thanks for reading, feel free to experiment with this Proof of Concept and to provide feedback on GitHub!
