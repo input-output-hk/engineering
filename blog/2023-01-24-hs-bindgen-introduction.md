@@ -56,10 +56,7 @@ So, let's look at a minimal example. In this case, if we annotate a function lik
 ```rust
 use hs_bindgen::*;
 
-/// Haskell type signatures are auto-magically inferred from Rust function
-/// types! This feature could slow down compilation, and be enabled with:
-/// `hs-bindgen = { ..., features = [ "full" ] }`
-#[hs_bindgen]
+#[hs_bindgen(CString -> IO ())]
 fn greetings(name: &str) {
     println!("Hello, {name}!");
 }
@@ -74,7 +71,8 @@ fn greetings(name: &str) {
     println!("Hello, {name}!");
 }
 
-#[no_mangle] // Mangling makes symbol names more difficult to predict. We disable it to ensure that the resulting symbol is really `__c_greetings`.
+#[no_mangle] // Mangling makes symbol names more difficult to predict.
+             // We disable it to ensure that the resulting symbol is really `__c_greetings`.
 extern "C" fn __c_greetings(__0: *const core::ffi::c_char) -> () {
     // `traits` module is `hs-bindgen::hs-bindgen-traits`
     // n.b. do not forget to import it, e.g., with `use hs-bindgen::*`
@@ -156,7 +154,7 @@ Wrapping user types by these traits have several benefits:
 >
 > `rustc` will complain if a function prefixed by `extern` keyword use as arguments types that are not FFI-safe. FFI-safe types guarantee that a type has a [specified layout](https://doc.rust-lang.org/reference/type-layout.html) (memory representation) by e.g. having a [`#[repr(C)]`](https://doc.rust-lang.org/nomicon/other-reprs.html#reprc) compiler attribute, for the given C call convention.
 
-**To go further:** the memory management strategy is: freeing the value is the role of the receiver (which has “ownership” of it). This means that values returned by Rust functions aren't [`dropped`](https://doc.rust-lang.org/std/ops/trait.Drop.html) by Rust but rather should be [`freed`](https://hackage.haskell.org/package/base/docs/Foreign-Marshal-Alloc.html) on the Haskell side!
+**To go further:** the memory management strategy is freeing the value is the role of the receiver (which has “ownership” of it). This means that values returned by Rust functions aren't [`dropped`](https://doc.rust-lang.org/std/ops/trait.Drop.html) by Rust but rather should be [`freed`](https://hackage.haskell.org/package/base/docs/Foreign-Marshal-Alloc.html) on the Haskell side!
 
 Currently `hs-bindgen` only generates `unsafe` Haskell foreign imports. In the future it could generate `safe` ones too. I invite you to read *[“FFI safety and GC”](https://frasertweedale.github.io/blog-fp/posts/2022-09-23-ffi-safety-and-gc.html)* by Fraser Tweedale or GHC's users guide to understand the differences between `unsafe`/`safe`.
 
