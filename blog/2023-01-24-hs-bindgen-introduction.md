@@ -114,11 +114,9 @@ In Rust, [`extern`](https://doc.rust-lang.org/book/ch19-01-unsafe-rust.html#usin
 
 > **Why C ABI (Application Binary Interface)?**
 >
-> The Rust [ABI](https://doc.rust-lang.org/reference/items/external-blocks.html#abi) (call-convention and types [memory layout](https://cheats.rs/#memory-layout)) isn’t stable. That means that it’s specified internally but could be broken by any `rustc` minor release, building a software on top of it is by definition a “hack” …
->
-> And, if we think it’s worth it, we would have to perform our bindgen against a given `rustc` version (and that would be really laborious to maintain) …
->
-> So, do not fear the C ABI … because, at least, it is stable!
+> First, GHC currently doesn't know anything about Rust calling convention, while it does about C's one: C's calling convention is the [_lingua franca_](https://en.wikipedia.org/wiki/Mediterranean_Lingua_Franca) of `rustc`/`ghc`.
+> 
+> Additionally, the Rust [ABI](https://doc.rust-lang.org/reference/items/external-blocks.html#abi) (call-convention and types [memory layout](https://cheats.rs/#memory-layout)) isn’t stable. That means that it’s specified internally but could be broken by any `rustc` minor release, building a software on top of it is by definition a “hack” … If we think it’s worth it, we would have to perform our bindgen against a given `rustc` version (and that would be really laborious to maintain). So, do not fear the C ABI because, at least, it is stable!
 >
 > **To go further:** I invite you to read *[“Rust does not have a stable ABI”](https://viruta.org/rust-stable-abi.html)* by Federico Mena Quintero: a blog post discussing how much the absence of Rust stable ABI isn't a big deal in the context of GTK development. Highlighting that *[“How Swift Achieved Dynamic Linking Where Rust Couldn't”](https://faultlore.com/blah/swift-abi/)* by Aria Beingessner isn't so far from [`GObject` Introspection](https://gi.readthedocs.io/en/latest/) strategy!
 
