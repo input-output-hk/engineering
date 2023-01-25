@@ -21,15 +21,17 @@ JavaScript backend in GHC's user guide, but for now your best chance is to look
 at GHCJS's documentation or at the source code. In this post, we'll build GHC as
 a JavaScript cross-compiler and run a trivial Haskell program in the browser.
 
-Please note: this is a technology preview of the in-development JavaScript backend
-for GHC. Not all Haskell features are implemented, and bugs are expected. It is
-currently rather complicated for JavaScript code to call into Haskell code ("foreign
-exports" aren't implemented). GHC isn't a multi-target compiler yet, so a GHC executable
-built for a native platform (Linux/x86-64, Windows/x86-64, Darwin/AArch64...) as currently distributed (via ghcup, Stack, binary distributions, etc.) won't be able to produce JavaScript. Official prebuilt binary distributions are likely to remain
-unavailable until GHC gains multi-target support - requiring the JavaScript backend
-to be built from source even after the backend matures.
-That's why we start this post with the required steps to build yourself
-a GHC compiler capable of producing JavaScript.
+Please note: this is a technology preview of the in-development JavaScript
+backend for GHC. Not all Haskell features are implemented, and bugs are
+expected. It is currently rather complicated for JavaScript code to call into
+Haskell code ("foreign exports" aren't implemented). GHC isn't a multi-target
+compiler yet, so a GHC executable built for a native platform (Linux/x86-64,
+Windows/x86-64, Darwin/AArch64...) as currently distributed (via ghcup, Stack,
+binary distributions, etc.) won't be able to produce JavaScript. Official
+pre-built binary distributions are likely to remain unavailable until GHC gains
+multi-target support - requiring the JavaScript backend to be built from source
+even after the backend matures. That's why we start this post with the required
+steps to build yourself a GHC compiler capable of producing JavaScript.
 
 ## Building GHC as a Cross Compiler to JavaScript
 
@@ -215,8 +217,8 @@ Hello, JavaScript!
 Notice that a directory called `HelloJS.jsexe` was created. This directory
 contains all the final JavaScript code, including a file named `all.js`, and a
 minimal `index.html` HTML file that wraps `all.js`. For now, we'll only care
-about `all.js` and return to `index.html later. `all.js` _is_ the payload of our
-`HelloJS` exectuable. The executable is simply a copy of `all.js`, with a call
+about `all.js` and return to `index.html` later. `all.js` _is_ the payload of our
+`HelloJS` executable. The executable is simply a copy of `all.js`, with a call
 to `node` added to the top. We could have equivalently run our program with:
 
 ```
@@ -227,7 +229,7 @@ node HelloJS.jsexe/all.js
 
 We saw in the previous example that GHC's JavaScript backend allows us to write
 Haskell and run the output JavaScript with NodeJS. This produces a portable
-executable, but otherwise doesn't enable anything we couldn't do before; GHC can
+executable but otherwise doesn't enable anything we couldn't do before; GHC can
 already compile Haskell to run on most platforms! So let's do something novel,
 and run Haskell in the browser.
 
