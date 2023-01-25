@@ -23,7 +23,9 @@ One typical use case concerns cryptographic primitives which must be very perfor
 > 1. designing a protocol that allows two codes written with different languages and using different runtime systems to communicate
 > 2. designing tools and methods to build, to bundle, and to distribute such polyglot code bases (what developers fear most)
 >
-> Why not just use, e.g., [Google Protobuf](https://developers.google.com/protocol-buffers) over a [Unix Domain Socket](https://en.wikipedia.org/wiki/Unix_domain_socket)? How to make a choice in this landscape of solutions available? First, I will argue that we want something fast, say, by reducing its overhead to the minimal footprint of extra computations. So, we want to avoid use of any OS capabilities, like I/Os (that will cost you a full roundtrip) and the needs (De)Serialization.
+> As our main criterion is performance, we want a solution with a minimal overhead. In particular, we want to avoid the use of any solution that relies on syscalls (like I/Os) and on costly data (de)serialization.
+>
+> It leads us to exclude solutions such as IPC (Inter-Process Communication), e.g., using [Google Protobuf](https://developers.google.com/protocol-buffers) over a [Unix Domain Socket](https://en.wikipedia.org/wiki/Unix_domain_socket).
 >
 > FFI looks like the right choice, it doesn’t rely on any syscall, at runtime they just behave as a jump in memory. Unfortunately, it comes at a cost of careful special attention on following call-conventions and handling memory management, we will come back to it later!
 >
