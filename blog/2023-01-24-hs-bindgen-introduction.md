@@ -126,15 +126,13 @@ The previous code example highlighted that we rely on two constructs: an attribu
 
 > **Why use a Rust macro?**
 >
-> Binding code generation could have been achieved using an external tool, e.g., `c-bindgen` parses Rust code (before macro expansion) and deduces the right C function signatures.
+> Binding code generation could have been achieved using an external tool, e.g., `cbindgen` parses Rust code (before macro expansion) and deduces C function signatures.
 >
 > But instead we decided to define a custom macro (like `cxx`, `wasm-bindgen`, and `PyO3` do), and so we require the user to depend on a custom crate.
 >
 > The reason is that we want generated bindings to always match the source code used for their generation. By using a macro we enforce binding generation during the build process and bindings can't get out-of-sync.
 >
-> The natural way to do that in Rust, and to have directly access to source code's AST (Abstract Syntax Tree), rather than trying to implement a parser, is to use a macro!
->
-> **To go further:** `c-bindgen` is well known to be buggy! It's a flaw in its design to have a custom Rust source parser, rather using the framework implement here for `hs-bindgen` would allow us to provide a better `c-bindgen` implementation.
+> **To go further:** `cbindgen` has a major limitation in that it does not understand Rust's module system or namespacing. As mentioned in its [documentation](https://github.com/eqrion/cbindgen/blob/master/docs.md#writing-your-c-api), this means that if `cbindgen` sees that it needs the definition for `MyType` and there exists two things in your project with the type name `MyType`, it won't know what to do. Rather, using the framework implemented here for `hs-bindgen` would allow us to provide a better `c-bindgen` implementation.
 
 Wrapping user types by these traits have several benefits:
 
