@@ -49,7 +49,7 @@ This list isn't exhaustive but give you a hint, all these projects are about gen
 
 ## Example
 
-So, let's look at a minimal example. In this case, if we annotate a function like this:
+Let's start with a minimal example: automatically generating bindings allowing Haskell codes to call a given Rust function. It is simply done by annotating the Rust function as follows:
 
 ```rust
 use hs_bindgen::*;
