@@ -20,8 +20,9 @@ One typical use case concerns cryptographic primitives which must be very perfor
 > **Why FFI (Foreign Function Interface)?**
 >
 > Solving the [interoperability](https://docs.rust-embedded.org/book/interoperability/) problem means:
-> 1. designing a protocol that allows two codes written with different languages and using different runtime systems to communicate
-> 2. designing tools and methods to build, to bundle, and to distribute such polyglot code bases (what developers fear most)
+>
+> 1. designing a protocol that allows two codes written with different languages and using different runtime systems to communicate ;
+> 2. designing tools and methods to build, to bundle, and to distribute such polyglot code bases (what developers fear most).
 >
 > As our main criterion is performance, we want a solution with a minimal overhead. In particular, we want to avoid the use of any solution that relies on syscalls (like I/Os) and on costly data (de)serialization.
 >
