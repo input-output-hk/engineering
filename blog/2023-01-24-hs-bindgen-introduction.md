@@ -134,6 +134,8 @@ The previous code example highlighted that we rely on two constructs: an attribu
 >
 > **To go further:** `cbindgen` has a major limitation in that it does not understand Rust's module system or namespacing. As mentioned in its [documentation](https://github.com/eqrion/cbindgen/blob/master/docs.md#writing-your-c-api), this means that if `cbindgen` sees that it needs the definition for `MyType` and there exists two things in your project with the type name `MyType`, it won't know what to do. Rather, using the framework implemented here for `hs-bindgen` would allow us to provide a better `c-bindgen` implementation.
 
+`ReprRust` and `ReprC` traits respectively ensure that the arguments and return value of exposed function respect a set of given safety rules. As a recall, Rust's traits are similar to Haskell's typeclasses: it’s a way to define a contract for a type, specifying a set of methods that the type must implement. This allows for generic programming, where a function or data structure can operate on any type that implements the given set of traits.
+
 Wrapping user types by these traits have several benefits:
 
 * Unsupported types are nicely reported as _“the trait `ReprRust<T>` is not implemented for `U`”_ error (that suggest other types that the trait implement to the user);
