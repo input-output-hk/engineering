@@ -27,7 +27,7 @@ One typical use case concerns cryptographic primitives which must be very perfor
 >
 > It leads us to exclude solutions such as IPC (Inter-Process Communication), e.g., using [Google Protobuf](https://developers.google.com/protocol-buffers) over a [Unix Domain Socket](https://en.wikipedia.org/wiki/Unix_domain_socket).
 >
-> FFI looks like the right choice, it doesn’t rely on any syscall, at runtime they just behave as a jump in memory. Unfortunately, it comes at a cost of careful special attention on following call-conventions and handling memory management, we will come back to it later!
+> FFI looks like the right choice: no syscall, a foreign function call just behaves as a jump in memory and there is no extra data (de)serialization involved. The price to pay for this performance is that using the FFI requires special care to low-level calling conventions and memory management of the two involved systems. But we will come back to this topic later!
 >
 > **To go further:** you can learn more about how to use FFI in Rust by reading the [_The Rustonomicon_](https://doc.rust-lang.org/nomicon/ffi.html) (Unsafe Rust guide) dedicated section, or the dedicated [_Rust FFI Omnibus_](http://jakegoulding.com/rust-ffi-omnibus/) tutorial. The ANSSI (French government security agency) also write about it in [_Secure Rust Guidelines_](https://anssi-fr.github.io/rust-guide/07_ffi.html) guide, and _Rust Embedded_ book have an [Interoperability with C](https://docs.rust-embedded.org/book/interoperability/rust-with-c.html) chapter. On the Haskell side, you way want to take a look at [GHC wiki](https://wiki.haskell.org/GHC/Using_the_FFI) or read the dedicated [_Real-World Haskell_](https://book.realworldhaskell.org/read/interfacing-with-c-the-ffi.html) chapter!
 
