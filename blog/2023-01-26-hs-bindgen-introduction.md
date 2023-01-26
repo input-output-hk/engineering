@@ -1,5 +1,5 @@
 ---
-slug: 2023-01-25-hs-bindgen-introduction
+slug: 2023-01-26-hs-bindgen-introduction
 title: One step forward, an easier interoperability between Rust and Haskell
 authors: [yvan]
 tags: [cabal, rust, bindgen]
@@ -181,6 +181,6 @@ It would be delightful to get as far as having custom preludes in Haskell bindin
 
 Finally, it’s worth mentioning that there are also proposals to improve the interface between Haskell programs requiring Rust libraries, including this Cabal [RFC](https://github.com/haskell/cabal/issues/7906). As a reminder, the implementation proposed here does not provide support for Haskell dependencies in Rust project yet, but there is a previous [unmaintained attempt](https://github.com/mgattozzi/curryrs) by Michael Gattozzi to bring Haskell runtime support to Rust binaries. We should also keep a close look on the Rust RFC that offers to introduce a `#[repr(interop)]` attribute: [Experimental feature gate proposal `interoperable_abi`](https://github.com/rust-lang/rust/pull/105586).
 
-I would like to thank [@hsyl20](https://github.com/hsyl20), [@iquerejeta](https://github.com/iquerejeta), [@govanify](https://github.com/govanify), and [@doyougnu](https://github.com/doyougnu) for their reviews and for their helpful suggestions.
+I would like to thank [@doyougnu](https://github.com/doyougnu), [@hsyl20](https://github.com/hsyl20), [@govanify](https://github.com/govanify), and [@iquerejeta](https://github.com/iquerejeta) for their reviews and for their helpful suggestions.
 
 Thanks for reading, feel free to experiment with this proof of concept and to provide feedback on GitHub!
