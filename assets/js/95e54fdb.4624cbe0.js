@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkengineering_iog_io=self.webpackChunkengineering_iog_io||[]).push([[7963],{6290:function(a){a.exports=JSON.parse('{"allTagsPath":"/tags","slug":"/tags/cabal","name":"cabal","count":1,"permalink":"/tags/cabal"}')}}]);
