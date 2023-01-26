@@ -57,7 +57,7 @@ Let's start with a minimal example: automatically generating bindings allowing H
 ```rust
 use hs_bindgen::*;
 
-#[hs_bindgen(CString -> IO ())]
+#[hs_bindgen(greetings :: CString -> IO ())]
 fn greetings(name: &str) {
     println!("Hello, {name}!");
 }
