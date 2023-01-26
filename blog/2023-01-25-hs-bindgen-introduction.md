@@ -159,7 +159,7 @@ Currently `hs-bindgen` only generates `unsafe` Haskell foreign imports. In the f
 
 ## DevX
 
-[`cargo-cabal`](https://github.com/yvan-sraka/cargo-cabal) is a CLI tool that helps you, in one simple command, turning a Rust crate into a Haskell Cabal library!
+[`cargo-cabal`](https://github.com/yvan-sraka/cargo-cabal) is a CLI tool that helps you, in one simple command, turn a Rust crate into a Haskell Cabal library!
 
 I was heavily inspired by the developer experience that offers [`wasm-pack`](https://rustwasm.github.io/docs/wasm-pack/) or [`maturin`](https://github.com/PyO3/maturin): launched in any Rust project folder, these tools help the user to interactively tweak their `Cargo.toml` package file and generate the build files needed by Node.js `npm` or Python `setuptools`.
 
