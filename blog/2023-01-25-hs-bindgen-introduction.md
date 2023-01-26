@@ -173,7 +173,7 @@ What `cargo-cabal` actually does is:
 
 ## What's next?
 
-[`cargo-cabal`](https://github.com/yvan-sraka/cargo-cabal) and [`hs-bindgen`](https://github.com/yvan-sraka/hs-bindgen) combined are less than 1000 LoC, they also support Rust `#[no_std]` code, and I would be glad to keep them as [KISS](https://en.wikipedia.org/wiki/KISS_principle) and modular as possible. But there is still room for improvements, e.g. by adding traits' implementations for more Rust `std` types, or why not supporting `async` functions with [`async-ffi`](https://github.com/oxalica/async-ffi)?!
+[`cargo-cabal`](https://github.com/yvan-sraka/cargo-cabal) and [`hs-bindgen`](https://github.com/yvan-sraka/hs-bindgen) combined are less than 1000 LoC, they also support Rust `#[no_std]` code, and I would be glad to keep them as [KISS](https://en.wikipedia.org/wiki/KISS_principle) and modular as possible. But there is still room for improvements, e.g., by adding trait implementations for more Rust `std` types, or possibly supporting `async` functions with [`async-ffi`](https://github.com/oxalica/async-ffi)?!
 
 Furthermore, It’s also nice to give a sneak peek on what others do for comparison: **OCaml** [allows extensions to be written directly in Rust with no C stubs](https://docs.rs/ocaml), this work was supported from the [OCaml Software Foundation](http://ocaml-sf.org/) and you can find [a basic example project here](http://github.com/zshipko/ocaml-rust-starter). It offers [safe OCaml/Rust interoperability](https://github.com/simplestaking/ocaml-interop), meaning utilities to convert ADTs (Algebraic Data Types) and functions using them.
 
