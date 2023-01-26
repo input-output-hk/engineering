@@ -9,6 +9,109 @@
     <icon>https://engineering.iog.io/img/favicon.ico</icon>
     <rights>Copyright © 2023 IOG, Inc.</rights>
     <entry>
+        <title type="html"><![CDATA[GHC DevX Update 2023-01-26]]></title>
+        <id>2023-01-26-ghc-update</id>
+        <link href="https://engineering.iog.io/2023-01-26-ghc-update"/>
+        <updated>2023-01-26T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[This is the second biweekly update of the IOG GHC DevX team.]]></summary>
+        <content type="html"><![CDATA[<p>This is the second biweekly update of the IOG GHC DevX team.
+You can find the previous one <a href="https://engineering.iog.io/2023-01-12-ghc-update" target="_blank" rel="noopener noreferrer">here</a>.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="javascript-backend">JavaScript backend<a class="hash-link" href="#javascript-backend" title="Direct link to heading">​</a></h2><h3 class="anchor anchorWithStickyNavbar_mojV" id="template-haskell">Template Haskell<a class="hash-link" href="#template-haskell" title="Direct link to heading">​</a></h3><p>Sylvain continued his work on the implementation of Template Haskell for the JS
+backend. He factorized the code from <code>iserv</code> and <code>libiserv</code> into the <code>ghci</code>
+library. This makes it easy for GHC to load and run the external interpreter
+server (<code>iserv</code>) that ends up compiled into JavaScript in a NodeJS instance. He
+modified GHC to avoid creating ByteCode objects (which are unsupported by the JS
+backend) and to instead compile and link JavaScript code.</p><p>Template Haskell basically works with the JavaScript backend now, except for a few
+corner cases (such as one-shot mode), but these should be fixed in the coming
+days/weeks.</p><p>Luite modified Sylvain's JavaScript code to fix support for Darwin and Windows. If you
+want to test it, a draft merge request has been opened:
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9779" target="_blank" rel="noopener noreferrer">https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9779</a></p><h3 class="anchor anchorWithStickyNavbar_mojV" id="javascript-backend-in-the-browser-tutorial">JavaScript backend in the browser tutorial<a class="hash-link" href="#javascript-backend-in-the-browser-tutorial" title="Direct link to heading">​</a></h3><p>Josh published a tutorial about using code produced by the JavaScript backend in a web
+page:
+<a href="https://engineering.iog.io/2023-01-24-javascript-browser-tutorial" target="_blank" rel="noopener noreferrer">https://engineering.iog.io/2023-01-24-javascript-browser-tutorial</a></p><h3 class="anchor anchorWithStickyNavbar_mojV" id="cabal-support-for-js-sources">Cabal support for js-sources<a class="hash-link" href="#cabal-support-for-js-sources" title="Direct link to heading">​</a></h3><p>Sylvain added tests to his patch that adds cabal support for the <code>js-sources</code>
+stanza when GHC is used as a compiler (and not only when GHCJS is used as a
+compiler), allowing the patch to be merged:
+<a href="https://github.com/haskell/cabal/pull/8636" target="_blank" rel="noopener noreferrer">https://github.com/haskell/cabal/pull/8636</a></p><p><a href="https://github.com/haskell/cabal/issues/8639" target="_blank" rel="noopener noreferrer">https://github.com/haskell/cabal/issues/8639</a> is still open though so be careful
+if you try to use <code>js-sources</code>, they still don't work in some cases.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="javascript-backend-ci">JavaScript backend CI<a class="hash-link" href="#javascript-backend-ci" title="Direct link to heading">​</a></h3><p>The <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9552" target="_blank" rel="noopener noreferrer">JavaScript backend
+CI</a> has been an
+ongoing saga for the last month, and has been a blocking item for JavaScript
+Backend development. Thankfully it is close to being merged. This week, Jeff
+rebased the CI to discover that recent
+<a href="https://gitlab.haskell.org/ghc/ghc/-/commit/d31fcbca6cf4bc166904cfd25696503401ad631d" target="_blank" rel="noopener noreferrer">changes</a>
+removed <code>nodejs</code> (the <code>node</code> that is bundled with emscripten) from the CI
+containers <code>$PATH</code>. So Jeff patched the CI images to add <code>node</code>. Now the CI runs
+and has discovered two new bugs even before being merged. All that is left is to
+bump some submodules and the CI will be ready to land in GHC HEAD.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="filestat">FileStat<a class="hash-link" href="#filestat" title="Direct link to heading">​</a></h3><p>Josh opened an MR to match the layout of the JavaScript <code>fileStat</code> with the
+layout of the equivalent struct defined in Emscripten's <code>stat.h</code>. This is needed
+to ensure that hsc2hs features work correctly with this data type. Hsc2hs features
+can peek at memory locations directly without using accessor functions, and the
+memory locations are taken from the header file, hence the requirement to match
+these layouts.</p><p>This MR only touches JavaScript files, so we're waiting on the approval of the
+JS CI before continuing. For more information, see
+<a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22573" target="_blank" rel="noopener noreferrer">https://gitlab.haskell.org/ghc/ghc/-/issues/22573</a></p><h3 class="anchor anchorWithStickyNavbar_mojV" id="javascript-rts-refactor">JavaScript RTS refactor<a class="hash-link" href="#javascript-rts-refactor" title="Direct link to heading">​</a></h3><p>Josh refactored parts of the GHC.StgtoJS.Rts.Rts module to remove special cases
+from one of the n-argument JavaScript RTS functions, and combined these cases
+into a general case. Thus, simplifying the Rts module's code.</p><p>Josh also improved the caching in the JavaScript Backend for commonly used names
+in the generated JavaScript ASTs. Previously, names such as <code>x1</code> would require
+allocation <em>for each</em> use: first by allocating a <code>String</code>, which was then
+converted to a GHC <code>FastString</code>, which was finally wrapped in a JavaScript AST
+data constructor. Now, these names are captured in a static CAF'd <code>Array</code> and
+each reference was replaced with a lookup to the corresponding slot in the
+array. This avoids the extra allocations and ensures these names are shared.</p><p>For the full set of refactors, see:
+<a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22822" target="_blank" rel="noopener noreferrer">https://gitlab.haskell.org/ghc/ghc/-/issues/22822</a></p><h3 class="anchor anchorWithStickyNavbar_mojV" id="javascript-edsl">JavaScript EDSL<a class="hash-link" href="#javascript-edsl" title="Direct link to heading">​</a></h3><p>Jeff began work on a new eDSL to replace the existing DSL the JavaScript Backend
+inherited from GHCJS. This solves a <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22736" target="_blank" rel="noopener noreferrer">design
+problem</a>. The existing DSL in
+the JavaScript Backend is used for two things: (1) to write the JavaScript
+Backend's garbage collector, runtime system and other low level bits; (2) as a
+target for optimizations; (3) as the source for code generation. This becomes
+problematic because the existing DSL tries to do so much that it ends up not
+being particularly good at (1), (2) and (3).</p><p>The fix is to separate concerns by writing a new DSL for (1). The DSL is Type
+Safe and based on the <a href="https://github.com/ku-fpg/sunroof-compiler" target="_blank" rel="noopener noreferrer">Sunroof
+compiler</a> (Thanks Andy Gill et al.
+for your labor!). Then, we'll compile the new DSL to the existing GHCJS DSL.
+This way we can slowly begin to replace JavaScript Backend code module by
+module, thus gaining type safety while still continuing other work. The end game
+of this project is to eventually remove the GHCJS DSL entirely and then compile
+our new DSL to a better intermediate representation that is explicitly crafted
+to make optimizations easier.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="blog-posts">Blog posts<a class="hash-link" href="#blog-posts" title="Direct link to heading">​</a></h3><p>Luite has been working on new blog posts about internals of the GHC JavaScript
+backend and a strategy guide for debugging the generated JavaScript code. These
+will be published in the coming weeks.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="javascript-backend-configuration-issue-in-a-docker-image">JavaScript backend configuration issue in a Docker image<a class="hash-link" href="#javascript-backend-configuration-issue-in-a-docker-image" title="Direct link to heading">​</a></h3><p>Sylvain debugged a configuration issue of GHC with the JavaScript backend (see
+<a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22814" target="_blank" rel="noopener noreferrer">#22814</a>).
+The recommended way to configure is to use the following command line:</p><div class="codeBlockContainer_I0IT theme-code-block"><div class="codeBlockContent_wNvx"><pre tabindex="0" class="prism-code language-text codeBlock_jd64 thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_mRuA"><span class="token-line" style="color:#393A34"><span class="token plain">emconfigure ./configure --target=js-unknown-ghcjs</span><br></span></code></pre><button type="button" aria-label="Copy code to clipboard" class="copyButton_wuS7 clean-btn">Copy</button></div></div><p>where <code>emconfigure</code> is provided by the Emscripten project and sets appropriate
+environment variables (CC, LD, AR...).</p><p>However in some cases it seems like these variables are set as follows:</p><div class="codeBlockContainer_I0IT theme-code-block"><div class="codeBlockContent_wNvx"><pre tabindex="0" class="prism-code language-text codeBlock_jd64 thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_mRuA"><span class="token-line" style="color:#393A34"><span class="token plain">CC=emcc</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">LD=emcc</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">...</span><br></span></code></pre><button type="button" aria-label="Copy code to clipboard" class="copyButton_wuS7 clean-btn">Copy</button></div></div><p>in which case GHC's <code>configure</code> script will silently ignores them... and uses
+the C compiler for the host platform instead (x86-64, aarch64...). As the C
+compiler is only used for the CPP pass, it results in some inscrutable errors.
+In <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22814" target="_blank" rel="noopener noreferrer">#22814</a> the error is due
+to <code>CSize</code> being inferred as a 64-bit type while it should be 32-bit for the
+JavaScript platform, leading to CSize values being passed as 2 arguments in FFI
+calls while the callee expects 1.</p><p>Calling <code>configure</code> with the right environment variables fixes the issue:</p><div class="codeBlockContainer_I0IT theme-code-block"><div class="codeBlockContent_wNvx"><pre tabindex="0" class="prism-code language-text codeBlock_jd64 thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_mRuA"><span class="token-line" style="color:#393A34"><span class="token plain">./configure CC=$(which emcc) LD=$(which emcc) --target=js-unknown-ghcjs</span><br></span></code></pre><button type="button" aria-label="Copy code to clipboard" class="copyButton_wuS7 clean-btn">Copy</button></div></div><h3 class="anchor anchorWithStickyNavbar_mojV" id="discussion-about-javascript-backend-maturity">Discussion about JavaScript backend maturity<a class="hash-link" href="#discussion-about-javascript-backend-maturity" title="Direct link to heading">​</a></h3><p>Quite some time was spent discussing users' expectations about the JavaScript and WASM backends.
+We would like to make it very clear that even if GHCJS has been here for a long time,
+the JavaScript backend doesn't yet have the same level of maturity.</p><p>Bugs, missing features, and sub-par performance are to be expected in the 9.6 release.
+We encourage adventurous users to try out this release and send us feedback, but it's
+best to exercise caution before relying on it for production.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="compiler-performance">Compiler performance<a class="hash-link" href="#compiler-performance" title="Direct link to heading">​</a></h2><h3 class="anchor anchorWithStickyNavbar_mojV" id="more-strict-break">More-strict <code>break</code><a class="hash-link" href="#more-strict-break" title="Direct link to heading">​</a></h3><p>Josh did more investigation into the performance difference that introducing
+some strictness into the <code>break</code> function would make. The STG and microbenchmarks
+are very promising, but using the "compile cabal" benchmark, there doesn't seem
+to be a noticable time difference caused by the change. In terms of memory, it
+seems to reduce GC copying, but slightly increase overall allocations and total
+memory usage.</p><p>There's pathological cases in using a strict break by default - for example in the
+<code>lines</code> function. Because of this, it's likely that this optimization would have
+the most benefit if applied in isolated cases in GHC, if any pathological lazy
+cases are found.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="misc">Misc<a class="hash-link" href="#misc" title="Direct link to heading">​</a></h2><h3 class="anchor anchorWithStickyNavbar_mojV" id="cross-compilation-from-linuxdarwin-to-windows">Cross-compilation from Linux/Darwin to Windows<a class="hash-link" href="#cross-compilation-from-linuxdarwin-to-windows" title="Direct link to heading">​</a></h3><p>Ticket <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22805" target="_blank" rel="noopener noreferrer">#22805</a> reminded Sylvain that he had made <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9310" target="_blank" rel="noopener noreferrer">MR !9310</a> more than two months ago to fix the same issue: cross-compilation from Linux/Darwin to Windows. The MR has now been updated, tested, reviewed, and merged.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="hadrian-rules-to-build-the-sphinx-based-docs">Hadrian rules to build the Sphinx-based docs<a class="hash-link" href="#hadrian-rules-to-build-the-sphinx-based-docs" title="Direct link to heading">​</a></h3><p>Sylvain started working on adding a chapter about the JavaScript in GHC's Users Guide.
+The first step was to fix Hadrian's build rules for the Users Guide (<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9795" target="_blank" rel="noopener noreferrer">MR !9795</a>)</p>]]></content>
+        <author>
+            <name>Sylvain Henry</name>
+        </author>
+        <author>
+            <name>Jeffrey M. Young</name>
+            <uri>https://iog.io/en/</uri>
+        </author>
+        <author>
+            <name>Luite Stegeman</name>
+        </author>
+        <author>
+            <name>Joshua Meredith</name>
+            <uri>https://iog.io/en/</uri>
+        </author>
+        <category label="ghc" term="ghc"/>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[One step forward, an easier interoperability between Rust and Haskell]]></title>
         <id>2023-01-26-hs-bindgen-introduction</id>
         <link href="https://engineering.iog.io/2023-01-26-hs-bindgen-introduction"/>
