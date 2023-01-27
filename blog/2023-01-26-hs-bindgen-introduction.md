@@ -155,7 +155,7 @@ Wrapping user types by these traits have several benefits:
 
 **To go further:** the memory management strategy is freeing the value is the role of the receiver (which has “ownership” of it). This means that values returned by Rust functions aren't [`dropped`](https://doc.rust-lang.org/std/ops/trait.Drop.html) by Rust but rather should be [`freed`](https://hackage.haskell.org/package/base/docs/Foreign-Marshal-Alloc.html) on the Haskell side!
 
-Currently `hs-bindgen` only generates `unsafe` Haskell foreign imports. In the future it could generate `safe` ones too. I invite you to read *[“FFI safety and GC”](https://frasertweedale.github.io/blog-fp/posts/2022-09-23-ffi-safety-and-gc.html)* by Fraser Tweedale or GHC's users guide to understand the differences between `unsafe`/`safe`.
+**EDIT:*** Thanks to community feedbacks from Merijn Verstraaten, I just released `hs-bindgen` v0.8.0 that now generates `safe` Haskell foreign imports by default! You can still generate `unsafe` bindings simply by prefixing a function name like `#[hs_bindgen(unsafe NAME :: TYPE)]` in Rust attribute macro. I invite you to read *[“FFI safety and GC”](https://frasertweedale.github.io/blog-fp/posts/2022-09-23-ffi-safety-and-gc.html)* by Fraser Tweedale or GHC's users guide to understand the differences between Haskell `unsafe`/`safe` keywords.
 
 ## DevX
 
