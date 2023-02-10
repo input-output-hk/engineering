@@ -110,6 +110,7 @@ The first step was to fix Hadrian's build rules for the Users Guide (<a href="ht
             <uri>https://iog.io/en/</uri>
         </author>
         <category label="ghc" term="ghc"/>
+        <category label="ghc-update" term="ghc-update"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[One step forward, an easier interoperability between Rust and Haskell]]></title>
@@ -261,6 +262,7 @@ fixes and documentation.</p></li></ul>]]></content>
             <uri>https://iog.io/en/</uri>
         </author>
         <category label="ghc" term="ghc"/>
+        <category label="ghc-update" term="ghc-update"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[JavaScript backend merged into GHC]]></title>
@@ -780,6 +782,7 @@ be published shortly.</p>]]></content>
             <name>Sylvain Henry</name>
         </author>
         <category label="ghc" term="ghc"/>
+        <category label="ghc-update" term="ghc-update"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[The GHCJS Linker]]></title>
@@ -958,6 +961,7 @@ Jeff has been steadily writing some initial material as per the project plan.</p
             <name>Sylvain Henry</name>
         </author>
         <category label="ghc" term="ghc"/>
+        <category label="ghc-update" term="ghc-update"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[GHC DevX May 2022 Update]]></title>
@@ -989,6 +993,7 @@ More about this in the upcoming months.</p>]]></content>
             <name>Sylvain Henry</name>
         </author>
         <category label="ghc" term="ghc"/>
+        <category label="ghc-update" term="ghc-update"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[Objectable vs GHC Binary]]></title>
@@ -1047,6 +1052,7 @@ very welcome!</p>]]></content>
             <uri>https://iog.io/en/</uri>
         </author>
         <category label="ghc" term="ghc"/>
+        <category label="ghc-update" term="ghc-update"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[Setting up Csaba's External STG Interpreter]]></title>
@@ -1113,6 +1119,7 @@ handbook</a>.<a href="#fnref-1" class="footnote-backref">↩</a></li></ol></div>
             <name>Sylvain Henry</name>
         </author>
         <category label="ghc" term="ghc"/>
+        <category label="ghc-update" term="ghc-update"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[haskell.nix March Update]]></title>
@@ -1134,6 +1141,7 @@ handbook</a>.<a href="#fnref-1" class="footnote-backref">↩</a></li></ol></div>
             <name>Sylvain Henry</name>
         </author>
         <category label="ghc" term="ghc"/>
+        <category label="ghc-update" term="ghc-update"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[2021 GHC update]]></title>
@@ -1146,6 +1154,7 @@ handbook</a>.<a href="#fnref-1" class="footnote-backref">↩</a></li></ol></div>
             <name>Sylvain Henry</name>
         </author>
         <category label="ghc" term="ghc"/>
+        <category label="ghc-update" term="ghc-update"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[haskell.nix February Update]]></title>
@@ -1167,6 +1176,7 @@ handbook</a>.<a href="#fnref-1" class="footnote-backref">↩</a></li></ol></div>
             <name>Sylvain Henry</name>
         </author>
         <category label="ghc" term="ghc"/>
+        <category label="ghc-update" term="ghc-update"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[haskell.nix January Update]]></title>
