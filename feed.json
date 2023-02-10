@@ -241,7 +241,11 @@
                 "name": "Luite Stegeman"
             },
             "tags": [
-                "ghc ghcjs javascript tooling profiling"
+                "ghc",
+                "ghcjs",
+                "javascript",
+                "tooling",
+                "profiling"
             ]
         },
         {

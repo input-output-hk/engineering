@@ -1008,7 +1008,11 @@ More about this in the upcoming months.</p>]]></content>
         <author>
             <name>Luite Stegeman</name>
         </author>
-        <category label="ghc ghcjs javascript tooling profiling" term="ghc ghcjs javascript tooling profiling"/>
+        <category label="ghc" term="ghc"/>
+        <category label="ghcjs" term="ghcjs"/>
+        <category label="javascript" term="javascript"/>
+        <category label="tooling" term="tooling"/>
+        <category label="profiling" term="profiling"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[GHC April 2022 Update]]></title>
