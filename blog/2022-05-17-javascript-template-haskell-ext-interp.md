@@ -3,7 +3,7 @@ slug: 2022-05-17-javascript-template-haskell-external-interpreter
 title: JavaScript, Template Haskell and the External Interpreter
 date: May 17, 2022
 authors: [ luite ]
-tags: [ghc ghcjs javascript tooling profiling]
+tags: [ghc, ghcjs, javascript, tooling, profiling]
 ---
 
 ## Introduction
