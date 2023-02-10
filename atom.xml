@@ -2,12 +2,113 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://engineering.iog.io/</id>
     <title>IOG Engineering Blog</title>
-    <updated>2023-01-26T00:00:00.000Z</updated>
+    <updated>2023-02-09T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://engineering.iog.io/"/>
     <subtitle>IOG Engineering blog</subtitle>
     <icon>https://engineering.iog.io/img/favicon.ico</icon>
     <rights>Copyright © 2023 IOG, Inc.</rights>
+    <entry>
+        <title type="html"><![CDATA[IOG GHC Update #3 (2023-02-09)]]></title>
+        <id>2023-02-09-ghc-update</id>
+        <link href="https://engineering.iog.io/2023-02-09-ghc-update"/>
+        <updated>2023-02-09T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Biweekly update from the GHC DevX team at IOG.]]></summary>
+        <content type="html"><![CDATA[<p>Biweekly update from the GHC DevX team at IOG.</p><p>Previous updates can be found <a href="https://engineering.iog.io/tags/ghc-update" target="_blank" rel="noopener noreferrer">here</a>.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="javascript-backend">JavaScript backend<a class="hash-link" href="#javascript-backend" title="Direct link to heading">​</a></h2><h3 class="anchor anchorWithStickyNavbar_mojV" id="template-haskell">Template Haskell<a class="hash-link" href="#template-haskell" title="Direct link to heading">​</a></h3><p>Luite: fixed the support for one-shot mode (GHC's <code>-c</code> command-line flag)
+in the TH JS linker.</p><p>Luite: Investigated a warning about the temporary directory not being removed
+after running Template Haskell with the JavaScript backend. It turned out
+that GHC's <code>GHC.Utils.TmpFs.newTempDir</code>, which is used by the Template Haskell
+linker, does not allow the newly created directory to be removed
+(see <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22952" target="_blank" rel="noopener noreferrer">#22952</a>).</p><p>Sylvain: cleaned up the <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9779" target="_blank" rel="noopener noreferrer">merge request</a>,
+removing unnecessary changes and adding documentation.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="javascript-backend-ci">JavaScript backend CI<a class="hash-link" href="#javascript-backend-ci" title="Direct link to heading">​</a></h3><p>Jeff: JavaScript backend CI was <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9552" target="_blank" rel="noopener noreferrer">finally
+merged</a>! Now that we
+have CI we are unblocked on several fronts, such as, implementing <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9825" target="_blank" rel="noopener noreferrer">faster
+arithmetic</a> and fixing
+some <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9879" target="_blank" rel="noopener noreferrer">async
+exceptions</a>. In
+general, we can now have confidence that our work is progressing the JavaScript
+backend to a better state.</p><p>Sylvain: fixed a spurious failure on JS CI due to some test <em>passing</em> on fast runners
+while it was expected to fail (see <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9934" target="_blank" rel="noopener noreferrer">!9934</a>).</p><p>Josh: fixed some inaccurate test predicates <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9939" target="_blank" rel="noopener noreferrer">!9939</a></p><h3 class="anchor anchorWithStickyNavbar_mojV" id="filestat">FileStat<a class="hash-link" href="#filestat" title="Direct link to heading">​</a></h3><p>Josh: rebased and merged <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9755" target="_blank" rel="noopener noreferrer">!9755</a>.
+This patch changes the representation of the JavaScript equivalent of the C <code>struct stat</code>
+to make its field offsets match the C ones: some Haskell codes directly access fields of
+this structure using <code>hsc2hs</code> to get the field offsets from the C headers.</p><p>This patch also adds fields to the JavaScript file stat that were previously not
+included, such as modification and access times.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="javascript-rts-refactor">JavaScript RTS refactor<a class="hash-link" href="#javascript-rts-refactor" title="Direct link to heading">​</a></h3><p>Josh: rebased <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9794" target="_blank" rel="noopener noreferrer">!9794</a> which consists
+in the refactor of the module generating some part of the RTS. The new JS CI job found a bug in the patch that
+caused ~50 tests to time out, so waiting for CI to be set up before merging this MR was judicious.</p><p>This MR also became an opportunity to revisit some arbitrary cache sizes in the RTS code generator.
+This is still ongoing work.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="warnings">Warnings<a class="hash-link" href="#warnings" title="Direct link to heading">​</a></h3><p>Luite: We accidently removed the check for the "javascript" calling convention on
+foreign imports, allowing this convention to be wrongly used on native platform.
+Fixed in <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9880" target="_blank" rel="noopener noreferrer">!9880</a>.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="fix-for-asynchronous-exceptions">Fix for asynchronous exceptions<a class="hash-link" href="#fix-for-asynchronous-exceptions" title="Direct link to heading">​</a></h3><p>Luite: Fixed an issue in the garbage collector for the JavaScript backend:
+A thread that posts an asynchronous exception (<code>throwTo</code>) to another thread
+is temporarily suspended until the exception has been delivered. The
+garbage collector did not correctly follow the list of threads suspended in
+this way, potentially considering them unreachable and cleaning up data
+referenced by them. See <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22836" target="_blank" rel="noopener noreferrer">#22836</a> and
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9879" target="_blank" rel="noopener noreferrer">!9879</a>.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="integer-performance">Integer performance<a class="hash-link" href="#integer-performance" title="Direct link to heading">​</a></h3><p>Evaluating the following expression is very slow in general but especially with
+the JS backend:</p><div class="codeBlockContainer_I0IT language-haskell theme-code-block"><div class="codeBlockContent_wNvx haskell"><pre tabindex="0" class="prism-code language-haskell codeBlock_jd64 thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_mRuA"><span class="token-line" style="color:#393A34"><span class="token plain">1 `shiftL` (1 `shiftL` 20) :: Integer</span><br></span></code></pre><button type="button" aria-label="Copy code to clipboard" class="copyButton_wuS7 clean-btn">Copy</button></div></div><p>We've had to mark a test computing this as broken on CI because it triggers a
+timeout error. Luckily the identification of slow operations is easy with
+JavaScript profiling tools (see graphs in
+<a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22835" target="_blank" rel="noopener noreferrer">https://gitlab.haskell.org/ghc/ghc/-/issues/22835</a>) and we know that <code>Word32</code>
+primops are the culprit in this case.</p><p>Sylvain started replacing the uses of JavaScript's <code>BigInt</code> in the
+implementation of these primops with usual JavaScript <code>numbers</code>.
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9825" target="_blank" rel="noopener noreferrer">!9825</a>.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="javascript-edsl">JavaScript EDSL<a class="hash-link" href="#javascript-edsl" title="Direct link to heading">​</a></h3><p>Jeff: JavaScript eDSL based on
+<a href="https://github.com/ku-fpg/sunroof-compiler" target="_blank" rel="noopener noreferrer">sunroof</a> close to MR, see
+<a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22736" target="_blank" rel="noopener noreferrer">#22736</a> for background.
+Compiler is complete. Major items left are: the interpreter to translate to
+<code>JStat</code>, filling in documentation, and testing now that CI has been merged.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="documentation">Documentation<a class="hash-link" href="#documentation" title="Direct link to heading">​</a></h3><p>Jeff: Wrote the JavaScript backend release notes. Notes pending
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9828" target="_blank" rel="noopener noreferrer">approval</a>. We cite
+the <a href="https://gitlab.haskell.org/ghc/ghc/-/wikis/javascript-backend" target="_blank" rel="noopener noreferrer">JavaScript
+backend</a> wiki
+page in the release notes. So Jeff and Sylvain heavily edited the wiki pages to
+make them suitable for external customers.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="change-from-js-to-javascript-architecture">Change from <code>js</code> to <code>javascript</code> architecture<a class="hash-link" href="#change-from-js-to-javascript-architecture" title="Direct link to heading">​</a></h3><p>In <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22740" target="_blank" rel="noopener noreferrer">#22740</a> it was noticed that
+<code>hackage-server</code> would prevent the upload of the upcoming <code>base</code> package bundled with GHC 9.6.
+The reason is that <code>hackage-server</code> relies on the <code>cabal --check</code> feature which filters
+out perfectly valid packages (it happened before, for example with <a href="https://gitlab.haskell.org/haskell/ghc-api-compat/-/issues/1" target="_blank" rel="noopener noreferrer">ghc-api-compat</a>).</p><p>In our case, the package was rejected because the <code>js</code> architecture wasn't recognized
+as a built-in one, but luckily we could fall back to the existing <code>javascript</code> built-in
+architecture defined for GHCJS (if it wasn't a JS backend, we would have had to fix Cabal,
+update <code>hackage-server</code> dependencies, and redeploy <code>hackage-server</code>...).</p><p>Sylvain completed Ben's MR in <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9814" target="_blank" rel="noopener noreferrer">!9814</a>.</p><p>For early users of the JS backend the change means that from now on:</p><ul><li><code>configure</code> command is: <code>emconfigure ./configure --target=javascript-unknown-ghcjs</code></li><li>Cabal condition is: <code>arch(javascript)</code></li><li>CPP condition is: <code>#if defined(javascript_HOST_ARCH)</code></li></ul><h2 class="anchor anchorWithStickyNavbar_mojV" id="compiler-performance">Compiler performance<a class="hash-link" href="#compiler-performance" title="Direct link to heading">​</a></h2><h3 class="anchor anchorWithStickyNavbar_mojV" id="more-strict-break">More-strict <code>break</code><a class="hash-link" href="#more-strict-break" title="Direct link to heading">​</a></h3><p>Josh: opened an MR to add a strict <code>break'</code> version to <code>base</code> - however, this would require a CLC proposal.</p><p><a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22865" target="_blank" rel="noopener noreferrer">https://gitlab.haskell.org/ghc/ghc/-/issues/22865</a>
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9868" target="_blank" rel="noopener noreferrer">https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9868</a></p><p>Further analysis was done using ticky profiles on a simple test program that benchmarks GHC's startup code.
+This has found an example where a more-strict break is an improvement in GHC, which will provide motivation
+for the CLC proposal.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="unboxed-codebuffers">Unboxed CodeBuffers<a class="hash-link" href="#unboxed-codebuffers" title="Direct link to heading">​</a></h3><p>Josh: implemented changes to GHC's text encoding buffers to use unboxed tuples on handle encoders/decoders.
+The buffers pass around and repeatedly pack/unpack a tuple in an <code>IO</code> inner loop, which causes a significant
+number of unnecessary allocations. By replacing this with an unboxed tuple, and replacing the <code>IO</code> with
+manually passing around a <code>State# RealWorld</code> in the same tuple, we're able to reduce allocations by nearly 50%
+in a pathological example (non-allocating loop printing characters).</p><p><a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22946" target="_blank" rel="noopener noreferrer">https://gitlab.haskell.org/ghc/ghc/-/issues/22946</a>
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9948" target="_blank" rel="noopener noreferrer">https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9948</a></p><h3 class="anchor anchorWithStickyNavbar_mojV" id="optimization-handbook">Optimization Handbook<a class="hash-link" href="#optimization-handbook" title="Direct link to heading">​</a></h3><p>Jeff: opened IT ticket to move the <a href="https://github.com/input-output-hk/hs-opt-handbook.github.io" target="_blank" rel="noopener noreferrer">Optimization
+Handbook</a> to Haskell Foundation's repository.
+IT stated they need to check with legal, of course.</p><p>Jeff: almost finished the <a href="https://input-output-hk.github.io/hs-opt-handbook.github.io/src/Optimizations/GHC_opt/lambda_lifting.html" target="_blank" rel="noopener noreferrer">lambda
+lifting</a>
+chapter; major remaining items are adding some glossary terms and describing the
+interaction between lambda lifting and calling conventions.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="constant-folding-for-division-operations">Constant folding for division operations<a class="hash-link" href="#constant-folding-for-division-operations" title="Direct link to heading">​</a></h3><p>While looking into his old merge requests still opened, Sylvain nerd-snipped
+himself into fixing constant folding rules for division operations (see
+<a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22152" target="_blank" rel="noopener noreferrer">#22152</a>).</p><p>MR <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/8956" target="_blank" rel="noopener noreferrer">!8956</a> adds the
+following rewrite rules:</p><div class="codeBlockContainer_I0IT theme-code-block"><div class="codeBlockContent_wNvx"><pre tabindex="0" class="prism-code language-text codeBlock_jd64 thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_mRuA"><span class="token-line" style="color:#393A34"><span class="token plain">   case quotRemInt# x y of</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">     (# q, _ #) -&gt; body</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  ====&gt;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">   case quotInt# x y of</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">     q -&gt; body</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">   case quotRemInt# x y of</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">     (# _, r #) -&gt; body</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  ====&gt;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">   case remInt# x y of</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">     r -&gt; body</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  For all primitive numerical types:</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    (x `quot` l1) `quot` l2</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">     | l1 /= 0</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">     | l2 /= 0</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">     | l1*l2 doesn't overflow/underflow</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">   ====&gt;</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    x `quot` (l1 * l2)</span><br></span></code></pre><button type="button" aria-label="Copy code to clipboard" class="copyButton_wuS7 clean-btn">Copy</button></div></div><p>It also makes some division primops (Word64/Int64 Quot/Rem, WordQuotRem2Op)
+ok-for-speculation when the divisor is known to be non-zero, similarly to other
+division primops. Otherwise the last rule wasn't firing in the added test
+because we got the following Core (simplified for the presentation):</p><div class="codeBlockContainer_I0IT language-haskell theme-code-block"><div class="codeBlockContent_wNvx haskell"><pre tabindex="0" class="prism-code language-haskell codeBlock_jd64 thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_mRuA"><span class="token-line" style="color:#393A34"><span class="token plain">case quotWord64# x# 10#Word64 of</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    ds1 -&gt; case quotWord64# ds1 20#Word64 of</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">        ds2 -&gt; ...</span><br></span></code></pre><button type="button" aria-label="Copy code to clipboard" class="copyButton_wuS7 clean-btn">Copy</button></div></div><p>and not:</p><div class="codeBlockContainer_I0IT language-haskell theme-code-block"><div class="codeBlockContent_wNvx haskell"><pre tabindex="0" class="prism-code language-haskell codeBlock_jd64 thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_mRuA"><span class="token-line" style="color:#393A34"><span class="token plain">case quotWord64# (quotWord64# x# 10#Word64) 20#Word64 of</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    ds2 -&gt; ...</span><br></span></code></pre><button type="button" aria-label="Copy code to clipboard" class="copyButton_wuS7 clean-btn">Copy</button></div></div><h2 class="anchor anchorWithStickyNavbar_mojV" id="ghci">GHCi<a class="hash-link" href="#ghci" title="Direct link to heading">​</a></h2><p>Luite: A test run of GHC 9.6 with the <code>-fbyte-code-and-object-code</code> flag
+on <a href="https://ghc.gitlab.haskell.org/head.hackage/" target="_blank" rel="noopener noreferrer">head.hackage</a> revealed
+(<a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22888" target="_blank" rel="noopener noreferrer">issue #22888</a>) with bytecode
+size limits. Many bytecode instructions have <code>Word16</code> operands, which
+is not always enough to run programs generated from optimized core. The solution
+is to enable large operands for all the bytecode instructions that deal with
+stack offsets.</p><p><a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22888" target="_blank" rel="noopener noreferrer">https://gitlab.haskell.org/ghc/ghc/-/issues/22888</a>
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9957" target="_blank" rel="noopener noreferrer">https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9957</a></p>]]></content>
+        <author>
+            <name>Sylvain Henry</name>
+        </author>
+        <author>
+            <name>Jeffrey M. Young</name>
+            <uri>https://iog.io/en/</uri>
+        </author>
+        <author>
+            <name>Luite Stegeman</name>
+        </author>
+        <author>
+            <name>Joshua Meredith</name>
+            <uri>https://iog.io/en/</uri>
+        </author>
+        <category label="ghc" term="ghc"/>
+        <category label="ghc-update" term="ghc-update"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[GHC DevX Update 2023-01-26]]></title>
         <id>2023-01-26-ghc-update</id>
