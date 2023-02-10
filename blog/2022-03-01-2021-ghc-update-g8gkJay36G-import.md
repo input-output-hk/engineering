@@ -2,7 +2,7 @@
 slug: 2022-03-01-2021-ghc-update
 title: 2021 GHC update
 authors: [sylvain]
-tags: [ghc]
+tags: [ghc,ghc-update]
 custom_edit_url: null
 ---
 IOG is committed to improving Haskell developer experience, both by [sponsoring the Haskell Foundation](https://iohk.io/en/blog/posts/2020/11/04/iohk-sponsors-new-haskell-foundation) and by directly founding a team committed to this task: the Haskell DX team.

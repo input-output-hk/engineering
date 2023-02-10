@@ -2,7 +2,7 @@
 slug: 2022-02-01-ghc-january-2022-update
 title: GHC January 2022 update
 authors: [sylvain]
-tags: [ghc]
+tags: [ghc,ghc-update]
 custom_edit_url: null
 ---
 Hopefully 2022 should be the year GHC will get a JavaScript backend without relying on GHCJS. This month the team has been busy planning the work that needs to be done to get there!

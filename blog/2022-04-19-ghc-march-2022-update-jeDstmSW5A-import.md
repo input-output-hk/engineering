@@ -2,7 +2,7 @@
 slug: 2022-04-19-ghc-march-2022-update
 title: GHC March 2022 Update
 authors: [sylvain]
-tags: [ghc]
+tags: [ghc,ghc-update]
 custom_edit_url: null
 ---
 ## JS Backend
