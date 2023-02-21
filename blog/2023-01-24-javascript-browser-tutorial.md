@@ -94,10 +94,10 @@ You should notice quite a few submodules being cloned as well as the main repo; 
 ```
 cd ghc
 ./boot
-emconfigure ./configure --target=js-unknown-ghcjs
+emconfigure ./configure --target=javascript-unknown-ghcjs
 ```
 
-`emconfigure ./configure --target=js-unknown-ghcjs` will finish by outputting a screen that looks like:
+`emconfigure ./configure --target=javascript-unknown-ghcjs` will finish by outputting a screen that looks like:
 ```
 ----------------------------------------------------------------------
 Configure completed successfully.
@@ -107,7 +107,7 @@ Configure completed successfully.
 
    Build platform        : x86_64-unknown-linux
    Host platform         : x86_64-unknown-linux
-   Target platform       : js-unknown-ghcjs
+   Target platform       : javascript-unknown-ghcjs
 
    Bootstrapping using   : /home/josh/.ghcup/bin/ghc
       which is version   : 9.4.2
@@ -155,7 +155,7 @@ Configure completed successfully.
 ```
 
 If everything is correct, you'll see that the `Target platform` is set to
-`js-unknown-ghcjs`, and the build tools will be set to their
+`javascript-unknown-ghcjs`, and the build tools will be set to their
 Emscripten counterparts: `ar` becomes `emar`, `nm` becomes `llvm-nm`, etc.
 
 Finally, to build GHC:
@@ -173,14 +173,14 @@ Expect this to take around a half hour or longer. If all goes well you should se
 | Copy package 'ghc'
 # cabal-copy (for _build/stage1/lib/package.conf.d/ghc-9.5.conf)
 | Run GhcPkg Recache Stage1: none => none
-| Copy file: _build/stage0/bin/js-unknown-ghcjs-ghc => _build/stage1/bin/js-unknown-ghcjs-ghc
+| Copy file: _build/stage0/bin/javascript-unknown-ghcjs-ghc => _build/stage1/bin/javascript-unknown-ghcjs-ghc
 Build completed in 1h00m
 ```
 
-Take note of `_build/stage1/bin/js-unknown-ghcjs-ghc` path. This is the GHC executable that we'll use to compile to JavaScript. To make life easier on ourselves we can alias it:
+Take note of `_build/stage1/bin/javascript-unknown-ghcjs-ghc` path. This is the GHC executable that we'll use to compile to JavaScript. To make life easier on ourselves we can alias it:
 
 ```
-alias ghc-js=`pwd`/_build/stage1/bin/js-unknown-ghcjs-ghc
+alias ghc-js=`pwd`/_build/stage1/bin/javascript-unknown-ghcjs-ghc
 ```
 
 ## First Haskell to JavaScript Program

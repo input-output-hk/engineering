@@ -243,12 +243,13 @@ JavaScript backend with just these commands:
 
 ```
 > ./boot
-> emconfigure ./configure --target=js-unknown-ghcjs
+> emconfigure ./configure --target=javascript-unknown-ghcjs
 > ./hadrian/build --bignum=native -j
 ```
 
 Note that if this doesn't work, up to date instructions and troubleshootings can
-be found on https://gitlab.haskell.org/ghc/ghc/-/wikis/javascript-backend
+be found on
+https://gitlab.haskell.org/ghc/ghc/-/wikis/javascript-backend/building
 
 The Hadrian build system has been adapted to support Cabal's `js-sources`
 stanzas that are to support user-provided `.js` files. Both the `rts` and `base`
