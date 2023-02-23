@@ -2,12 +2,79 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://engineering.iog.io/</id>
     <title>IOG Engineering Blog</title>
-    <updated>2023-02-09T00:00:00.000Z</updated>
+    <updated>2023-02-23T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://engineering.iog.io/"/>
     <subtitle>IOG Engineering blog</subtitle>
     <icon>https://engineering.iog.io/img/favicon.ico</icon>
     <rights>Copyright © 2023 IOG, Inc.</rights>
+    <entry>
+        <title type="html"><![CDATA[IOG GHC Update #4]]></title>
+        <id>2023-02-23-ghc-update</id>
+        <link href="https://engineering.iog.io/2023-02-23-ghc-update"/>
+        <updated>2023-02-23T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Biweekly update from the GHC DevX team at IOG.]]></summary>
+        <content type="html"><![CDATA[<p>Biweekly update from the GHC DevX team at IOG.</p><p>Previous updates can be found <a href="https://engineering.iog.io/tags/ghc-update" target="_blank" rel="noopener noreferrer">here</a>.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="javascript-backend">JavaScript backend<a class="hash-link" href="#javascript-backend" title="Direct link to heading">​</a></h2><h3 class="anchor anchorWithStickyNavbar_mojV" id="template-haskell">Template Haskell<a class="hash-link" href="#template-haskell" title="Direct link to heading">​</a></h3><p>Sylvain: <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9779" target="_blank" rel="noopener noreferrer">!9779</a>
+adding TH support for the JS backend passes CI and is ready for reviews.</p><p>Ticket <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/23013" target="_blank" rel="noopener noreferrer">#23013</a> has been
+opened to keep track of an issue with the recompilation avoidance mechanism.
+Fixing the issue seems to require some invasive refactoring that is best left
+for a future merge request.</p><p>Luite: <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10008" target="_blank" rel="noopener noreferrer">!10008</a>
+Implemented keeping track of subdirectories in GHC's temporary file manager.
+Ready for review. Fixes
+<a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22952" target="_blank" rel="noopener noreferrer">#22952</a>.</p><p>Temporary subdirectories are used when linking Template Haskell with the
+JavaScript backend and also in some situations when linking with other backends.
+This would always result in files being left behind in GHC's temporary directory
+(and a warning at high enough verbosity settings) since these subdirectories
+were never removed. With this patch, GHC keeps track of all created subdirectories
+and removes them at the end of the session.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="javascript-rts-refactor">JavaScript RTS refactor<a class="hash-link" href="#javascript-rts-refactor" title="Direct link to heading">​</a></h3><p>Josh: has merged the refactor of the RTS generation module to reduce redundant code.
+In this refactor, debug logging was also completed to determine the correct numbers
+to use as the cache sizes for generated JavaScript names - allowing us to vastly
+reduce the size of these arrays for efficiency, and to remove <code>panic</code> cases in favour
+of generating higher numbered names without caching.</p><p><a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9794" target="_blank" rel="noopener noreferrer">!9794</a></p><h3 class="anchor anchorWithStickyNavbar_mojV" id="integer-performance">Integer performance<a class="hash-link" href="#integer-performance" title="Direct link to heading">​</a></h3><p>Sylvain: <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9825" target="_blank" rel="noopener noreferrer">!9825</a> has
+been updated after an helpful review by Matthew Claven.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="javascript-edsl">JavaScript EDSL<a class="hash-link" href="#javascript-edsl" title="Direct link to heading">​</a></h3><p>Jeff: MR is <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10000" target="_blank" rel="noopener noreferrer">open</a>.
+In response to feedback from the team Jeff has added (and removed)
+several features that distinguish the eDSL from
+<a href="https://github.com/ku-fpg/sunroof-compiler" target="_blank" rel="noopener noreferrer">sunroof</a>. These include: removing
+threading and continuations, adding named unique variables and a proper switch
+statement. These changes allow more of the RTS to be replaced in the eDSL and
+allow the RTS to be typed using Haskell's type system. For example, now the STG
+registers track the type of the values they hold.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="ci">CI<a class="hash-link" href="#ci" title="Direct link to heading">​</a></h3><p>Sylvain: fixed CI script test that prevented performance results to be stored for
+the JS backend (see <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22923" target="_blank" rel="noopener noreferrer">#22923</a> and
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10026" target="_blank" rel="noopener noreferrer">!10026</a>).</p><hr><h2 class="anchor anchorWithStickyNavbar_mojV" id="compiler-performance">Compiler performance<a class="hash-link" href="#compiler-performance" title="Direct link to heading">​</a></h2><h3 class="anchor anchorWithStickyNavbar_mojV" id="more-strict-breakspan">More-strict <code>break</code>/<code>span</code><a class="hash-link" href="#more-strict-breakspan" title="Direct link to heading">​</a></h3><p>Josh: opened a CLC (Core Libraries Committee) proposal to add stricter versions of
+<code>break</code> and <code>span</code> to <code>Data.List</code> in addition to the existing lazy versions. The
+proposal considers evidence that these versions are situationally more performant,
+by comparing allocation statistics, generated STG, and microbenchmarks - as well as
+making the argument for consistency with existing <code>List</code> functions that also have
+strict versions.</p><p>See also:</p><ul><li><a href="https://github.com/haskell/core-libraries-committee/issues/133" target="_blank" rel="noopener noreferrer">CLC proposal 133</a></li><li><a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22865" target="_blank" rel="noopener noreferrer">GHC Issue 22865</a></li><li><a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9868" target="_blank" rel="noopener noreferrer">GHC MR 9868</a></li></ul><h3 class="anchor anchorWithStickyNavbar_mojV" id="unboxed-codebuffers">Unboxed CodeBuffers<a class="hash-link" href="#unboxed-codebuffers" title="Direct link to heading">​</a></h3><p>Josh: opened a CLC proposal to modify the implementation of <code>CodeBuffer</code>s in <code>base</code>
+to use unboxed tuples in the return type of encoding functions. This change presents
+a significant allocation improvement, due to the difficulty GHC has with applying a
+certain optimisation within data types.</p><p>See also:</p><ul><li><a href="https://github.com/haskell/core-libraries-committee/issues/134" target="_blank" rel="noopener noreferrer">CLC proposal 134</a></li><li><a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22946" target="_blank" rel="noopener noreferrer">GHC Issue 22946</a></li><li><a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9948" target="_blank" rel="noopener noreferrer">GHC MR 9948</a>.</li></ul><h3 class="anchor anchorWithStickyNavbar_mojV" id="optimization-handbook">Optimization Handbook<a class="hash-link" href="#optimization-handbook" title="Direct link to heading">​</a></h3><p>Jeff: Has been hard at work on the <a href="https://input-output-hk.github.io/hs-opt-handbook.github.io/" target="_blank" rel="noopener noreferrer">Optimization Handbook</a>.
+He has finished a
+chapter on <code>Lambda Lifting</code>, significantly expanded the glossary, and added
+documentation to the
+<a href="https://github.com/yongrenjie/sphinx-exec-directive" target="_blank" rel="noopener noreferrer">sphinx-exec-directive</a>
+haskell extension that he finished last month. The optimization handbook is now
+in review by IOG's IT team to migrate it to the Haskell Foundation website.</p><hr><h2 class="anchor anchorWithStickyNavbar_mojV" id="ghci">GHCi<a class="hash-link" href="#ghci" title="Direct link to heading">​</a></h2><p>Luite: Added a testcase and did some cleanups in the types of the C code in MR
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9957" target="_blank" rel="noopener noreferrer">!9957</a>, and adjusted
+the bytecode generator to not produce zero offset <code>SLIDE</code> instructions anymore.
+This is now ready for review.</p>]]></content>
+        <author>
+            <name>Sylvain Henry</name>
+        </author>
+        <author>
+            <name>Jeffrey M. Young</name>
+            <uri>https://iog.io/en/</uri>
+        </author>
+        <author>
+            <name>Luite Stegeman</name>
+        </author>
+        <author>
+            <name>Joshua Meredith</name>
+            <uri>https://iog.io/en/</uri>
+        </author>
+        <category label="ghc" term="ghc"/>
+        <category label="ghc-update" term="ghc-update"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[IOG GHC Update #3 (2023-02-09)]]></title>
         <id>2023-02-09-ghc-update</id>
