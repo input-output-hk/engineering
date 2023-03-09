@@ -2,12 +2,63 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://engineering.iog.io/</id>
     <title>IOG Engineering Blog</title>
-    <updated>2023-02-23T00:00:00.000Z</updated>
+    <updated>2023-03-09T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://engineering.iog.io/"/>
     <subtitle>IOG Engineering blog</subtitle>
     <icon>https://engineering.iog.io/img/favicon.ico</icon>
     <rights>Copyright © 2023 IOG, Inc.</rights>
+    <entry>
+        <title type="html"><![CDATA[IOG GHC Update #5]]></title>
+        <id>2023-03-09-ghc-update</id>
+        <link href="https://engineering.iog.io/2023-03-09-ghc-update"/>
+        <updated>2023-03-09T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Biweekly update from the GHC DevX team at IOG.]]></summary>
+        <content type="html"><![CDATA[<p>Biweekly update from the GHC DevX team at IOG.</p><p>Previous updates can be found <a href="https://engineering.iog.io/tags/ghc-update" target="_blank" rel="noopener noreferrer">here</a>.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="javascript-backend">JavaScript backend<a class="hash-link" href="#javascript-backend" title="Direct link to heading">​</a></h2><p>Luite: <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10059" target="_blank" rel="noopener noreferrer">!10059</a>
+Implemented computing a valid <code>LambdaFormInfo</code> for the JavaScript backend
+so that interface files can be written without warnings. Fixes
+<a href="https://gitlab.haskell.org/ghc/ghc/-/issues/23053" target="_blank" rel="noopener noreferrer">#23053</a>.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="template-haskell">Template Haskell<a class="hash-link" href="#template-haskell" title="Direct link to heading">​</a></h3><p>Luite: <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10008" target="_blank" rel="noopener noreferrer">!10008</a>
+implemented keeping track of subdirectories in GHC's temporary file manager.
+It has been updated after reviews and is now ready to be merged.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="javascript-edsl">JavaScript EDSL<a class="hash-link" href="#javascript-edsl" title="Direct link to heading">​</a></h3><p>Jeff: MR is <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10000" target="_blank" rel="noopener noreferrer">open</a>.
+In response to feedback from the team Jeff has added (and removed)
+several features that distinguish the eDSL from
+<a href="https://github.com/ku-fpg/sunroof-compiler" target="_blank" rel="noopener noreferrer">sunroof</a>. These include: </p><ul><li>removing threading and continuations</li><li>adding named unique variables and a proper switch statement</li><li>removing a dependency on the <code>operational</code> package</li><li>removing a dependency on the <code>data-reify</code> package</li><li>added a compilation function that compiles the eDSL to the IR the JavaScript backend uses.</li></ul><p>These changes allow more of the RTS to be replaced in the eDSL and allow the RTS
+to be typed using Haskell's type system. For example, now the STG registers
+track the type of the values they hold. The RTS migration is now underway.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="copymutablearray-primops">copyMutableArray primops<a class="hash-link" href="#copymutablearray-primops" title="Direct link to heading">​</a></h3><p>Sylvain: fixed JS implementations for <code>copyMutableByteArray#</code> and
+<code>copySmallMutableArray</code> primops. They were wrong in some cases when the source
+and target arrays overlap. See
+<a href="https://gitlab.haskell.org/ghc/ghc/-/issues/23033" target="_blank" rel="noopener noreferrer">#23033</a> and
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10037" target="_blank" rel="noopener noreferrer">!10037</a>.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="testsuite">Testsuite<a class="hash-link" href="#testsuite" title="Direct link to heading">​</a></h3><p>Sylvain: made a minor cleanup in the testsuite to correctly tag tests requiring
+Cmm support (which the JS backend doesn't have):
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10043" target="_blank" rel="noopener noreferrer">!10043</a>.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="callbacks">Callbacks<a class="hash-link" href="#callbacks" title="Direct link to heading">​</a></h3><p>Josh: ported GHCJS's <code>GHCJS.Foreign.Callback</code> module. Manual testing revealed some
+minor changes required in the JavaScript backend, including to <code>base.GHC.JS.Prim</code>,
+to make everything work as expected.</p><p>This will enable passing Haskell functions into <code>foreign import</code>s, which in turn
+enables a form of calling into Haskell from JavaScript code.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="compiler-performance">Compiler performance<a class="hash-link" href="#compiler-performance" title="Direct link to heading">​</a></h2><h3 class="anchor anchorWithStickyNavbar_mojV" id="optimization-handbook">Optimization Handbook<a class="hash-link" href="#optimization-handbook" title="Direct link to heading">​</a></h3><p>Jeff: Work has begun on the first major case study: a performance
+<a href="https://github.com/LeventErkok/sbv/issues/642" target="_blank" rel="noopener noreferrer">regression</a> in the
+<a href="https://github.com/LeventErkok/sbv" target="_blank" rel="noopener noreferrer">sbv</a> library. </p><hr><h2 class="anchor anchorWithStickyNavbar_mojV" id="rts-linker">RTS linker<a class="hash-link" href="#rts-linker" title="Direct link to heading">​</a></h2><p>Sylvain: helped fixing a RTS linker bug. The RTS ELF linker didn't properly
+take into account required section alignments and always used 16-bytes alignment.
+However AVX instructions generated by the C compiler may expect 32-bytes alignment
+(even if the code uses unaligned load intrinsics, the C compiler may optimize them
+into aligned load instructions, as was the case here).
+The fix was simple, the test case a bit more involved.
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/23066" target="_blank" rel="noopener noreferrer">#23066</a> and <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10087" target="_blank" rel="noopener noreferrer">!10087</a>.</p>]]></content>
+        <author>
+            <name>Sylvain Henry</name>
+        </author>
+        <author>
+            <name>Jeffrey M. Young</name>
+            <uri>https://iog.io/en/</uri>
+        </author>
+        <author>
+            <name>Luite Stegeman</name>
+        </author>
+        <author>
+            <name>Joshua Meredith</name>
+            <uri>https://iog.io/en/</uri>
+        </author>
+        <category label="ghc" term="ghc"/>
+        <category label="ghc-update" term="ghc-update"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[IOG GHC Update #4]]></title>
         <id>2023-02-23-ghc-update</id>
