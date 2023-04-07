@@ -32,3 +32,8 @@ yvan:
   name: Yvan Sraka
   title: Rust DevX Engineer @ IOG
   email: yvan.sraka@iohk.io
+
+bartek:
+  name: Bartłomiej Cieślar
+  title: Haskell DevX Intern @ IOG
+  url: bartlomiej.cieslar@iohk.io
