@@ -243,7 +243,7 @@ execTerm :: (MonadSTM m, MonadCatch (STM m))
          -> Term t
          -> STM m (ExecValue m t)
 ```
-See [`execTerm`](https://github.com/input-output-hk/io-sim/blob/93858df930c160450e12f34428b61e74813b14ae/io-sim/test/Test/STM.hs#L465)
+See [`execTerm`](https://github.com/input-output-hk/io-sim/blob/93858df930c160450e12f34428b61e74813b14ae/io-sim/test/Test/STM.hs#L465).
 
 `execTerm` and `evalTerm` all together give three ways of executing a `Term`:
 
@@ -389,7 +389,7 @@ information on the way.  Contravariant tracing allows for avoiding low-level
 components to have access to high-level tracing information, and make it
 possible to decouple and isolate components even if they depend on each other.
 
-## IOSim features
+## Some IOSim features
 
 ### Trace
 
@@ -398,17 +398,17 @@ detailed traces.  With [Control.Monad.IOSim.runSimTrace][runSimTrace] function
 you can get a trace that contains timed execution events including fork
 events, blocking / unblocking STM events, synchronous and asynchronous
 exceptions (including blocking information of `throwTo`), forking events, delay
-& timers events.  The [`Trace`] can be pretty-printed with
+& timers events.  The [`SimTrace`] can be pretty-printed with
 [Control.Monad.IOSim.ppTrace][ppTrace].  You also have control over the names
 of threads and `TVar`s.  And as we mentioned you can extract information logged
-by the code in simulation.  From the `Trace` you can also extract the result
+by the code in simulation.  From the `SimTrace` you can also extract the result
 computed by your simulation with
 [Control.Monad.IOSim.traceResult][traceResult].  These three functions are
 useful for example to enhance test failure information (e.g. via the well known
-[`counterexample`] in `QuickCheck`).
+[`counterexample`] from the `QuickCheck` library).
 
 You can use [`runSim`] or [`runSimOrThrow`] if you are not interested in the
-trace but you just want to get the result.  Note that the `Trace` is very
+trace but you just want to get the result.  Note that the `SimTrace` is very
 verbose, and thus it might include too much information to analyse simple
 problems, but it is indispensable when analysing concurrency bugs.
 
@@ -418,9 +418,13 @@ rescheduled and thus reorder events.
 [Control.Monad.Class.MonadSTM.MonadTraceSTM][MonadTraceSTM] provides the API.
 `IOSim` attaches the callbacks to its `TVar`s and executes them whenever an
 `STM` transaction is committed.  The callbacks allow one to either log
-`Strings` (the same way as the `say` from
+`Strings` (the same way as the [`say`] from
 [Control.Monad.Class.MonadSay][MonadSay] module does), or arbitrary data as
 [`traceM`][traceM] does.
+
+[`io-sim`]'s `STM` monad allows to log values with [`traceSTM`].  Since this
+function is not polymorphic over monad, it is usage is mostly limited to
+debugging stm transactions.
 
 ### Laziness
 
@@ -460,12 +464,16 @@ a trace.
 [`localSnocket`]: https://github.com/input-output-hk/ouroboros-network/blob/db633ec71eff9b2b7797ad0cce0c130771b8cf0c/ouroboros-network-framework/src/Ouroboros/Network/Snocket.hs#L378
 [`withSnocket`]: https://github.com/input-output-hk/ouroboros-network/blob/db633ec71eff9b2b7797ad0cce0c130771b8cf0c/ouroboros-network-framework/src/Simulation/Network/Snocket.hs#L376
 
-[comment]: TODO_UPDATE_LINKS_TO_HACKAGE
-[traceM]: https://github.com/input-output-hk/io-sim/blob/main/io-sim/src/Control/Monad/IOSim/Types.hs#L130-L131
-[runSimTrace]: https://github.com/input-output-hk/io-sim/blob/main/io-sim/src/Control/Monad/IOSim.hs#L356
-[ppTrace]: https://github.com/input-output-hk/io-sim/blob/main/io-sim/src/Control/Monad/IOSim/Types.hs#L693
-[`traceResult`]: https://github.com/input-output-hk/io-sim/blob/main/io-sim/src/Control/Monad/IOSim.hs#L310
+[traceM]: https://hackage.haskell.org/package/io-sim-1.0.0.0/docs/Control-Monad-IOSim.html#v:traceM
+[`runSim`]: https://hackage.haskell.org/package/io-sim-1.0.0.0/docs/Control-Monad-IOSim.html#v:runSim
+[`runSimOrThrow`]:  https://hackage.haskell.org/package/io-sim-1.0.0.0/docs/Control-Monad-IOSim.html#v:runSimOrThrow
+[runSimTrace]: https://hackage.haskell.org/package/io-sim-1.0.0.0/docs/Control-Monad-IOSim.html#v:runSimTrace
+[`SimTrace`]: https://hackage.haskell.org/package/io-sim-1.0.0.0/docs/Control-Monad-IOSim.html#t:SimTrace
+[ppTrace]: https://hackage.haskell.org/package/io-sim-1.0.0.0/docs/Control-Monad-IOSim.html#v:ppTrace
+[`traceResult`]: https://hackage.haskell.org/package/io-sim-1.0.0.0/docs/Control-Monad-IOSim.html#v:traceResult
 [`counterexample`]: https://hackage.haskell.org/package/QuickCheck-2.14.2/docs/Test-QuickCheck.html#v:counterexample
-[`MonadInspectSTM`]: https://github.com/input-output-hk/io-sim/blob/main/io-classes/src/Control/Monad/Class/MonadSTM/Internal.hs#L504-L511
-[MonadTraceSTM]: https://github.com/input-output-hk/io-sim/blob/main/io-classes/src/Control/Monad/Class/MonadSTM/Internal.hs#L559-L595
-[MonadSay]: https://github.com/input-output-hk/io-sim/blob/main/io-classes/src/Control/Monad/Class/MonadSay.hs
+[`MonadInspectSTM`]: https://hackage.haskell.org/package/io-classes-1.0.0.0/docs/Control-Monad-Class-MonadSTM.html#t:MonadInspectSTM
+[MonadTraceSTM]: https://hackage.haskell.org/package/io-classes-1.0.0.0/docs/Control-Monad-Class-MonadSTM.html#t:MonadTraceSTM
+[MonadSay]: https://hackage.haskell.org/package/io-classes-1.0.0.0/docs/Control-Monad-Class-MonadSay.html#t:MonadSay
+[`say`]: https://hackage.haskell.org/package/io-classes-1.0.0.0/docs/Control-Monad-Class-MonadSay.html#v:say
+[`traceSTM`]: https://hackage.haskell.org/package/io-sim-1.0.0.0/docs/Control-Monad-IOSim.html#v:traceSTM
