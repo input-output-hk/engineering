@@ -10,9 +10,9 @@ custom_edit_url: null
 ## IOSim on Hackage
 
 The IOG Networking Team is pleased to announce that we published [`io-sim`],
-[`io-classes`], [`si-timers`], [`strict-stm`] and [`io-classes-mtl`] on
-Hackage.  These are tools without which we could not imagine writing a complex
-distributed system like [Cardano].
+[`io-classes`], [`si-timers`], `strict-stm`], [`strict-mvar`] and
+[`io-classes-mtl`] on Hackage.  These are tools without which we could not
+imagine writing a complex distributed system like [Cardano].
 
 These packages support our goal of using the same code to run in production and
 simulation, what greatly increases the reliability and quality of the final
