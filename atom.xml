@@ -193,7 +193,9 @@ debugging stm transactions.</p><h3 class="anchor anchorWithStickyNavbar_mojV" id
 monad.  This means that the trace is created lazily.  This allows us to
 provide a simple <code>MonadFix</code> instance, but also allows one to simulate
 applications that never exit and then only analyse a finite portion of
-a trace.</p>]]></content>
+a trace.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="acknowledgement">Acknowledgement<a class="hash-link" href="#acknowledgement" title="Direct link to heading">​</a></h2><p><code>io-sim</code> was developed by <a href="https://www.well-typed.com/" target="_blank" rel="noopener noreferrer">Well-Typed</a> and <a href="https://iohk.io" target="_blank" rel="noopener noreferrer">IOG</a>.  We would like to specially
+thank Duncan Coutts for his ideas, help, guidance and contributions.
+<code>IOSimPOR</code> was developed by John Hughes from <a href="http://www.quviq.com" target="_blank" rel="noopener noreferrer">QuviQ</a>.</p>]]></content>
         <author>
             <name>Marcin Szamotulski</name>
         </author>
