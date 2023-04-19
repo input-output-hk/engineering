@@ -15,9 +15,9 @@
         <updated>2023-04-14T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[IOSim on Hackage]]></summary>
         <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_mojV" id="iosim-on-hackage">IOSim on Hackage<a class="hash-link" href="#iosim-on-hackage" title="Direct link to heading">​</a></h2><p>The IOG Networking Team is pleased to announce that we published <a href="https://hackage.haskell.org/package/io-sim" target="_blank" rel="noopener noreferrer"><code>io-sim</code></a>,
-<a href="https://hackage.haskell.org/package/io-classes" target="_blank" rel="noopener noreferrer"><code>io-classes</code></a>, <a href="https://hackage.haskell.org/package/si-timers" target="_blank" rel="noopener noreferrer"><code>si-timers</code></a>, <a href="https://hackage.haskell.org/package/strict-stm" target="_blank" rel="noopener noreferrer"><code>strict-stm</code></a> and <a href="https://hackage.haskell.org/package/io-classes-mtl" target="_blank" rel="noopener noreferrer"><code>io-classes-mtl</code></a> on
-Hackage.  These are tools without which we could not imagine writing a complex
-distributed system like <a href="https://www.github.com/input-output-hk/cardano-node#readme" target="_blank" rel="noopener noreferrer">Cardano</a>.</p><p>These packages support our goal of using the same code to run in production and
+<a href="https://hackage.haskell.org/package/io-classes" target="_blank" rel="noopener noreferrer"><code>io-classes</code></a>, <a href="https://hackage.haskell.org/package/si-timers" target="_blank" rel="noopener noreferrer"><code>si-timers</code></a>, <code>strict-stm</code>], <a href="https://hackage.haskell.org/package/strict-mvar" target="_blank" rel="noopener noreferrer"><code>strict-mvar</code></a> and
+<a href="https://hackage.haskell.org/package/io-classes-mtl" target="_blank" rel="noopener noreferrer"><code>io-classes-mtl</code></a> on Hackage.  These are tools without which we could not
+imagine writing a complex distributed system like <a href="https://www.github.com/input-output-hk/cardano-node#readme" target="_blank" rel="noopener noreferrer">Cardano</a>.</p><p>These packages support our goal of using the same code to run in production and
 simulation, what greatly increases the reliability and quality of the final
 system.  <a href="https://hackage.haskell.org/package/io-sim" target="_blank" rel="noopener noreferrer"><code>io-sim</code></a> and its ecosystem is designed to let write a simulation
 environment which provides provided things usually provided by an operating
