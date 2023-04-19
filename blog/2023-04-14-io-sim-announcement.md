@@ -434,6 +434,12 @@ provide a simple `MonadFix` instance, but also allows one to simulate
 applications that never exit and then only analyse a finite portion of
 a trace.
 
+## Acknowledgement
+
+`io-sim` was developed by [Well-Typed] and [IOG].  We would like to specially
+thank Duncan Coutts for his ideas, help, guidance and contributions.
+`IOSimPOR` was developed by John Hughes from [QuviQ].
+
 
 [Cardano]: https://www.github.com/input-output-hk/cardano-node#readme
 [SI]: https://www.wikiwand.com/en/International_System_of_Units
@@ -477,3 +483,8 @@ a trace.
 [MonadSay]: https://hackage.haskell.org/package/io-classes-1.0.0.0/docs/Control-Monad-Class-MonadSay.html#t:MonadSay
 [`say`]: https://hackage.haskell.org/package/io-classes-1.0.0.0/docs/Control-Monad-Class-MonadSay.html#v:say
 [`traceSTM`]: https://hackage.haskell.org/package/io-sim-1.0.0.0/docs/Control-Monad-IOSim.html#v:traceSTM
+
+[QuviQ]: http://www.quviq.com
+[Well-Typed]: https://www.well-typed.com/
+[IOG]: https://iohk.io
+
