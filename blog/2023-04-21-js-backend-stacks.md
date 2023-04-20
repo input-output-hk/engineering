@@ -410,9 +410,9 @@ A discussion of all the ins and outs of the scheduler is beyond the scope of thi
 
 ### Threads and Asynchronous Exceptions
 
-Haskell exceptions come in two flavours: _synchronous_ exceptions and _asynchronous_ exceptions. Synchronous exceptions always come from the code itself, for example a pattern match failure, a call to `error` or `undefined`. Running the code again with the same input would always result in the same result.
+Haskell exceptions come in two flavours: _synchronous_ exceptions and _asynchronous_ exceptions. Synchronous exceptions always come from the code itself, for example a pattern match failure, a call to `error` or `undefined`. Running the code again with the same input always produces the same result.
 
-Asynchronous exceptions come from the outside. They could come from other threads (but don't need to) or from the runtime system. Typical reasons for asynchronous exceptions are timeouts and resource exhaustion. It's perfectly possible for same function with the same input to be aborted with an asynchronous exception the first run, while running to completion the second time. This means that we must be careful preserving any partially completed computation.
+Asynchronous exceptions come from the outside. They can come from other threads (but don't need to) or from the runtime system. Typical reasons for asynchronous exceptions are timeouts and resource exhaustion. It's perfectly possible for same function with the same input to be aborted with an asynchronous exception the first run, while running to completion the second time. This means that we must be careful preserving any partially completed computation.
 
 Asynchronous exceptions can happen at any time, which can make them quite tricky to deal with. They could leave the program in an inconsistent state if they occur at the wrong time. Therefore, threads can temporarily block asynchronous exceptions, a process called _masking_. Different masking states are used for indicating whether exceptions are still masked when the thread is performing an _interruptible_ operation.
 
@@ -424,13 +424,13 @@ Here is a comparison of the main differences between synchronous and asynchronou
 | __Computation on the stack__ | thunks updated to immediately raise the same exception again | stack captured in heap objects so the computation can be resumed |
 | __Throw to other thread__ | impossible | push `h$raiseAsync_frame` frame onto receiving thread's stack (unless masked) |
 | __Throw to current thread__ | use `h$throw` immediately | use `h$throw` immediately (no masking) |
-| __Masking__ | no masking, thrown immediately | exception saved in `h$Thread.excep` of receiving thread if masked, the sending thread blocked until the exception is delivered |
+| __Masking__ | no masking, thrown immediately | exception saved in `h$Thread.excep` of receiving thread if masked, the sending thread is blocked until the exception is delivered |
 
 We can see that while on the surface, synchronous and asynchronous exceptions look similar, there are many differences under the hood. Masking requires some additional machinery for thread synchronization and storing exceptions that cannot be delivered yet.
 
 | Property | Description |
 | --- | ---- |
-| `h$Thread.mask` | `number`, mask status indicating unmasked / masked uninterruptible / masked ninterruptible |
+| `h$Thread.mask` | `number`, mask status indicating unmasked / masked uninterruptible / masked interruptible |
 | `h$Thread.excep` | `Array`, list of unposted asynchronous exceptions and their posting `h$Thread` objects. When the receiving thread unmasks, the scheduler posts the exceptions to its `h$Thread.stack` with `h$raiseAsync_frame` and unblocks the sending threads |
 | `h$Thread.interruptible` | `boolean`, interruptible state of the thread |
 
