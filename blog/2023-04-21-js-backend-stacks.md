@@ -201,7 +201,7 @@ Here is an example of what `h$stack` might look like during the execution of `ex
 | Slot | Value                                  | Frame | Type / Description |
 | ---- | -------------------------------------- | ----- | ----------------- |
 | 0    | `h$done`                               | __1__ | `function`, "finished" frame |
-| 1    | `0`                                    | 2     | `number`, fags |
+| 1    | `0`                                    | 2     | `number`, flags |
 | 2    | `h$...zireportError`                   | 2     | `object`, exception handler |
 | 3    | `h$catch_e`                            | __2__ | `function`, exception catch frame |
 | 4    | `4`                                    | 3     | value of `a` (in `example3` above) |
