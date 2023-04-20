@@ -4,11 +4,59 @@
         <title>IOG Engineering Blog</title>
         <link>https://engineering.iog.io/</link>
         <description>IOG Engineering blog</description>
-        <lastBuildDate>Fri, 14 Apr 2023 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 20 Apr 2023 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
         <copyright>Copyright © 2023 IOG, Inc.</copyright>
+        <item>
+            <title><![CDATA[IOG GHC Update #8]]></title>
+            <link>https://engineering.iog.io/2023-04-20-ghc-update</link>
+            <guid>2023-04-20-ghc-update</guid>
+            <pubDate>Thu, 20 Apr 2023 00:00:00 GMT</pubDate>
+            <description><![CDATA[Biweekly update from the GHC DevX team at IOG.]]></description>
+            <content:encoded><![CDATA[<p>Biweekly update from the GHC DevX team at IOG.</p><p>Previous updates can be found <a href="https://engineering.iog.io/tags/ghc-update" target="_blank" rel="noopener noreferrer">here</a>.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="javascript-backend">JavaScript backend<a class="hash-link" href="#javascript-backend" title="Direct link to heading">​</a></h2><ul><li><p>Sylvain: fixed the implementation of some thread-related primops
+(listThreads, getThreadLabel...).
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10303" target="_blank" rel="noopener noreferrer">GHC!10303</a></p></li><li><p>Sylvain: regenerated Cabal lexer with a newer Alex containing his bug fix
+for the JS backend (cf previous update). Some Cabal tests had to be updated in the process because
+they were relying on an Alex bug which has been fixed. This raised the question of
+bug fixes vs the PVP. See <a href="https://github.com/haskell/cabal/pull/8896" target="_blank" rel="noopener noreferrer">Cabal#8896</a>,
+<a href="https://github.com/haskell/alex/issues/227" target="_blank" rel="noopener noreferrer">Alex#227</a>,
+and <a href="https://github.com/haskell/pvp/issues/49" target="_blank" rel="noopener noreferrer">PVP#49</a>.</p></li><li><p>Josh: added an implementation for <code>mkdir</code> for node targets. Primarily this is
+expected to be used by Cabal setup scripts, but any JS backend programs running on
+node will be able to use it. See <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10279" target="_blank" rel="noopener noreferrer">GHC!10279</a>.</p></li><li><p>Josh: fixed the <code>-fcheck-prim-bounds</code> flag for the JS backend. The old implementation
+mostly only caused false negatives in the bounds that were rejected (i.e. it would miss
+some invalid bounds), but it some cases there were also false positives, caused by
+casted byte array indexing operations being indexed on the casted type's size.
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10234" target="_blank" rel="noopener noreferrer">GHC!10234</a>.</p></li><li><p>Josh: fixed the JS implementation for the <code>access</code> function on files. This
+function comes from C, but node also provides a direct equivalent - which the new
+implementation uses. See <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10301" target="_blank" rel="noopener noreferrer">GHC!10301</a>.</p></li><li><p>Luite: Worked on optimizing finalizers by disabling heap scanning and found
+an issue affecting <code>debugIO</code> in the base library. This is caused by the code
+generated for <code>h$appendToHsStringA</code>. A fix is now ready, see
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10312" target="_blank" rel="noopener noreferrer">GHC!10312</a></p></li></ul><h3 class="anchor anchorWithStickyNavbar_mojV" id="pipeline-refactoring-and-new-ir">Pipeline refactoring and new IR<a class="hash-link" href="#pipeline-refactoring-and-new-ir" title="Direct link to heading">​</a></h3><ul><li>Jeff: <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10260" target="_blank" rel="noopener noreferrer">MR!10260</a>
+ready to land. This MR paves the way for the new IR, changes the small
+optimization pass the JavaScript backend had to target the current IR instead of
+directly printing optimized forms, and adds an IR to IR optimizer. CI shows that
+the compile time allocations for the JavaScript backend is reduced an average of
+3.3% with a maximum reduction 13% with this MR. Note that these reductions
+come from cleaner code generation, not from the optimizer.</li></ul><h3 class="anchor anchorWithStickyNavbar_mojV" id="faster-weak-references-implementation">Faster weak references implementation?<a class="hash-link" href="#faster-weak-references-implementation" title="Direct link to heading">​</a></h3><h3 class="anchor anchorWithStickyNavbar_mojV" id="testsuite-and-cleanup">Testsuite and cleanup<a class="hash-link" href="#testsuite-and-cleanup" title="Direct link to heading">​</a></h3><ul><li>Sylvain: replaced uses of obsolescent <code>egrep</code> with <code>grep -E</code>. Otherwise
+recent <code>egrep</code> programs print a warning that makes some GHC golden tests fail.
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22351" target="_blank" rel="noopener noreferrer">GHC#22351</a>
+and <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10308" target="_blank" rel="noopener noreferrer">GHC!10308</a>.</li></ul><h3 class="anchor anchorWithStickyNavbar_mojV" id="code-generator-and-performance">Code generator and performance<a class="hash-link" href="#code-generator-and-performance" title="Direct link to heading">​</a></h3><h3 class="anchor anchorWithStickyNavbar_mojV" id="ghc-proposal-0134-deprecated-exports">GHC Proposal #0134 (Deprecated Exports)<a class="hash-link" href="#ghc-proposal-0134-deprecated-exports" title="Direct link to heading">​</a></h3><ul><li>Bartek: Implemented the parsing and pretty printing of warnings of deprecated exports.
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10283" target="_blank" rel="noopener noreferrer">GHC!10283</a> for the partial
+implementation of the proposal so far.</li></ul><h2 class="anchor anchorWithStickyNavbar_mojV" id="miscellaneous">Miscellaneous<a class="hash-link" href="#miscellaneous" title="Direct link to heading">​</a></h2><ul><li><p>Jeff : First case study on performance engineering for the <a href="https://input-output-hk.github.io/hs-opt-handbook.github.io/" target="_blank" rel="noopener noreferrer">Haskell
+Optimization Handbook</a> is almost done. The case study demonstrates a first pass
+of performance engineering on the klister programming language's interpreter.
+The chapter demonstrates the use of ticky ticky, info-table, biography and
+retainer analysis profiling to gain a 6-fold improvement in the interpreter.</p></li><li><p>Luite: Finished the blog post on the lightweight stacks and calling convention
+the JavaScript backend uses. This will be published on the IOG engineering blog
+shortly.</p></li><li><p>Josh: Updated the unboxed codebuffers implementation to include pattern
+synonyms for backwards-compatability. Now, the implementation of handle encoding
+in base can be updated to be more performant without requiring external changes.
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9948" target="_blank" rel="noopener noreferrer">GHC!9948</a>.</p></li></ul>]]></content:encoded>
+            <category>ghc</category>
+            <category>ghc-update</category>
+        </item>
         <item>
             <title><![CDATA[IOSim on Hackage!]]></title>
             <link>https://engineering.iog.io/2023-04-14-io-sim-annoucement</link>
