@@ -12,7 +12,7 @@ I recently gave a short presentation on the topic of stacks in the GHC JavaScrip
 
 In the context of a program produced by the GHC JavaScript backend, two different types of stack exist: The JavaScript call stack and Haskell lightweight stacks. In this post we will focus mostly on the lightweight stacks.
 
-First we will see why using only the JavaScript call stack is not suitable for running compiled Haskell code. Then we will introdunce the calling convention we use for Haskell and see how the lightweight stacks are used for making calls and passing around data. After this, we will explore in more detail how they are used for exception handling and multithreading.
+First we will see why using only the JavaScript call stack is not suitable for running compiled Haskell code. Then we will introduce the calling convention we use for Haskell and see how the lightweight stacks are used for making calls and passing around data. After this, we will explore in more detail how they are used for exception handling and multithreading.
  
 ## Lightweight Stacks
 
@@ -57,7 +57,7 @@ function example1_trampoline() {
 }
 ```
 
-`example1_trampoline` only works if it's called from scheduler loop. The scheduler loop keeps calling functions (`c = c();`), so all calls are made directly from the `scheduler` function, no growing JavaScript stack.
+`example1_trampoline` only works if it's called from the scheduler loop. The scheduler loop keeps calling functions (`c = c();`), so all calls are made directly from the `scheduler` function, no growing JavaScript stack.
 
 The scheduler loop cannot deal with function arguments, it calls each `c` without any arguments. There's no way to efficiently return both a function and arguments to `scheduler` in JavaScript. Allocating an object wrapping the function and arguments for each call would be prohibitively expensive. Therefore we rely on global variables `h$r1, h$r2, h$r3, ...`, which we refer to as "registers", to pass the arguments to `xyz`.
 
@@ -91,7 +91,7 @@ Returning the result value directly from `abc` is not possible: It would end up 
 
 This is where the lightweight Haskell stack comes into play. We use the convention that when we are done computing, we "return" the result by making a tail call to a _continuation_ (function) at the top of the lightweight stack, passing the result as an argument.
 
-The stack is stored in global variable `h$stack`, which is a JavaScript array, and we have a global integer variable `h$sp` which represents the index of the top of the stack. This means that our continuation is found at `h$stack[h$sp]`, the top of the stack. We call it the usual way: Returning the function to the trampoline and using registers (`h$r1, h$r2, ...`) for the arguments.
+The stack is stored in the global variable `h$stack`, which is a JavaScript array, and we have a global integer variable `h$sp` which represents the index of the top of the stack. This means that our continuation is found at `h$stack[h$sp]`, the top of the stack. We call it the usual way: Returning the function to the trampoline and using registers (`h$r1, h$r2, ...`) for the arguments.
 
 Using this convention, `example2` becomes:
 
@@ -212,11 +212,11 @@ Frame `3` is the `example3_cont` frame with two slots of payload, pushed by our 
 
 ### Stack Frame Metadata
 
-During normal execution of a program, the code that manipulates the stack has knowledge of the specific stack frame it's working with: It knows the size of the payload and which values are stored in each stack slot. However there are also operations that require dealing with all kinds of unknown stack frames. Exceptions and software transactional memory are the most important ones.
+During normal execution of a program, the code that manipulates the stack has knowledge of the specific stack frame it's working with: It knows the size of the payload and which values are stored in each stack slot. However, there are also operations that require dealing with all kinds of unknown stack frames. Exceptions and software transactional memory are the most important ones.
 
 These operations deal with unknown stack frames and sometimes need information about the frame, for example the frame size. Where do we store it?
 
-Every JavaScript function is also an object. This means that we can actually store arbitrary data in the function's properties. For example for any function `f` we can do `f.x = 5;`. This is what we use to store the metadata for stack frames.
+Every JavaScript function is also an object. This means that we can store arbitrary data in the function's properties. For example for any function `f` we can do `f.x = 5;`. This is what we use to store the metadata for stack frames.
 
 Stack frames contain at least the following metadata in the header:
 
@@ -307,11 +307,11 @@ function h$throw(e) {
 }
 ```
 
-`h$throw` keeps removing stack frames from the stack until some frame of interest is found, using `h$stackFrameSize` to determine the size of each frame. Eventually it transfers control to an exception handler or it reports an error if no exception handling frame could be found.
+`h$throw` keeps removing stack frames from the stack until some frame of interest is found, using `h$stackFrameSize` to determine the size of each frame. Eventually, it transfers control to an exception handler or it reports an error if no exception handling frame could be found.
 
 ## Threads
 
-Concurent Haskell supports multiple Haskell threads. These Haskell threads are run by one or more system threads. The JavaScript "system" is single threaded (ignoring Web Workers, which have limited memory sharing), so we have to use a single system thread to run everything. It turns out to be quite straightforward to support multithreading if we use the trampolining calling convention with lightweight stacks. Each Haskell thread gets its own stack and stack pointer.
+Concurrent Haskell supports multiple Haskell threads. These Haskell threads are run by one or more system threads. The JavaScript "system" is single-threaded (ignoring Web Workers, which have limited memory sharing), so we have to use a single system thread to run everything. It turns out to be quite straightforward to support multithreading if we use the trampolining calling convention with lightweight stacks. Each Haskell thread gets its own stack and stack pointer.
 
 Each Haskell thread has a thread state object, `t` of type `h$Thread`. This object contains the stack (`t.stack`, `Array`) and stack pointer (`t.sp`, `number`) for the thread, and also keeps track of the thread status, for example whether the thread is finished or masking asynchronous exceptions.
 
@@ -401,7 +401,7 @@ function scheduler() {
 }
 ```
 
-In practice, the scheduler is quite a bit more complicated. For example it also uses time based switching, changing to different thread even when `h$reschedule` is not returned by the current thread. In that case, the scheduler takes care of saving the thread state onto the stack, using metadata from the continuation.
+In practice, the scheduler is quite a bit more complicated. For example it also uses time-based switching, changing to different thread even when `h$reschedule` is not returned by the current thread. In that case, the scheduler takes care of saving the thread state onto the stack, using metadata from the continuation.
 
 A discussion of all the ins and outs of the scheduler is beyond the scope of this blog post. But it could be the topic of a follow-up post.
 
@@ -426,7 +426,7 @@ These functions start a new thread given an `IO` action. They also start the mai
 | Name | Description |
 | ----------- | ----------- |
 | `h$run(c)` | Run `IO` action `c` in a new lightweight thread |
-| `h$main(c)` | Run `IO` action `c` in a new lightweight thread, flush buffers and exit program when finished |
+| `h$main(c)` | Run `IO` action `c` in a new lightweight thread, flush buffers and exit the program when finished |
 
 #### Some Useful Internal Functions
 
@@ -456,4 +456,4 @@ These functions start a new thread given an `IO` action. They also start the mai
 
 We have introduced the _trampolining_ calling convention used by the JavaScript backend for GHC and the structure of the stacks used by it.
 
-We have seen that stacks of Haskell lightweight threads are represented by JavaScript arrays with the JavaScript backend. The contents on the stack consists of stack frames with a header and a payload. The header of each stack frame contains some metadata so that code for exception can traverse the stack and transfer control to an exception handler.
+We have seen that stacks of Haskell lightweight threads are represented by JavaScript arrays with the JavaScript backend. The contents on the stack consist of stack frames with a header and a payload. The header of each stack frame contains some metadata so that code for exception handling can traverse the stack and transfer control to an exception handler.
