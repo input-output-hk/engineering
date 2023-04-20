@@ -342,7 +342,7 @@ The initial stack contains two stack frames. The top three slots contain a `catc
 
 ### Scheduling and Suspending a Thread
 
-Now we have potentially multiple `h$Tread` objects, each with their own stack. But how do we run the threads?
+Now we have potentially multiple `h$Thread` objects, each with their own stack. But how do we run the threads?
 
 The trampolining calling convention introduced earlier expects the stack to be stored in `h$stack`, with `h$sp` the index of the topmost used slot. This means that if we want to run a thread `t`, we need to set `h$stack` and `h$sp` to the values from the `h$Thread` object `t`:
 
