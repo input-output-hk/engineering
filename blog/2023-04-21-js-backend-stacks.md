@@ -412,7 +412,7 @@ A discussion of all the ins and outs of the scheduler is beyond the scope of thi
 
 Haskell exceptions come in two flavours: _synchronous_ exceptions and _asynchronous_ exceptions. Synchronous exceptions always come from the code itself, for example a pattern match failure, a call to `error` or `undefined`. Running the code again with the same input always produces the same result.
 
-Asynchronous exceptions come from the outside. They can come from other threads (but don't need to) or from the runtime system. Typical reasons for asynchronous exceptions are timeouts and resource exhaustion. It's perfectly possible for same function with the same input to be aborted with an asynchronous exception the first run, while running to completion the second time. This means that we must be careful preserving any partially completed computation.
+Asynchronous exceptions come from the outside. They can come from other threads (but don't need to) or from the runtime system. Typical reasons for asynchronous exceptions are timeouts and resource exhaustion. It's perfectly possible for the same function with the same input to be aborted with an asynchronous exception the first run, while running to completion the second time. This means that we must be careful preserving any partially completed computation.
 
 Asynchronous exceptions can happen at any time, which can make them quite tricky to deal with. They could leave the program in an inconsistent state if they occur at the wrong time. Therefore, threads can temporarily block asynchronous exceptions, a process called _masking_. Different masking states are used for indicating whether exceptions are still masked when the thread is performing an _interruptible_ operation.
 
