@@ -87,7 +87,7 @@ Here the call to `abc_direct` is not a tail call; `example2_direct` has to do so
 - `abc` has to return a value to the function that called it
 - `example2` needs to inspect the value returned by `xyz`.
 
-Returning the result value directly from `abc` is not possible: It would end up in the `c = c();` loop in `scheduler`. We need to a value, but we can only return a function to make a tail call. Where do we get this function?
+Returning the result value directly from `abc` is not possible: It would end up in the `c = c();` loop in `scheduler`. We need to return a value, but we can only return a function to make a tail call. Where do we get this function?
 
 This is where the lightweight Haskell stack comes into play. We use the convention that when we are done computing, we "return" the result by making a tail call to a _continuation_ (function) at the top of the lightweight stack, passing the result as an argument.
 
@@ -403,7 +403,7 @@ function scheduler() {
 
 In practice, the scheduler is quite a bit more complicated. For example it also uses time based switching, changing to different thread even when `h$reschedule` is not returned by the current thread. In that case, the scheduler takes care of saving the thread state onto the stack, using metadata from the continuation.
 
-Unfortunately, a discussion of all the ins and outs of the scheduler is beyond the scope of this blog post.
+A discussion of all the ins and outs of the scheduler is beyond the scope of this blog post. But it could be the topic of a follow-up post.
 
 ### Important Values and Properties
 
