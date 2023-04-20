@@ -362,7 +362,7 @@ We also store `t` itself in the global `h$currentThread` variable to keep track 
 While the thread is running, `h$stack` and `h$sp` are constantly updated by the compiled Haskell code, so they go out of sync with values saved in the `h$Thread` object. This means that when we suspend a thread, these need to be copied back into the `h$Thread` as follows:
 
 ```javascript
-// suspending a thread t
+// suspending the current thread
 function __suspendCurrentThread() {
     // save the global h$stack and h$sp back into the thread state object
     h$currentThread.stack = h$stack;
