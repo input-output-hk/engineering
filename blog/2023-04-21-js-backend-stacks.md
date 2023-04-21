@@ -39,7 +39,7 @@ function example1_direct() {
 ```javascript
 // simplified scheduler function
 function scheduler(c) {
-  // scheduler trampolining loop:
+  // scheduler trampolining loop
   while(true) {
     c = c();
   }
@@ -86,7 +86,7 @@ function example2_direct() {
 Here the call to `abc_direct` is not a tail call; `example2_direct` has to do something with the result of the call. To make a trampolining version out of `example2`, we need to consider the following:
 
 - `abc` has to return a value to the function that called it
-- `example2` needs to inspect the value returned by `xyz`.
+- `example2` needs to inspect the value returned by `abc`.
 
 Returning the result value directly from `abc` is not possible: It would end up in the `c = c();` loop in `scheduler`. We need to return a value, but we can only return a function to make a tail call. Where do we get this function?
 
