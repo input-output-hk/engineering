@@ -27,7 +27,7 @@ When using trampolining to make a tail call, we don't directly make a function c
 ```javascript
 // example without trampolining
 function example1_direct() {
-  ... // compute arg1 here
+  var arg1 = ... // compute arg1
 
   // make a tail call to xyz (using space on the JavaScript call stack)
   return xyz(arg1);
@@ -47,7 +47,7 @@ function scheduler(c) {
 
 // example1 is called from the scheduler loop
 function example1_trampoline() {
-  ... // compute arg1 here
+  var arg1 = ... // compute arg1
 
   // use global "register" variable h$r1 for the argument
   h$r1 = arg1;
@@ -72,7 +72,8 @@ function abc_direct(arg1) {
 }
 
 function example2_direct() {
-  ... // compute arg1
+  var arg1 = ... // compute arg1
+
   var r = abc_direct(arg1);
   if(r > 0) {
     return 1;
@@ -106,7 +107,7 @@ function abc_trampoline() {
 }
 
 function example2_trampoline() {
-  ... // compute arg1
+  var arg1 = ... // compute arg1
 
   // push our continuation
   h$sp++;
@@ -146,7 +147,9 @@ function example3_direct() {
   var arg1 = ... // compute arg1
   var a    = ... // compute a
   var b    = ... // compute b
+
   var r = abc_direct(arg1);
+
   if(r > 0) {
     return a;
   } else {
@@ -159,9 +162,9 @@ Here we need to make sure that `a` and `b` are available in the continuation. To
 
 ```javascript
 function example3_trampoline() {
-  arg1 = ... // compute arg1
-  a    = ... // compute a
-  b    = ... // compute b
+  var arg1 = ... // compute arg1
+  var a    = ... // compute a
+  var b    = ... // compute b
 
   // push our continuation, saving a and b
   h$sp += 3;
@@ -270,13 +273,13 @@ The `catch` frame has two words of payload:
 | 2    | `h$catch_e`                            | __1__ | `function`, exception catch frame |
 
 
-The code for `h$catch_e` is straightforward, it just pops the stack frame and returns to the next frame. This is what happens if no exception has occurred; the program just skips past the exception handler:
+The code for `h$catch_e` is straightforward. It just pops the stack frame and returns to the next frame. This is what happens if no exception has occurred; the program just skips past the exception handler:
 
 ```javascript
 function h$catch_e() {
   h$sp -= 3;
   return h$stack[h$sp];
-};
+}
 ```
 
 An exception is thrown by the `h$throw` function, which unwinds the stack. Its implementation in simplified form looks like this:
