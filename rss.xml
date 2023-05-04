@@ -4,11 +4,58 @@
         <title>IOG Engineering Blog</title>
         <link>https://engineering.iog.io/</link>
         <description>IOG Engineering blog</description>
-        <lastBuildDate>Fri, 21 Apr 2023 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 04 May 2023 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
         <copyright>Copyright © 2023 IOG, Inc.</copyright>
+        <item>
+            <title><![CDATA[IOG GHC Update #9]]></title>
+            <link>https://engineering.iog.io/2023-05-04-ghc-update</link>
+            <guid>2023-05-04-ghc-update</guid>
+            <pubDate>Thu, 04 May 2023 00:00:00 GMT</pubDate>
+            <description><![CDATA[Biweekly update from the GHC DevX team at IOG.]]></description>
+            <content:encoded><![CDATA[<p>Biweekly update from the GHC DevX team at IOG.</p><p>Previous updates can be found <a href="https://engineering.iog.io/tags/ghc-update" target="_blank" rel="noopener noreferrer">here</a>.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="javascript-backend">JavaScript backend<a class="hash-link" href="#javascript-backend" title="Direct link to heading">​</a></h2><ul><li><p>Luite: has published a blog post about how Stacks work in the JS backend:
+<a href="https://engineering.iog.io/2023-04-21-stacks-in-the-js-backend" target="_blank" rel="noopener noreferrer">https://engineering.iog.io/2023-04-21-stacks-in-the-js-backend</a></p></li><li><p>Jeff: <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10260" target="_blank" rel="noopener noreferrer">GHC!10260</a>, which adds a small optimizer to the JS backend, has landed in master.</p></li><li><p>Josh &amp; Sylvain: fixed the <code>-fcheck-prim-bound</code> feature for the JS backend.
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/23123" target="_blank" rel="noopener noreferrer">GHC#23123</a> and
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10234" target="_blank" rel="noopener noreferrer">GHC!10234</a></p></li><li><p>Luite: improved gc pause times for the JS backend for programs that do not
+use weak references, by omitting heap scans if there are no pending finalizers.
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10379" target="_blank" rel="noopener noreferrer">GHC!10379</a></p></li></ul><ul><li><p>Josh: refactored some code related to saturated/unsaturated ASTs:</p><ul><li>First, the <code>identsS</code>/<code>identsE</code>/<code>identsV</code> functions were changed to
+take a <code>Sat.JStat</code> instead of an <code>Unsat.JStat</code> as an argument, since
+they previously would raise an error when encountering an unsaturated
+constructor (<code>Sat.JStat</code> and <code>Unsat.JStat</code> are identical other than
+this constructor)
+<a href="https://gitlab.haskell.org/ghc/ghc/-/issues/23304" target="_blank" rel="noopener noreferrer">GHC#23304</a><a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10348" target="_blank" rel="noopener noreferrer">GHC!10348</a></li><li>Then, <code>jsSaturate</code> and <code>satJStat</code> were combined into one function.
+Previously, <code>jsSaturate</code> would instantiate unsaturated constructors
+in a <code>JStat</code> AST, but retain the <code>Unsat.JStat</code> type, and <code>satJStat</code>
+would separately traverse the AST to make the simple type conversion.
+Since <code>jsSaturate</code> was never used without calling <code>satJStat</code> directly
+after, these can be combined to traverse the AST and instantiate
+unsaturated constructors in one pass.
+<a href="https://gitlab.haskell.org/ghc/ghc/-/issues/23328" target="_blank" rel="noopener noreferrer">GHC#23328</a><a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10369" target="_blank" rel="noopener noreferrer">GHC!10369</a></li></ul></li><li><p>Josh: Added the type of an STG closure to various STG data types so that
+it's passed through <code>GHC.CoreToStg.PreStgRhs</code> and <code>GHC.CoreToStg.StgRhsClosure</code>.
+With this, we no longer have to guess types based on other information available
+during JavaScript code generation. This fixes some issues that were revealed
+in the testsuite.
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10261" target="_blank" rel="noopener noreferrer">GHC!10261</a></p></li></ul><h2 class="anchor anchorWithStickyNavbar_mojV" id="ghc-proposal-0134-deprecated-exports">GHC Proposal #0134 (Deprecated Exports)<a class="hash-link" href="#ghc-proposal-0134-deprecated-exports" title="Direct link to heading">​</a></h2><ul><li><p>Bartek: found a bug in warnings about duplicate exports when exporting T(..).
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/23318" target="_blank" rel="noopener noreferrer">GHC#23318</a></p></li><li><p>Bartek: Finished exporting part of the renamer for the Deprecating Exports proposal.
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10283" target="_blank" rel="noopener noreferrer">GHC!10283</a></p></li></ul><h2 class="anchor anchorWithStickyNavbar_mojV" id="performance">Performance<a class="hash-link" href="#performance" title="Direct link to heading">​</a></h2><ul><li><p>Jeff: First case study on performance engineering for the <a href="https://input-output-hk.github.io/hs-opt-handbook.github.io/" target="_blank" rel="noopener noreferrer">Haskell
+Optimization
+Handbook</a> is done
+and has been published.</p></li><li><p>Josh: Added a GHC testsuite performance test for measuring memory allocations
+of encoding.
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10347" target="_blank" rel="noopener noreferrer">GHC!10347</a></p></li></ul><h2 class="anchor anchorWithStickyNavbar_mojV" id="modularity">Modularity<a class="hash-link" href="#modularity" title="Direct link to heading">​</a></h2><ul><li>Jeff: Has begun to consolidate the
+<a href="https://hsyl20.fr/home/files/papers/2022-ghc-modularity.pdf" target="_blank" rel="noopener noreferrer">ghc-modularity</a>
+paper for a
+<a href="https://icfp23.sigplan.org/home/funarch-2023#Call-for-Papers" target="_blank" rel="noopener noreferrer">FUNARCH</a>
+submission. See you at ICFP!</li></ul><h2 class="anchor anchorWithStickyNavbar_mojV" id="tooling">Tooling<a class="hash-link" href="#tooling" title="Direct link to heading">​</a></h2><ul><li>Sylvain: fixed Stack's hi-file-parser to support GHC 9.4.5 and GHC 9.6.1. See
+ticket
+<a href="https://github.com/commercialhaskell/hi-file-parser/issues/12" target="_blank" rel="noopener noreferrer">hi-file-parser#12</a>
+and PR
+<a href="https://github.com/commercialhaskell/hi-file-parser/pull/14" target="_blank" rel="noopener noreferrer">hi-file-parser#13</a>.</li></ul>]]></content:encoded>
+            <category>ghc</category>
+            <category>ghc-update</category>
+        </item>
         <item>
             <title><![CDATA[Stacks in the JavaScript Backend]]></title>
             <link>https://engineering.iog.io/2023-04-21-stacks-in-the-js-backend</link>
