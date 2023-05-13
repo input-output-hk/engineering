@@ -114,7 +114,7 @@ on `io-uring` (Linux) and [`io-completion` ports][io-completion-ports]
 ### [IOSim][`io-sim`]
 
 [`io-sim`] package provides a pure (free) monad that has instances for type
-classes defined in [`io-classses`] and [`si-timers`]. In particular, [`io-sim`]
+classes defined in [`io-classes`] and [`si-timers`]. In particular, [`io-sim`]
 supports threads (via low-level `forkIO` as well as [`async`] package
 interface), deadlock detection, asynchronous exceptions, software transaction
 memory (`STM`), lifting `ST` computations, `mfix`, and various APIs that
@@ -403,7 +403,7 @@ exceptions (including blocking information of `throwTo`), forking events, delay
 of threads and `TVar`s.  And as we mentioned you can extract information logged
 by the code in simulation.  From the `SimTrace` you can also extract the result
 computed by your simulation with
-[Control.Monad.IOSim.traceResult][traceResult].  These three functions are
+[Control.Monad.IOSim.traceResult][`traceResult`].  These three functions are
 useful for example to enhance test failure information (e.g. via the well known
 [`counterexample`] from the `QuickCheck` library).
 
