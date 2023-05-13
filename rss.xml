@@ -174,7 +174,7 @@ platforms (which is part of <a href="https://github.com/input-output-hk/ouroboro
 an interesting longer <code>GHC</code> project to provide performant native timeouts based
 on <code>io-uring</code> (Linux) and <a href="https://learn.microsoft.com/en-us/windows/win32/fileio/i-o-completion-ports" target="_blank" rel="noopener noreferrer"><code>io-completion</code> ports</a>
 (Windows).</p><h3 class="anchor anchorWithStickyNavbar_mojV" id="iosim"><a href="https://hackage.haskell.org/package/io-sim" target="_blank" rel="noopener noreferrer">IOSim</a><a class="hash-link" href="#iosim" title="Direct link to heading">​</a></h3><p><a href="https://hackage.haskell.org/package/io-sim" target="_blank" rel="noopener noreferrer"><code>io-sim</code></a> package provides a pure (free) monad that has instances for type
-classes defined in <!-- -->[<code>io-classses</code>]<!-- --> and <a href="https://hackage.haskell.org/package/si-timers" target="_blank" rel="noopener noreferrer"><code>si-timers</code></a>. In particular, <a href="https://hackage.haskell.org/package/io-sim" target="_blank" rel="noopener noreferrer"><code>io-sim</code></a>
+classes defined in <a href="https://hackage.haskell.org/package/io-classes" target="_blank" rel="noopener noreferrer"><code>io-classes</code></a> and <a href="https://hackage.haskell.org/package/si-timers" target="_blank" rel="noopener noreferrer"><code>si-timers</code></a>. In particular, <a href="https://hackage.haskell.org/package/io-sim" target="_blank" rel="noopener noreferrer"><code>io-sim</code></a>
 supports threads (via low-level <code>forkIO</code> as well as <a href="https://hackage.haskell.org/package/async" target="_blank" rel="noopener noreferrer"><code>async</code></a> package
 interface), deadlock detection, asynchronous exceptions, software transaction
 memory (<code>STM</code>), lifting <code>ST</code> computations, <code>mfix</code>, and various APIs that
@@ -282,7 +282,7 @@ exceptions (including blocking information of <code>throwTo</code>), forking eve
 of threads and <code>TVar</code>s.  And as we mentioned you can extract information logged
 by the code in simulation.  From the <code>SimTrace</code> you can also extract the result
 computed by your simulation with
-<!-- -->[Control.Monad.IOSim.traceResult][traceResult]<!-- -->.  These three functions are
+<a href="https://hackage.haskell.org/package/io-sim-1.0.0.0/docs/Control-Monad-IOSim.html#v:traceResult" target="_blank" rel="noopener noreferrer">Control.Monad.IOSim.traceResult</a>.  These three functions are
 useful for example to enhance test failure information (e.g. via the well known
 <a href="https://hackage.haskell.org/package/QuickCheck-2.14.2/docs/Test-QuickCheck.html#v:counterexample" target="_blank" rel="noopener noreferrer"><code>counterexample</code></a> from the <code>QuickCheck</code> library).</p><p>You can use <a href="https://hackage.haskell.org/package/io-sim-1.0.0.0/docs/Control-Monad-IOSim.html#v:runSim" target="_blank" rel="noopener noreferrer"><code>runSim</code></a> or <a href="https://hackage.haskell.org/package/io-sim-1.0.0.0/docs/Control-Monad-IOSim.html#v:runSimOrThrow" target="_blank" rel="noopener noreferrer"><code>runSimOrThrow</code></a> if you are not interested in the
 trace but you just want to get the result.  Note that the <code>SimTrace</code> is very
