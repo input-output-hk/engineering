@@ -2,12 +2,60 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://engineering.iog.io/</id>
     <title>IOG Engineering Blog</title>
-    <updated>2023-05-04T00:00:00.000Z</updated>
+    <updated>2023-05-18T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://engineering.iog.io/"/>
     <subtitle>IOG Engineering blog</subtitle>
     <icon>https://engineering.iog.io/img/favicon.ico</icon>
     <rights>Copyright © 2023 IOG, Inc.</rights>
+    <entry>
+        <title type="html"><![CDATA[IOG GHC Update #10]]></title>
+        <id>2023-05-18-ghc-update</id>
+        <link href="https://engineering.iog.io/2023-05-18-ghc-update"/>
+        <updated>2023-05-18T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Biweekly update from the GHC DevX team at IOG.]]></summary>
+        <content type="html"><![CDATA[<p>Biweekly update from the GHC DevX team at IOG.</p><p>Previous updates can be found <a href="https://engineering.iog.io/tags/ghc-update" target="_blank" rel="noopener noreferrer">here</a>.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="javascript-backend">JavaScript backend<a class="hash-link" href="#javascript-backend" title="Direct link to heading">​</a></h2><ul><li><p>Josh: Merged a port of <code>clock_gettime</code> from GHCJS into the JavaScript backend. This
+function is required by some Cabal <code>Setup.hs</code> programs, so this brings us closer to
+full Cabal functionality, as well as Unix parity.
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10396" target="_blank" rel="noopener noreferrer">GHC!10396</a></p></li><li><p>Luite: Ported the patch to support the <code>process</code> package in the GHC JavaScript
+backend from GHCJS. The old code was never fully tested and only intended to support
+Cabal, so there is missing functionality and error reporting is lacking. Work is
+now on the way to bring it up to level where it can be merged in the <code>process</code> package.</p></li><li><p>Luite: Looked into the test failures for the JavaScript specific weak references.
+It turned out to be caused by messing deadlock detection. Experimented with making
+the JavaScript storage manager (<code>FinalizationRegistry</code>) work for deadlock detection,add
+but it requires signifcant changes to the representation of <code>ThreadId#</code> in the Haskell
+code. For GHC 9.8 we will most likely document that deadlocks are not guaranteed to
+be detected with the JavaScript backend, and give the user the option to manually run
+full deadlock detection (heap scan) if desired.</p></li><li><p>Sylvain: fixed support for the <code>ghcjs_HOST_OS</code> CPP conditional.
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/23346" target="_blank" rel="noopener noreferrer">GHC#22346</a>
+and <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10430" target="_blank" rel="noopener noreferrer">GHC!10430</a>.</p></li><li><p>Sylvain: fixed <code>getpid</code>. See <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/23399" target="_blank" rel="noopener noreferrer">GHC#23399</a> and <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10454" target="_blank" rel="noopener noreferrer">GHC!10454</a>.</p></li></ul><h2 class="anchor anchorWithStickyNavbar_mojV" id="deprecation-warnings">Deprecation warnings<a class="hash-link" href="#deprecation-warnings" title="Direct link to heading">​</a></h2><ul><li><p>Bartek: changed the way warning reporting from addUsedGRE was done from artificially removing all warning categories from dynflags to an explicit argument
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10414" target="_blank" rel="noopener noreferrer">GHC!10414</a></p></li><li><p>Bartek: almost finished the deprecated exports proposal, a bug left to fix in backpack
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10283" target="_blank" rel="noopener noreferrer">GHC!10283</a></p></li></ul><h2 class="anchor anchorWithStickyNavbar_mojV" id="performance">Performance<a class="hash-link" href="#performance" title="Direct link to heading">​</a></h2><ul><li>Josh: Merged improvements to the implementation of handle encoders after approval of
+the CLC. By manually unboxing functions stored in the <code>CodeBuffer</code> record, the
+allocations caused by allocations are reduced by ~20%, and general GHC usage is also
+slightly improved.
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9948" target="_blank" rel="noopener noreferrer">GHC!9948</a>
+and <a href="https://gitlab.haskell.org/ghc/ghc/-/jobs/1514795#L6775" target="_blank" rel="noopener noreferrer">CI Performance Tests</a></li></ul><h2 class="anchor anchorWithStickyNavbar_mojV" id="linker">Linker<a class="hash-link" href="#linker" title="Direct link to heading">​</a></h2><ul><li>Sylvain: backported fix for (GHC#19421](<a href="https://gitlab.haskell.org/ghc/ghc/-/issues/19421" target="_blank" rel="noopener noreferrer">https://gitlab.haskell.org/ghc/ghc/-/issues/19421</a>) (<code>internal error: m32_allocator_init: Failed to map</code>) to 9.2. See <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10453" target="_blank" rel="noopener noreferrer">GHC!10453</a></li></ul><h2 class="anchor anchorWithStickyNavbar_mojV" id="misc">Misc.<a class="hash-link" href="#misc" title="Direct link to heading">​</a></h2><ul><li>Jeff: First draft of the <a href="https://hsyl20.fr/home/files/papers/2022-ghc-modularity.pdf" target="_blank" rel="noopener noreferrer">GHC Modularity</a> FUNARCH paper is complete.</li></ul>]]></content>
+        <author>
+            <name>Sylvain Henry</name>
+        </author>
+        <author>
+            <name>Jeffrey M. Young</name>
+            <uri>https://iog.io/en/</uri>
+        </author>
+        <author>
+            <name>Luite Stegeman</name>
+        </author>
+        <author>
+            <name>Joshua Meredith</name>
+            <uri>https://iog.io/en/</uri>
+        </author>
+        <author>
+            <name>Bartłomiej Cieślar</name>
+        </author>
+        <category label="ghc" term="ghc"/>
+        <category label="ghc-update" term="ghc-update"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[IOG GHC Update #9]]></title>
         <id>2023-05-04-ghc-update</id>
