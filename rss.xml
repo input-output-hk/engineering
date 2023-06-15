@@ -4,11 +4,45 @@
         <title>IOG Engineering Blog</title>
         <link>https://engineering.iog.io/</link>
         <description>IOG Engineering blog</description>
-        <lastBuildDate>Thu, 01 Jun 2023 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 15 Jun 2023 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
         <copyright>Copyright © 2023 IOG, Inc.</copyright>
+        <item>
+            <title><![CDATA[IOG GHC Update #12]]></title>
+            <link>https://engineering.iog.io/2023-06-15-ghc-update</link>
+            <guid>2023-06-15-ghc-update</guid>
+            <pubDate>Thu, 15 Jun 2023 00:00:00 GMT</pubDate>
+            <description><![CDATA[Biweekly update from the GHC DevX team at IOG.]]></description>
+            <content:encoded><![CDATA[<p>Biweekly update from the GHC DevX team at IOG.</p><p>Previous updates can be found <a href="https://engineering.iog.io/tags/ghc-update" target="_blank" rel="noopener noreferrer">here</a>.</p><h2 class="anchor anchorWithStickyNavbar_mojV" id="ghc-contributors-workshop--zurihac">GHC contributors' workshop &amp; Zurihac<a class="hash-link" href="#ghc-contributors-workshop--zurihac" title="Direct link to heading">​</a></h2><ul><li>Sylvain: had a great time presenting the JavaScript backend at the GHC
+contributors' workshop and discussing various Haskell/GHC related things at
+Zurihac. It was nice to meet so many familiar nicknames in person!
+Slides and examples can be found <a href="https://github.com/hsyl20/ghc-workshop-2023" target="_blank" rel="noopener noreferrer">here</a>.</li></ul><h2 class="anchor anchorWithStickyNavbar_mojV" id="javascript-backend">JavaScript backend<a class="hash-link" href="#javascript-backend" title="Direct link to heading">​</a></h2><ul><li><p>Sylvain: updated the MR implementing Template Haskell for the JS backend
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/9779" target="_blank" rel="noopener noreferrer">!9779</a> to add
+a workaround for recompilation avoidance issues. We hope to get this MR merged
+before the GHC 9.8 fork (tomorrow).</p></li><li><p>Sylvain: has been doing some bug triage in the testsuite. Now the result can
+be accessed and modifierd directly on the <a href="https://gitlab.haskell.org/ghc/ghc/-/wikis/javascript-backend/bug_triage" target="_blank" rel="noopener noreferrer">wiki</a>
+(it was in a Google doc before).</p></li><li><p>Luite: fixed a few IO related bugs, including one that caused threads to be
+unreachable by asynchronous exceptions such as timeout.
+<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10657" target="_blank" rel="noopener noreferrer">GHC!10657</a></p></li><li><p>Luite: fixed file descriptor sharing and signal handling for the <code>process</code> package
+on node.js, among many smaller changes and fixes. The testsuite for the <code>process</code>
+package now passes on the JavaScript target. Some work remains before it can be
+merged, mostly around error handling and documentation, but the package should be
+generally usable now.
+<a href="https://gitlab.haskell.org/ghc/ghc/-/issues/22349" target="_blank" rel="noopener noreferrer">GHC#22349</a>,
+<a href="https://github.com/luite/process/tree/js" target="_blank" rel="noopener noreferrer">luite/process/js WIP branch GitHub</a>.</p></li><li><p>Josh: updated JavaScript FFI import strings in the <code>posix</code> library to use modern
+JavaScript backend syntax.
+See: <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10590" target="_blank" rel="noopener noreferrer">!10590</a></p></li><li><p>Josh: worked on updating <code>ghcjs-base</code> to work with the JavaScript backend. This library
+is the first step in updating the GHCJS ecosystem for the JavaScript backend, such as
+<code>ghcjs-dom</code>.
+See: <a href="https://github.com/ghcjs/ghcjs-base/pull/134" target="_blank" rel="noopener noreferrer">ghcjs-base!134</a></p></li><li><p>Jeff: Root caused JavaScript backend CI perf tests not being run. Perf tests should be enabled again soon. MR <!-- -->[here]<!-- -->(<a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10576%7D" target="_blank" rel="noopener noreferrer">https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10576}</a></p></li><li><p>Jeff: Continued splitting the JavaScript backend into an eDSL and IR for codegen/optimizations. Not ready for MR yet, but this will be a fairly large code churn.</p></li></ul><h2 class="anchor anchorWithStickyNavbar_mojV" id="deprecation-warnings">Deprecation warnings<a class="hash-link" href="#deprecation-warnings" title="Direct link to heading">​</a></h2><ul><li>Bartek: Trying to get the last changes through and fixing minor comments from Sam.
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10283" target="_blank" rel="noopener noreferrer">GHC!10283</a></li></ul><h2 class="anchor anchorWithStickyNavbar_mojV" id="incomplete-record-selectors">Incomplete Record Selectors<a class="hash-link" href="#incomplete-record-selectors" title="Direct link to heading">​</a></h2><ul><li><p>Bartek: started work on the <a href="https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0516-incomplete-record-selectors.rst" target="_blank" rel="noopener noreferrer">incomplete record selectors propolal</a>,
+reading through the desugarer code</p></li><li><p>Bartek: crunching through the <a href="https://dl.acm.org/doi/pdf/10.1145/3408989" target="_blank" rel="noopener noreferrer">pattern match checker paper</a></p></li><li><p>Bartek: investigating the issue where the code handling the incomplete record updates warning was removed.
+See <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/23520" target="_blank" rel="noopener noreferrer">GHC#23520</a></p></li></ul><h2 class="anchor anchorWithStickyNavbar_mojV" id="miscellaneous">Miscellaneous<a class="hash-link" href="#miscellaneous" title="Direct link to heading">​</a></h2><ul><li>Jeff: Continued trying to add ANSI Hyperlinks for the Haskell Error Index <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10395" target="_blank" rel="noopener noreferrer">here</a>. We hope to get this merged into the GHC 9.8 fork.</li></ul>]]></content:encoded>
+            <category>ghc</category>
+            <category>ghc-update</category>
+        </item>
         <item>
             <title><![CDATA[IOG GHC Update #11]]></title>
             <link>https://engineering.iog.io/2023-06-01-ghc-update</link>
