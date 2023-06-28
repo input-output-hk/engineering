@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://engineering.iog.io/</id>
     <title>IOG Engineering Blog</title>
-    <updated>2023-06-22T00:00:00.000Z</updated>
+    <updated>2023-06-28T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://engineering.iog.io/"/>
     <subtitle>IOG Engineering blog</subtitle>
@@ -10,9 +10,9 @@
     <rights>Copyright © 2023 IOG, Inc.</rights>
     <entry>
         <title type="html"><![CDATA[Unveiling Cardano's Dynamic P2P: a leap forward in decentralization]]></title>
-        <id>2023-05-30-p2p</id>
-        <link href="https://engineering.iog.io/2023-05-30-p2p"/>
-        <updated>2023-06-22T00:00:00.000Z</updated>
+        <id>2023-06-28-p2p</id>
+        <link href="https://engineering.iog.io/2023-06-28-p2p"/>
+        <updated>2023-06-28T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[Banner]]></summary>
         <content type="html"><![CDATA[<p><img alt="Banner" src="/assets/images/p2p-banner-14683a3ff0e7334098173db8e96c2980.png" width="1601" height="901"></p><h2 class="anchor anchorWithStickyNavbar_mojV" id="introduction">Introduction<a class="hash-link" href="#introduction" title="Direct link to heading">​</a></h2><p>As the Cardano ecosystem continues to grow and evolve, contributors to the Cardano
 ecosystem are committed to continually refining and optimizing Cardano's networking
