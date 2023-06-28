@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkengineering_iog_io=self.webpackChunkengineering_iog_io||[]).push([[2825],{2346:function(e){e.exports=JSON.parse('{"allTagsPath":"/tags","slug":"/tags/p-2-p","name":"p2p","count":1,"permalink":"/tags/p-2-p"}')}}]);
