@@ -37,6 +37,8 @@ a [bug][sim-tcp-open-bug] in simultaneous TCP open when one side of the
 connection crashed - a corner case of a corner case, that's how effective is
 the combination of quickcheck style property-based testing & simulation!
 
+<!-- truncate -->
+
 ### [IO-Classes][`io-classes`]
 
 [`io-classes`] allow testing production code under simulation where one can

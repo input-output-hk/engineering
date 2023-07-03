@@ -9,6 +9,8 @@ tags: [cabal, rust, bindgen]
 
 > **N.B.** quoted paragraphs in this article give straightforward motivation regarding some systems programming basic concepts. Feel free to skip them if you know you’re likely to be already comfortable with them ;)
 
+<!-- truncate  -->
+
 ## Context
 
 At IOG we maintain large [Haskell](https://www.haskell.org) codebases and we would like to interface them with some libraries written in [Rust](https://www.rust-lang.org).

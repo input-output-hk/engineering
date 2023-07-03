@@ -14,6 +14,8 @@ In the context of a program produced by the GHC JavaScript backend, two differen
 
 First we will see why using only the JavaScript call stack is not suitable for running compiled Haskell code. Then we will introduce the calling convention we use for Haskell and see how the lightweight stacks are used for making calls and passing around data. After this, we will explore in more detail how they are used for exception handling and multithreading.
 
+<!-- truncate  -->
+
 ## Lightweight Stacks
 
 GHC's JavaScript backend translates Haskell, via the intermediate language STG, to JavaScript functions and data. When compiled Haskell code needs to run a computation from a different part of the code, it has to call into the corresponding (JavaScript) function. The code relies on tail calls a lot, and for this reason we cannot use a regular JavaScript function call: JavaScript does not support tail-call optimization and we would run out of stack space quickly.
