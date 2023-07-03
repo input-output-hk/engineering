@@ -48,6 +48,8 @@ Hence, we believe that the WebAssembly and JavaScript backends provide different
 strengths, and it is to the Haskell community's benefit to have and support
 both code generation paths in GHC for different use cases and requirements.
 
+<!-- truncate -->
+
 ## Why Haskell?
 
 JavaScript has many problems ranging from the

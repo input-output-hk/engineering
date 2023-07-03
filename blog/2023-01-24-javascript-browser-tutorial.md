@@ -33,6 +33,8 @@ to be built from source even after the backend matures.
 That's why we start this post with the required steps to build yourself
 a GHC compiler capable of producing JavaScript.
 
+<!-- truncate -->
+
 ## Building GHC as a Cross Compiler to JavaScript
 
 ### Installing Dependencies

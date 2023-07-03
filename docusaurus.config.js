@@ -31,12 +31,12 @@ const config = {
         blog: {
           routeBasePath: '/',
           showReadingTime: true,
-          postsPerPage: 1,
+          postsPerPage: 20,
+          blogSidebarCount: 20,
           // Please change this to your repo.
-          editUrl: undefined,
-            // 'https://github.com/input-output-hk/engineering/tree/master/',
+          editUrl: 'https://github.com/input-output-hk/engineering/tree/master/',
           feedOptions: {
-            type: 'all',
+            type: null,
             description: 'IOG Engineering blog',
             language: 'en',
             copyright: `Copyright © ${new Date().getFullYear()} IOG, Inc.`

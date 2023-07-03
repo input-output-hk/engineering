@@ -28,6 +28,8 @@ The heap is also used to store other values:
 - CON: boxed values (saturated constructor applications) with field values as payload
 - Other unlifted values: TSO, BCO, arrays, MutVar#, MVar#, TVar#, stacks, stack frames...
 
+<!-- truncate -->
+
 ## Info tables
 
 Many heap objects share the same properties: e.g. all `Int` CON objects are

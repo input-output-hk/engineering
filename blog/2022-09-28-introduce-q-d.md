@@ -8,6 +8,8 @@ tags: [ testing quickcheck ]
 
 [quickcheck-dynamic](https://github.com/input-output-hk/quickcheck-dynamic) is a library jointly developed by Quviq and IOG, whose purpose is to leverage [QuickCheck](https://hackage.haskell.org/package/QuickCheck) to test stateful programs against a _Model_. In other words, it's a [_Model-Based Testing_](https://en.wikipedia.org/wiki/Model-based_testing) tool. This article wants to be a gentle introduction to the use of quickcheck-dynamic for Model-Based Testing. It describes the overall approach, how the library works, and how it's being applied within IOG to improve the reach of our testing efforts.
 
+<!-- truncate -->
+
 ## Background
 
 Testing stateful or rather effectful code using QuickCheck is not new: In particular, techniques to test _Monadic_ code with QuickCheck have been introduced in [Claessen & Hughes, 2002](https://dl.acm.org/doi/10.1145/636517.636527). `quickcheck-dynamic` is based on a state-machine approach originally implemented by Quviq in closed-source [Erlang version of QuickCheck](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.148.6554&rep=rep1&type=pdf) and put to use to test various systems as explained in John Hughes' [paper](https://publications.lib.chalmers.se/records/fulltext/232550/local_232550.pdf).
