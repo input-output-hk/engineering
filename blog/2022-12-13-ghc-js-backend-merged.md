@@ -458,7 +458,7 @@ git submodule update --init --recursive
 #### Boot and Configure for JavaScript
 
 ```
-./boot && emconfigure ./configure --target=js-unknown-ghcjs
+./boot && emconfigure ./configure --target=javascript-ghcjs
 ```
 
 You should see `configure` finish and report something similar:
@@ -471,7 +471,7 @@ Configure completed successfully.
 
    Build platform        : x86_64-unknown-linux
    Host platform         : x86_64-unknown-linux
-   Target platform       : js-unknown-ghcjs
+   Target platform       : javascript-ghcjs
 
    Bootstrapping using   : /nix/store/4bkmkc7c98m4qyszsshnw9iclzzmdn4n-ghc-9.2.3-with-packages/bin/ghc
       which is version   : 9.2.3
