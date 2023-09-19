@@ -87,7 +87,7 @@ they have to be derived in explicit statements:
 derived instance {-# DEPRECATED "Will be removed soon" #-} Show T
 ```
 
-The new feature can be used from the GHC version 9.10
+This new feature can be used from the GHC version 9.10
 
 ## Incomplete Record Selectors
 
