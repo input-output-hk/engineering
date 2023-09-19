@@ -163,24 +163,24 @@ data X = X {x :: Int, y :: Char}
 
 ### Broken deprecations for record fields
 
-Since GHC 9.4, deprecations of record fields were not emitted for record
-selectors, the usage of `HasField` or using the overloaded record dot syntax
+Since GHC 9.4, deprecation warnings attached to record fields were not emitted when record fields
+were accessed via record selectors, the usage of `HasField`, or with the overloaded record dot syntax:
 
 ```haskell
 module Mod2 where
 import Mod
 import GHC.Records
 foo :: X -> Int
-foo = x -- no warning emitted here
+foo = x -- no warning emitted here (record selector)
 
 bar1 :: HasField "x" t Int => t -> Int
 bar1 t = getField @"x" t
 
 bar2 :: X -> Int
-bar2 = bar1 -- no warning emitted here
+bar2 = bar1 -- no warning emitted here (HasField constraint)
 
 baz :: X -> Int
-baz t = t.x -- no warning emitted here
+baz t = t.x -- no warning emitted here (record dot syntax)
 ```
 
 I can happily say that with the help of Sam Derbyshire and Simon Peyton-Jones
