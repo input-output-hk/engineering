@@ -46,7 +46,7 @@ import Mod2 (foo)
 ```
 
 similarly, if an identifier is imported from modules that both deprecate and do
-not deprecate it, it will not be warned about (unless explicitly mentioned in
+not deprecate it, the warning will not be emitted (unless explicitly mentioned in
 the import list of that module or explicitly qualified with that module)
 
 ```haskell
