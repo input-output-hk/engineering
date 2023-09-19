@@ -1,6 +1,6 @@
 # Internship in GHC at IOG
 
-My name is Bartłomiej Cieślar, and today marks the end of my 5-month long
+My name is Bartłomiej Cieślar, and I have been done a 5-month long
 internship at IOG. Throughout the internship my work was focused on improving
 the Glasgow Haskell Compiler. In this post I share a bit about the work that I
 did and the new features that will be available in GHC 9.10 thanks to me.
