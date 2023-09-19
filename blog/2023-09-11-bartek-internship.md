@@ -62,7 +62,7 @@ The new feature can be used from the GHC version 9.8
 
 ## Deprecating Instances
 
-Simmilar to exports, there was previously no way to deprecate single instances
+Similar to exports, there was previously no way to deprecate single instances
 of type classes. For example, the `NFData` class is responsible for implementing
 deep strictness on types. However, there is an instance of it for
 
