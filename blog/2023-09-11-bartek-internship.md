@@ -36,7 +36,7 @@ import Types (T(..))
 
 Note that if an identifier is exported both with and without a warning, it will
 not emit a warning at the importing module. A warning flag
-`-Wincomplete-export-warnings` prompts the user about such occurences
+`-Wincomplete-export-warnings` prompts the user about such occurrences
 
 ```haskell
 module Mod3 where
