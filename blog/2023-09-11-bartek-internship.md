@@ -120,7 +120,7 @@ which do not have that field; in this case, `foo2` would fail on the constructor
 however, it is sometimes desirable to use incomplete record selectors because of
 some usage pattern of a library (e.g. the field is defined for only one
 constructor). Therefore, a new warning `-Wincomplete-record-selectors` is now
-available, and warns about such occurences of incomplete record selectors that
+available, and warns about such occurrences of incomplete record selectors that
 could potentially fail
 
 ```haskell
