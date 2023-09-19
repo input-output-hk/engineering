@@ -147,7 +147,7 @@ bar2 :: G Char -> Int
 bar2 g = r g -- warning not emitted here, since G2 cannot occur
 ```
 
-The new feature can be used from the GHC version 9.10
+This new feature can be used from the GHC version 9.10
 
 ## Other minor contributions
 
