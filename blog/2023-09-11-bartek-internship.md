@@ -58,7 +58,7 @@ bar = foo -- no warning here since imported without deprecation through Mod3
 baz = Mod1.foo -- warning here since the function is qualified
 ```
 
-The new feature can be used from the GHC version 9.8
+This new feature can be used from the GHC version 9.8
 
 ## Deprecating Instances
 
