@@ -114,8 +114,10 @@ foo2 t = x t + 2
 ```
 
 However, the issue is that a record selector is not defined for the constructors
-which do not have that field; in this case, `foo2` would fail on the constructor
-`T2`. Such record selectors are called incomplete. There is already a warning
+which do not have that field; in this case, calling `foo2` on the constructor
+`T2` would fail at runtime with an exception.
+
+Such record selectors are called incomplete. There is already a warning
 `-Wpartial-fields` that warns about such record fields at the definition site;
 however, it is sometimes desirable to use incomplete record selectors because of
 some usage pattern of a library (e.g. the field is defined for only one
