@@ -1,3 +1,10 @@
+---
+slug: 2023-09-22-internship
+title: "Internship in GHC at IOG"
+authors: [bartek]
+tags: [ghc,internship]
+---
+
 # Internship in GHC at IOG
 
 My name is Bartłomiej Cieślar, and I have been done a 5-month long
