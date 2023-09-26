@@ -25,13 +25,14 @@ foo x = x * x
 -- Note: The DEPRECATED pragma can always be substituted with a WARNING pragma
 ```
 
-However, consider the following (nb real) issue: there are several functions in
+However, consider the following (real) issue: there are several functions in
 the module `Data.List` (`lines`, `words`, `unlines` and `unwords`) that have
 been moved to `Data.String`; however, their exports cannot be removed from
 `base`, since in doing so it would immediately break any code using those
 functions through `Data.List` without any heads-up. This is where the new
-deprecated warnings come in. Under the new syntax, it is possible to write
-deprecation pragmas next to the export definitions:
+deprecated warnings come in.
+
+Under the new syntax (available from GHC 9.8), it is possible to write deprecation pragmas next to the export definitions:
 
 ```haskell
 module Mod where
@@ -41,31 +42,38 @@ import Mod2 (foo)
 import Types (T(..))
 ```
 
-Note that if an identifier is exported both with and without a warning, it will
-not emit a warning at the importing module. A warning flag
-`-Wincomplete-export-warnings` prompts the user about such occurrences
+There are two corner cases:
+- an identifier exported more than once with inconsistent annotations
+- an identifier imported from several modules leading to inconsistent annotations in the importing module
+
+In the following example, `foo` identifier is exported twice with inconsistent annotions:
 
 ```haskell
-module Mod3 where
-       ( {-# DEPRECATED "Moved to Mod2" #-} foo
-       , foo ) -- foo will not be deprecated
-import Mod2 (foo)
+module M where
+       ( {-# DEPRECATED "Moved to R" #-} foo
+       , foo
+       )
+import R (foo)
 ```
 
-similarly, if an identifier is imported from modules that both deprecate and do
-not deprecate it, the warning will not be emitted (unless explicitly mentioned in
-the import list of that module or explicitly qualified with that module)
+As `foo` is exported from `M` both with and without a deprecation annotation, a module importing `foo` from `M` won't raise a deprecation warning.
+A new compiler flag `-Wincomplete-export-warnings` can be enabled to ake the compiler warn about such inconsistent annotations in the defining module.
+
+The second case is illustrated with the following example: `foo` is imported from both `Good` and `Bad` modules but it is
+deprecated only in `Bad`'s export list.
 
 ```haskell
-module Mod4 where
-import Mod1 (foo) -- warning here since explicitly mentioned
-import Mod3
+import Bad (foo) -- warning here since explicitly mentioned in Bad's import list
+import Good
 
-bar = foo -- no warning here since imported without deprecation through Mod3
-baz = Mod1.foo -- warning here since the function is qualified
+bar = foo     -- no warning here since imported without deprecation from Good
+baz = Bad.foo -- warning here since the import is qualified with Bad
 ```
 
-This new feature can be used from the GHC version 9.8
+Warnings will be emitted every time the identifier is explicitly used from `Bad`:
+- in `Bad`'s import list
+- when an occurrence is qualified with `Bad`
+
 
 ## Deprecating Instances
 
@@ -79,8 +87,9 @@ instance (Enumerate a, NFData b) => NFData (a -> b)
 
 which does not make much sense and is pretty inefficient. However, it also
 cannot be removed since this would suddenly break all code using this feature,
-not giving the library users time to update their code. However, now there is a
-way to do add deprecation pragmas to instances:
+not giving the library users time to update their code.
+
+From GHC 9.10, there will be a way to do add deprecation pragmas to instances:
 
 ```haskell
 instance {-# DEPRECATED "Do not use" #-} (Enumerate a, NFData b) => NFData (a -> b)
@@ -88,13 +97,11 @@ instance {-# DEPRECATED "Do not use" #-} (Enumerate a, NFData b) => NFData (a ->
 
 which will emit a warning every time a type class constraint is solved to this
 instance. It is also possible to add warnings to derived instances, although
-they have to be derived in explicit statements:
+they have to be derived with standalone `deriving` declarations:
 
 ```haskell
-derived instance {-# DEPRECATED "Will be removed soon" #-} Show T
+deriving instance {-# DEPRECATED "Will be removed soon" #-} Show T
 ```
-
-This new feature can be used from the GHC version 9.10
 
 ## Incomplete Record Selectors
 
@@ -102,61 +109,62 @@ In haskell, one can name the fields of a data type constructor, in which case
 that constructor is called a record:
 
 ```haskell
-data T = T1 { x :: Int } | T2 Bool | T3 { x :: Int, y :: Char }
+data T = T1 { fieldX :: Int } | T2 Bool | T3 { fieldX :: Int, fieldY :: Char }
 ```
 
 In order to access the fields of a record, one can pattern match on it:
 
 ```haskell
 foo1 :: T -> Int
-foo1 (T1 {x = val}) = val
-foo1 _              = 0
+foo1 (T1 {fieldX = val}) = val
+foo1 _                   = 0
 ```
 
 or use a record selector function:
 
 ```haskell
 foo2 :: T -> Int
-foo2 t = x t + 2
+foo2 t = fieldX t + 2
 ```
 
-However, the issue is that a record selector is not defined for the constructors
-which do not have that field; in this case, calling `foo2` on the constructor
-`T2` would fail at runtime with an exception.
+The issue is that a record selector is not defined for the constructors
+which do not have that field. Such record selectors are called incomplete.
+In our example, `fieldX` and `fieldY` are incomplete record selectors.
+As a consequence, calling `foo2` on a value constructed with constructor `T2`
+would fail at runtime with an exception becaues `T2` doesn't have a `fieldX` field. 
 
-Such record selectors are called incomplete. There is already a warning
-`-Wpartial-fields` that warns about such record fields at the definition site;
-however, it is sometimes desirable to use incomplete record selectors because of
-some usage pattern of a library (e.g. the field is defined for only one
-constructor). Therefore, a new warning `-Wincomplete-record-selectors` is now
-available, and warns about such occurrences of incomplete record selectors that
-could potentially fail
+There is already a warning `-Wpartial-fields` that warns about such record fields at the **definition site**.
+However, it is only a warning because incomplete record selectors are sometimes desirable.
+
+Therefore, I've implemented a new `-Wincomplete-record-selectors` warning (available from GHC 9.10)
+that warns about **occurrences** of incomplete record selectors that **can't be proved not to fail**.
+
 
 ```haskell
 foo3 :: T -> Int
-foo3 (T1 {x = x}) = x
-foo3 t = x t -- warning emitted here
+foo3 (T1 {fieldX = x}) = x
+foo3 t                 = fieldX t -- warning emitted here
 
 foo4 :: T -> Int
 foo4 (T2 _) = 0
-foo4 t = x t -- warning not emitted here, since T2 is handled by the previous case
+foo4 t      = fieldX t -- warning not emitted here, since T2 is handled by the previous equation
 ```
 
-this also works with GADTs
+This also works with GADTs for which we need to take types into account to know which constructors
+are allowed to occur. In the following example, it doesn't make sense to warn in `bar2` about handling
+the case where `g` is constructed with `G2` because `g`'s type prevents it.
 
 ```haskell
 data G a where
-    G1 :: {z :: Int, r :: Char} -> G a
-    G2 :: {r :: Char} -> G Int
+    G1 :: {fieldZ :: Int, fieldR :: Char} -> G a
+    G2 :: {fieldR :: Char} -> G Int
 
 bar1 :: G a -> Int
-bar1 g = r g -- warning emitted here
+bar1 g = fieldZ g -- warning emitted here
 
 bar2 :: G Char -> Int
-bar2 g = r g -- warning not emitted here, since G2 cannot occur
+bar2 g = fieldZ g -- warning not emitted here, since G2 cannot occur
 ```
-
-This new feature can be used from the GHC version 9.10
 
 ## Other minor contributions
 
