@@ -32,14 +32,14 @@ been moved to `Data.String`; however, their exports cannot be removed from
 functions through `Data.List` without any heads-up. This is where the new
 deprecated warnings come in.
 
-Under the new syntax (available from GHC 9.8), it is possible to write deprecation pragmas next to the export definitions:
+Under the new syntax (available from GHC 9.8), it is possible to write deprecation and warning annotations next to the export definitions:
 
 ```haskell
-module Mod where
-       ( {-# DEPRECATED "Moved to Mod2" #-} foo
-       , {-# WARNING "Moved to Types" #-} T(..) )
-import Mod2 (foo)
-import Types (T(..))
+module Data.List where
+       ( {-# DEPRECATED "Moved to Data.String" #-} lines
+       , {-# WARNING "Will be removed in the next release!" #-} SomeType(..) )
+import Data.String (lines)
+import Types (SomeType(..))
 ```
 
 There are two corner cases:
