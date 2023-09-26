@@ -57,7 +57,7 @@ import R (foo)
 ```
 
 As `foo` is exported from `M` both with and without a deprecation annotation, a module importing `foo` from `M` won't raise a deprecation warning.
-A new compiler flag `-Wincomplete-export-warnings` can be enabled to ake the compiler warn about such inconsistent annotations in the defining module.
+A new compiler flag `-Wincomplete-export-warnings` can be enabled to make the compiler warn about such inconsistent annotations in the defining module.
 
 The second case is illustrated with the following example: `foo` is imported from both `Good` and `Bad` modules but it is
 deprecated only in `Bad`'s export list.
