@@ -43,37 +43,90 @@ import Types (SomeType(..))
 ```
 
 There are two corner cases:
-- an identifier exported more than once with inconsistent annotations
 - an identifier imported from several modules leading to inconsistent annotations in the importing module
+- an identifier exported more than once with inconsistent annotations in the exporting module
 
-In the following example, `foo` identifier is exported twice with inconsistent annotions:
-
-```haskell
-module M where
-       ( {-# DEPRECATED "Moved to R" #-} foo
-       , foo
-       )
-import R (foo)
-```
-
-As `foo` is exported from `M` both with and without a deprecation annotation, a module importing `foo` from `M` won't raise a deprecation warning.
-A new compiler flag `-Wincomplete-export-warnings` can be enabled to make the compiler warn about such inconsistent annotations in the defining module.
-
-The second case is illustrated with the following example: `foo` is imported from both `Good` and `Bad` modules but it is
-deprecated only in `Bad`'s export list.
+The first case is illustrated with the following example: `foo` is imported from both `Good` and `Wrong` modules but it is
+deprecated only in `Wrong`'s export list.
 
 ```haskell
-import Bad (foo) -- warning here since explicitly mentioned in Bad's import list
+module Good where
+foo :: Int
+foo = 10
+----------------------
+module Wrong
+  ( {-# DEPRECATED "Moved to Good" #-} foo
+  )
+where
+import Good
+----------------------
+module Test where
+
+import Wrong (foo) -- warning here since explicitly mentioned in Wrong's import list
 import Good
 
-bar = foo     -- no warning here since imported without deprecation from Good
-baz = Bad.foo -- warning here since the import is qualified with Bad
+bar = foo       -- no warning here since imported without deprecation from Good
+baz = Wrong.foo -- warning here since the import is qualified with Wrong
 ```
 
-Warnings will be emitted every time the identifier is explicitly used from `Bad`:
-- in `Bad`'s import list
-- when an occurrence is qualified with `Bad`
+Warnings are emitted every time the identifier is explicitly used from `Wrong`:
+- in `Wrong`'s import list
+- when an occurrence is qualified with `Wrong`
 
+```
+> ghc-9.8 Test.hs
+[1 of 3] Compiling Good             ( Good.hs, Good.o )
+[2 of 3] Compiling Wrong            ( Wrong.hs, Wrong.o )
+[3 of 3] Compiling Test             ( Test.hs, Test.o )
+
+Test.hs:3:15: warning: [GHC-68441] [-Wdeprecations]
+    In the use of ‘foo’ (imported from Wrong):
+    Deprecated: "Moved to Good"
+  |
+3 | import Wrong (foo)
+  |               ^^^
+
+Test.hs:7:7: warning: [GHC-68441] [-Wdeprecations]
+    In the use of ‘foo’ (imported from Wrong):
+    Deprecated: "Moved to Good"
+  |
+7 | baz = Wrong.foo
+  | 
+```
+
+The second case is illustrated with the following example. `foo` identifier is exported twice with inconsistent annotions in module `Both`:
+
+```haskell
+module Both
+  ( {-# DEPRECATED "Moved to Good" #-} foo
+  , foo
+  )
+where
+import Good (foo)
+```
+
+As `foo` is exported from module `Both` both with and without a deprecation annotation, a module importing `foo` from `Both` won't raise a deprecation warning.
+A new compiler flag `-Wincomplete-export-warnings` can be enabled to make the compiler warn about such inconsistent annotations in the defining module.
+
+```
+> ghc-9.8 Both.hs -Wall
+[1 of 2] Compiling Good             ( Good.hs, Good.o )
+[2 of 2] Compiling Both             ( Both.hs, Both.o )
+
+Both.hs:2:5: warning: [GHC-94721] [-Wincomplete-export-warnings]
+    ‘foo’ will not have its export warned about
+    missing export warning at Both.hs:3:5-7
+  |
+2 |   ( {-# DEPRECATED "Moved to R" #-} foo
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Both.hs:3:5: warning: [GHC-47854] [-Wduplicate-exports]
+    ‘foo’ is exported by ‘foo’ and ‘{-# DEPRECATED "Moved to R" #-}
+                                    foo’
+  |
+3 |   , foo
+  |     ^^^
+```
 
 ## Deprecating Instances
 
