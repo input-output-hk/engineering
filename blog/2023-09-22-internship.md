@@ -15,7 +15,7 @@ did and the new features that will be available in GHC 9.10 thanks to me.
 ## Deprecating Exports
 
 Originally in GHC, the only way to deprecate usages of certain things was to
-deprecate their definitions
+deprecate their definitions, as in the following example:
 
 ```haskell
 foo :: Int -> Int
@@ -45,8 +45,7 @@ There are two corner cases:
 - an identifier imported from several modules leading to inconsistent annotations in the importing module
 - an identifier exported more than once with inconsistent annotations in the exporting module
 
-The first case is illustrated with the following example: `foo` is imported from both `Good` and `Wrong` modules but it is
-deprecated only in `Wrong`'s export list.
+The first case is illustrated with the following example:
 
 ```haskell
 module Good where
@@ -68,6 +67,7 @@ bar = foo       -- no warning here since imported without deprecation from Good
 baz = Wrong.foo -- warning here since the import is qualified with Wrong
 ```
 
+`foo` is imported from both `Good` and `Wrong` modules but it is deprecated only in `Wrong`'s export list.
 Warnings are emitted every time the identifier is explicitly used from `Wrong`:
 - in `Wrong`'s import list
 - when an occurrence is qualified with `Wrong`
@@ -93,7 +93,7 @@ Test.hs:7:7: warning: [GHC-68441] [-Wdeprecations]
   | 
 ```
 
-The second case is illustrated with the following example. `foo` identifier is exported twice with inconsistent annotions in module `Both`:
+The second case is illustrated with the following example:
 
 ```haskell
 module Both
@@ -104,8 +104,10 @@ where
 import Good (foo)
 ```
 
-As `foo` is exported from module `Both` both with and without a deprecation annotation, a module importing `foo` from `Both` won't raise a deprecation warning.
-A new compiler flag `-Wincomplete-export-warnings` can be enabled to make the compiler warn about such inconsistent annotations in the defining module.
+`foo` identifier is exported twice with inconsistent annotions in module `Both`: both with and without a deprecation annotation.
+A module importing `foo` from `Both` won't raise a deprecation warning (there is a non-deprecated export after all).
+To help avoiding this situation, a new compiler flag `-Wincomplete-export-warnings` can be enabled (it is included in `-Wall`)
+to make the compiler warn about such inconsistent annotations in the defining module:
 
 ```
 > ghc-9.8 Both.hs -Wall
@@ -141,14 +143,14 @@ DEPRECATED pragma but the WARNING pragma could have been used too.
 
 Similar to exports, there was previously no way to deprecate single instances
 of type classes. For example, the `NFData` class is responsible for implementing
-deep strictness on types. However, there is an instance of it for
+deep strictness on types and there is an instance of it for functions
+which does not make much sense and is pretty inefficient:
 
 ```haskell
 instance (Enumerate a, NFData b) => NFData (a -> b)
 ```
 
-which does not make much sense and is pretty inefficient. However, it also
-cannot be removed since this would suddenly break all code using this feature,
+However, it cannot be removed since this would suddenly break all code using this instance,
 not giving the library users time to update their code.
 
 From GHC 9.10, there will be a way to do add deprecation pragmas to instances:
@@ -200,8 +202,30 @@ In our example, `fieldX` and `fieldY` are incomplete record selectors.
 As a consequence, calling `foo2` on a value constructed with constructor `T2`
 would fail at runtime with an exception becaues `T2` doesn't have a `fieldX` field. 
 
-There is already a warning `-Wpartial-fields` that warns about such record fields at the **definition site**.
-However, it is only a warning because incomplete record selectors are sometimes desirable.
+There is already a warning `-Wpartial-fields` that warns about such record fields at the **definition site**:
+
+```
+> ghc T.hs -Wpartial-fields
+[1 of 1] Compiling T                ( T.hs, T.o )
+
+T.hs:3:15: warning: [GHC-82712] [-Wpartial-fields]
+    Use of partial record field selector: ‘fieldX’
+  |
+3 | data T = T1 { fieldX :: Int } | T2 Bool | T3 { fieldX :: Int, fieldY :: Char }
+  |               ^^^^^^
+
+T.hs:3:63: warning: [GHC-82712] [-Wpartial-fields]
+    Use of partial record field selector: ‘fieldY’
+  |
+3 | data T = T1 { fieldX :: Int } | T2 Bool | T3 { fieldX :: Int, fieldY :: Char }
+  |                                                               ^^^^^^
+```
+
+Note: the message should read `Definition of partial record field selector: ...`, not `Use...`.
+
+However:
+1. it is only a warning because incomplete record selectors are sometimes desirable.
+2. it is only visible when compiling a module defining partial record field selectors, not when a partial record field selector field is used in some client module.
 
 Therefore, I've implemented a new `-Wincomplete-record-selectors` warning (available from GHC 9.10)
 that warns about **occurrences** of incomplete record selectors that **can't be proved not to fail**.
@@ -215,6 +239,15 @@ foo3 t                 = fieldX t -- warning emitted here
 foo4 :: T -> Int
 foo4 (T2 _) = 0
 foo4 t      = fieldX t -- warning not emitted here, since T2 is handled by the previous equation
+```
+
+```
+> ghc-9.10 -Wincomplete-record-selectors
+Test.hs:7:26: warning: [GHC-17335] [-Wincomplete-record-selectors]
+    The application of the record field ‘fieldX’ may fail for the following constructors: T2
+  |
+7 | foo3 t                 = fieldX t -- warning emitted here
+  |  
 ```
 
 This also works with GADTs for which we need to take types into account to know which constructors
