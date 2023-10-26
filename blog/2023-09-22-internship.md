@@ -127,6 +127,12 @@ Both.hs:3:5: warning: [GHC-47854] [-Wduplicate-exports]
   |     ^^^
 ```
 
+References:
+- [GHC proposal #134](https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0134-deprecating-exports-proposal.rst)
+- [GHC ticket #4879](https://gitlab.haskell.org/ghc/ghc/-/issues/4879)
+- [GHC merge request !10283](https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10283)
+
+
 Note: The WARNING pragma behaves exactly like the DEPRECATED pragma.
 In previous examples and in the rest of this post we always use the
 DEPRECATED pragma but the WARNING pragma could have been used too.
