@@ -10,7 +10,7 @@ tags: [ghc,internship]
 My name is Bartłomiej Cieślar, and I have done a 5-month long
 internship at IOG. Throughout the internship my work was focused on improving
 the Glasgow Haskell Compiler. In this post I share a bit about the work that I
-did and the new features that will be available in GHC 9.10 thanks to me.
+did and the new features that are available in GHC 9.8 and GHC 9.10 as a result.
 
 ## Deprecating Exports
 
