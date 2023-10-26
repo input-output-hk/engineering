@@ -129,7 +129,7 @@ Both.hs:3:5: warning: [GHC-47854] [-Wduplicate-exports]
 
 References:
 - [GHC proposal #134](https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0134-deprecating-exports-proposal.rst)
-- [GHC ticket #4879](https://gitlab.haskell.org/ghc/ghc/-/issues/4879)
+- [GHC issue #4879](https://gitlab.haskell.org/ghc/ghc/-/issues/4879)
 - [GHC merge request !10283](https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10283)
 
 
@@ -164,6 +164,11 @@ they have to be derived with standalone `deriving` declarations:
 ```haskell
 deriving instance {-# DEPRECATED "Will be removed soon" #-} Show T
 ```
+
+References:
+- [GHC proposal #575](https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0575-deprecated-instances.rst)
+- [GHC issue #17485](https://gitlab.haskell.org/ghc/ghc/-/issues/17485)
+- [GHC merge request !10902](https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10902)
 
 ## Incomplete Record Selectors
 
@@ -228,6 +233,11 @@ bar2 :: G Char -> Int
 bar2 g = fieldZ g -- warning not emitted here, since G2 cannot occur
 ```
 
+References:
+- [GHC proposal #516](https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0516-incomplete-record-selectors.rst)
+- [GHC issue #18650](https://gitlab.haskell.org/ghc/ghc/-/issues/18650)
+- [GHC merge request !10736](https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10736)
+
 ## Other minor contributions
 
 For the purpose of this part, let us assume that module `Mod` has the following definition:
@@ -261,7 +271,11 @@ baz t = t.x -- no warning emitted here (record dot syntax)
 ```
 
 I can happily say that with the help of Sam Derbyshire and Simon Peyton-Jones
-the bug was fixed and this feature will work again fully in GHC 9.10
+the bug was fixed and this feature will work again fully in GHC 9.8.
+
+References:
+- [GHC issue #23279](https://gitlab.haskell.org/ghc/ghc/-/issues/23279)
+- [GHC merge request !10991](https://gitlab.haskell.org/ghc/ghc/-/merge_requests/10991)
 
 ### Custom deprecations in record wild card syntax
 
@@ -288,3 +302,7 @@ the warnings would have been noisy. However, since GHC 9.10 it will be changed
 so that the custom warnings for record fields will be emitted only if the
 variables to which their values are assinged to are used in the body of the
 function.
+
+References:
+- [GHC issue #23382](https://gitlab.haskell.org/ghc/ghc/-/issues/23382)
+- [GHC merge request !11043](https://gitlab.haskell.org/ghc/ghc/-/merge_requests/11043)
