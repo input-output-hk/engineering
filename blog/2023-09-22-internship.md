@@ -242,7 +242,7 @@ foo4 t      = fieldX t -- warning not emitted here, since T2 is handled by the p
 ```
 
 ```
-> ghc-9.10 -Wincomplete-record-selectors
+> ghc-9.10 Test.hs -Wincomplete-record-selectors
 Test.hs:7:26: warning: [GHC-17335] [-Wincomplete-record-selectors]
     The application of the record field ‘fieldX’ may fail for the following constructors: T2
   |
