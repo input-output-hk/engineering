@@ -22,7 +22,6 @@ foo :: Int -> Int
 foo x = x * x
 
 {-# DEPRECATED foo "Do not use" #-}
--- Note: The DEPRECATED pragma can always be substituted with a WARNING pragma
 ```
 
 However, consider the following (real) issue: there are several functions in
@@ -127,6 +126,10 @@ Both.hs:3:5: warning: [GHC-47854] [-Wduplicate-exports]
 3 |   , foo
   |     ^^^
 ```
+
+Note: The WARNING pragma behaves exactly like the DEPRECATED pragma.
+In previous examples and in the rest of this post we always use the
+DEPRECATED pragma but the WARNING pragma could have been used too.
 
 ## Deprecating Instances
 
