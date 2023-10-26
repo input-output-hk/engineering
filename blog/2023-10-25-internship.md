@@ -1,5 +1,5 @@
 ---
-slug: 2023-09-22-internship
+slug: 2023-10-25-internship
 title: "Internship in GHC at IOG"
 authors: [bartek]
 tags: [ghc,internship]
