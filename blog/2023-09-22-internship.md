@@ -221,7 +221,7 @@ T.hs:3:63: warning: [GHC-82712] [-Wpartial-fields]
   |                                                               ^^^^^^
 ```
 
-Note: the message should read `Definition of partial record field selector: ...`, not `Use...`.
+Note: the message `Use of partial record field selector: ...` should better be reworded as `Definition of partial record field selector: ...`.
 
 However:
 1. it is only a warning because incomplete record selectors are sometimes desirable.
