@@ -74,9 +74,6 @@ Warnings are emitted every time the identifier is explicitly used from `Wrong`:
 
 ```
 > ghc-9.8 Test.hs
-[1 of 3] Compiling Good             ( Good.hs, Good.o )
-[2 of 3] Compiling Wrong            ( Wrong.hs, Wrong.o )
-[3 of 3] Compiling Test             ( Test.hs, Test.o )
 
 Test.hs:3:15: warning: [GHC-68441] [-Wdeprecations]
     In the use of ‘foo’ (imported from Wrong):
@@ -111,8 +108,6 @@ to make the compiler warn about such inconsistent annotations in the defining mo
 
 ```
 > ghc-9.8 Both.hs -Wall
-[1 of 2] Compiling Good             ( Good.hs, Good.o )
-[2 of 2] Compiling Both             ( Both.hs, Both.o )
 
 Both.hs:2:5: warning: [GHC-94721] [-Wincomplete-export-warnings]
     ‘foo’ will not have its export warned about
@@ -256,14 +251,24 @@ the case where `g` is constructed with `G2` because `g`'s type prevents it.
 
 ```haskell
 data G a where
-    G1 :: {fieldZ :: Int, fieldR :: Char} -> G a
-    G2 :: {fieldR :: Char} -> G Int
+    G1 :: {fieldZ :: Int, fieldC1 :: Char} -> G a
+    G2 :: {fieldC2 :: Char} -> G Int
 
 bar1 :: G a -> Int
 bar1 g = fieldZ g -- warning emitted here
 
 bar2 :: G Char -> Int
 bar2 g = fieldZ g -- warning not emitted here, since G2 cannot occur
+```
+
+```
+> ghc-9.10 Test.hs -Wincomplete-record-selectors
+
+Test.hs:8:10: warning: [GHC-17335] [-Wincomplete-record-selectors]
+    The application of the record field ‘fieldZ’ may fail for the following constructors: G2
+  |
+8 | bar1 g = fieldZ g -- warning emitted here
+  |  
 ```
 
 References:
