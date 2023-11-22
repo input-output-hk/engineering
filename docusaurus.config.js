@@ -56,7 +56,8 @@ const config = {
         title: 'Engineering',
         logo: {
           alt: 'IOG',
-          src: 'img/iohk-logo.jpg',
+          src: 'img/iohk-logo.png',
+          srcDark: 'img/iohk-logo-inverted.png',
         },
         items: [
           // {
