@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkengineering_iog_io=self.webpackChunkengineering_iog_io||[]).push([[6668],{9412:function(e){e.exports=JSON.parse('{"allTagsPath":"/tags","slug":"/tags/ghcjs","name":"ghcjs","count":1,"permalink":"/tags/ghcjs"}')}}]);
