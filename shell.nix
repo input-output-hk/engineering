@@ -1,4 +1,4 @@
-{ pkgs ? import (fetchTarball https://github.com/NixOS/nixpkgs/archive/b387b736065fff4755fc8676ead59e59efc82262.tar.gz) {} }:
+{ pkgs ? import (fetchTarball https://github.com/NixOS/nixpkgs/archive/871b9fd269ff6246794583ce4ee1031e1da71895.tar.gz) {} }:
   pkgs.mkShell {
     nativeBuildInputs = with pkgs.buildPackages; [ nodejs yarn curl jq ];
     shellHook = ''
