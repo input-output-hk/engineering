@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkengineering_iog_io=globalThis.webpackChunkengineering_iog_io||[]).push([[4900],{1636:e=>{e.exports=JSON.parse('{"label":"concurrency","permalink":"/tags/concurrency","allTagsPath":"/tags","count":1}')}}]);

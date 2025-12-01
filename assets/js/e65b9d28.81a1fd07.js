@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkengineering_iog_io=self.webpackChunkengineering_iog_io||[]).push([[6550],{1637:function(e){e.exports=JSON.parse('{"allTagsPath":"/tags","slug":"/tags/rust","name":"rust","count":1,"permalink":"/tags/rust"}')}}]);

@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkengineering_iog_io=globalThis.webpackChunkengineering_iog_io||[]).push([[4051],{5927:a=>{a.exports=JSON.parse('{"label":"javascript","permalink":"/tags/javascript","allTagsPath":"/tags","count":9}')}}]);

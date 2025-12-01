@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkengineering_iog_io=globalThis.webpackChunkengineering_iog_io||[]).push([[6505],{6991:e=>{e.exports=JSON.parse('{"label":"testing quickcheck","permalink":"/tags/testing-quickcheck","allTagsPath":"/tags","count":1}')}}]);

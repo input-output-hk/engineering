@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkengineering_iog_io=globalThis.webpackChunkengineering_iog_io||[]).push([[1862],{5213:a=>{a.exports=JSON.parse('{"label":"explanation","permalink":"/tags/explanation","allTagsPath":"/tags","count":2}')}}]);

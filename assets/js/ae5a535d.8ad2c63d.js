@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkengineering_iog_io=globalThis.webpackChunkengineering_iog_io||[]).push([[8492],{9894:e=>{e.exports=JSON.parse('{"label":"bindgen","permalink":"/tags/bindgen","allTagsPath":"/tags","count":1}')}}]);

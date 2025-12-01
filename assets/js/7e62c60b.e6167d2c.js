@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkengineering_iog_io=globalThis.webpackChunkengineering_iog_io||[]).push([[5262],{3987:e=>{e.exports=JSON.parse('{"label":"knowledge_engineering","permalink":"/tags/knowledge-engineering","allTagsPath":"/tags","count":2}')}}]);

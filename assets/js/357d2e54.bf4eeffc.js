@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkengineering_iog_io=globalThis.webpackChunkengineering_iog_io||[]).push([[9998],{8471:e=>{e.exports=JSON.parse('{"label":"p2p","permalink":"/tags/p-2-p","allTagsPath":"/tags","count":1}')}}]);

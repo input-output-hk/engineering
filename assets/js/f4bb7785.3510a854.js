@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkengineering_iog_io=globalThis.webpackChunkengineering_iog_io||[]).push([[8210],{873:e=>{e.exports=JSON.parse('{"permalink":"/tags/ghc","page":1,"postsPerPage":20,"totalPages":4,"totalCount":67,"nextPage":"/tags/ghc/page/2","blogDescription":"Blog","blogTitle":"Blog"}')}}]);

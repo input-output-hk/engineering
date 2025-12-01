@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkengineering_iog_io=self.webpackChunkengineering_iog_io||[]).push([[5641],{5247:function(n){n.exports=JSON.parse('{"allTagsPath":"/tags","slug":"/tags/internship","name":"internship","count":1,"permalink":"/tags/internship"}')}}]);

@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkengineering_iog_io=globalThis.webpackChunkengineering_iog_io||[]).push([[903],{1906:e=>{e.exports=JSON.parse('{"label":"haskell","permalink":"/tags/haskell","allTagsPath":"/tags","count":1}')}}]);

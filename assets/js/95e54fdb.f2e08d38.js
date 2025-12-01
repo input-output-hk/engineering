@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkengineering_iog_io=globalThis.webpackChunkengineering_iog_io||[]).push([[6635],{1958:a=>{a.exports=JSON.parse('{"label":"cabal","permalink":"/tags/cabal","allTagsPath":"/tags","count":1}')}}]);

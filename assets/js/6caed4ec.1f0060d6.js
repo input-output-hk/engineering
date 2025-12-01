@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkengineering_iog_io=globalThis.webpackChunkengineering_iog_io||[]).push([[6012],{1635:e=>{e.exports=JSON.parse('{"label":"ghc","permalink":"/tags/ghc","allTagsPath":"/tags","count":67}')}}]);

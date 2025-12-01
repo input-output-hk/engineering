@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkengineering_iog_io=globalThis.webpackChunkengineering_iog_io||[]).push([[4460],{7978:e=>{e.exports=JSON.parse('{"label":"ghc-update","permalink":"/tags/ghc-update","allTagsPath":"/tags","count":55}')}}]);

@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkengineering_iog_io=globalThis.webpackChunkengineering_iog_io||[]).push([[9537],{7415:e=>{e.exports=JSON.parse('{"label":"ghc-9.14","permalink":"/tags/ghc-9-14","allTagsPath":"/tags","count":1}')}}]);

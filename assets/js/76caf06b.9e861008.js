@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkengineering_iog_io=self.webpackChunkengineering_iog_io||[]).push([[5734],{2464:function(i){i.exports=JSON.parse('{"allTagsPath":"/tags","slug":"/tags/profiling","name":"profiling","count":2,"permalink":"/tags/profiling"}')}}]);

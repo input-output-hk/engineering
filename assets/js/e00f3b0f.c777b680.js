@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkengineering_iog_io=self.webpackChunkengineering_iog_io||[]).push([[82],{6921:function(e){e.exports=JSON.parse('{"allTagsPath":"/tags","slug":"/tags/haskell","name":"haskell","count":1,"permalink":"/tags/haskell"}')}}]);
